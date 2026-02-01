@@ -15,4 +15,13 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const updates = await Update.find();
+    res.status(200).json({updates});
+  } catch (err) {
+    res.status(500).json({error: "Error fetching updates"});
+  }
+})
+
 module.exports = router;
