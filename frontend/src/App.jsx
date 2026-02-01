@@ -5,7 +5,7 @@ function App() {
   const [update, setUpdate] = useState("");
 
   const postUpdate = () => {
-    fetch('http://localhost:5050/updates', {
+    fetch('https://willbergforever-com-server.onrender.com/updates', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
