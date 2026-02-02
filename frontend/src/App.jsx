@@ -13,7 +13,7 @@ function App() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${sessionStorage.getItem("auth_token")}`,
+          "Authorization": `Bearer ${localStorage.getItem("auth_token")}`,
         },
         body: JSON.stringify({
           text: update,
@@ -49,7 +49,7 @@ function App() {
     fetch(`${BACKEND}/login/verify`, {
       method: "HEAD",
       headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem("auth_token")}`,
+        "Authorization": `Bearer ${localStorage.getItem("auth_token")}`,
       },
     }).then(res => {
       if (!res.ok) {
@@ -57,7 +57,7 @@ function App() {
       }
       setIsAdmin(true);
     }).catch(error => {
-      console.log(error);
+      setIsAdmin(false);
     })
   }
 
@@ -76,8 +76,20 @@ function App() {
     }
   }
 
+  const signOut = () => {
+    localStorage.removeItem("auth_token");
+    getUpdates();
+    verify();
+  }
+
   return (
     <>
+      {isAdmin &&
+        <div>
+          <h2>Logged in as admin</h2>
+          <button onClick={signOut}>Sign Out</button>
+        </div>
+      }
       <h1>WELCOME TO THE WILL BERG WEBSITE</h1>
       <h3>THE PLACE TO BE</h3>
       <h5>Glad you could make it</h5>

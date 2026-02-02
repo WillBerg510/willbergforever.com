@@ -34,7 +34,7 @@ const Login = () => {
     }).catch(error => {
       alert(error);
     }).then(data => {
-      sessionStorage.setItem("auth_token", data.token);
+      localStorage.setItem("auth_token", data.token);
       navigate('/');
     });
   }

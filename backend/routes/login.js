@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require("../utils/auth.js");
+const jwt = require('jsonwebtoken');
 
 router.post("/", async (req, res) => {
   const { password } = req.body;
@@ -8,7 +9,8 @@ router.post("/", async (req, res) => {
     if (password != process.env.PASSWORD) {
       return res.status(401).json({error: "Incorrect password"});
     }
-    res.status(200).json({token: process.env.TOKEN});
+    const token = jwt.sign({"name": "Admin"}, process.env.TOKEN, {expiresIn: "1d"});
+    res.status(200).json({token: token});
   } catch (err) {
     res.status(500).json({error: "Login unsuccessful"});
   }

@@ -1,12 +1,16 @@
+const jwt = require("jsonwebtoken");
+
 const auth = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
+  if (!token || token == "null") {
     return res.status(401).json({error: 'Missing auth token.'});
   }
-  if (token != process.env.TOKEN) {
+  try {
+    jwt.verify(token, process.env.TOKEN);
+    next();
+  } catch {
     return res.status(401).json({error: 'Invalid auth token.'});
   }
-  next();
 }
 
 module.exports = auth;
