@@ -92,8 +92,7 @@ function App() {
       if (!res.ok) {
         throw new Error(`Response status ${res.status}`);
       }
-      return res.json();
-    }).then(data => {
+    }).then(() => {
       getUpdates();
     }).catch(error => {
       alert(error);
@@ -124,7 +123,7 @@ function App() {
         </div>
       )}
       {isAdmin &&
-        <button onChange={clearUpdates}>Delete updates</button>
+        <button onClick={clearUpdates}>Delete updates</button>
       }
     </>
   )
