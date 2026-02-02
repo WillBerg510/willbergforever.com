@@ -83,7 +83,12 @@ function App() {
   }
 
   const clearUpdates = () => {
-    fetch(`${BACKEND}/updates/clear`).then(res => {
+    fetch(`${BACKEND}/updates/clear`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("auth_token")}`,
+      }
+    }).then(res => {
       if (!res.ok) {
         throw new Error(`Response status ${res.status}`);
       }
