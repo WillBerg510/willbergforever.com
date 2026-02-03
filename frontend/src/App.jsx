@@ -7,6 +7,12 @@ function App() {
   const [updates, setUpdates] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const reactions = {
+    "heart": "❤️",
+    "fire": "🔥",
+    "surprise": "😯"
+  };
+
   const postUpdate = () => {
     if (update != "") {
       fetch(`${BACKEND}/updates`, {
@@ -41,6 +47,11 @@ function App() {
     }).then(data => {
       data.updates.forEach((update) => {
         update.date = new Date(update.date);
+        update.reacted = {
+          "heart": false,
+          "fire": false,
+          "surprise": false,
+        };
       });
       setUpdates(data.updates);
     }).catch(error => {
@@ -77,6 +88,50 @@ function App() {
     localStorage.removeItem("auth_token");
     getUpdates();
     verify();
+  }
+
+  const toggleReaction = (update, reaction) => {
+    if (update.reacted[reaction]) {
+      fetch(`${BACKEND}/updates/unreact/${update._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reaction: reaction,
+        })
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error(`Response status ${res.status}`);
+        }
+      }).catch(error => {
+        alert(error);
+      });
+    } else {
+      fetch(`${BACKEND}/updates/react/${update._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reaction: reaction,
+        })
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error(`Response status ${res.status}`);
+        }
+      }).catch(error => {
+        alert(error);
+      });
+    }
+    setUpdates(updates.map(up => {
+        if (update._id == up._id) {
+          var newReacted = up.reacted;
+          newReacted[reaction] = !up.reacted[reaction];
+          return {...up, reacted: newReacted}
+        }
+        else return up;
+      }));
   }
 
   const deleteUpdate = (_id) => {
@@ -131,9 +186,9 @@ function App() {
         </div>
       }
       {updates.toReversed().map((update, i) =>
-        <div index={i} class="update">
-          <h2 class="updateText">{update.text}</h2>
-          <p class="updateDate">{update.date.toLocaleString("en-US", {
+        <div index={i} className="update">
+          <h2 className="updateText">{update.text}</h2>
+          <p className="updateDate">{update.date.toLocaleString("en-US", {
             month: "long",
             day: "numeric",
             year: "numeric",
@@ -142,8 +197,20 @@ function App() {
             hour12: true,
           })}</p>
           {isAdmin &&
-            <button class="deleteUpdate" onClick={() => deleteUpdate(update._id)}>Delete</button>
+            <button className="deleteUpdate" onClick={() => deleteUpdate(update._id)}>Delete</button>
           }
+          <div className="reactions">
+            {Object.entries(reactions).map(([reactionName, reactionEmoji]) => 
+              <button
+                className="reaction"
+                style={{
+                  backgroundColor: update.reacted[reactionName] ? "lightgreen" : "lightgrey",
+                }}
+                onClick={() => toggleReaction(update, reactionName)}>
+                {reactionEmoji} {(update.reactions?.[reactionName] | 0) + update.reacted?.[reactionName]}
+              </button>
+            )}
+          </div>
         </div>
       )}
       {isAdmin &&

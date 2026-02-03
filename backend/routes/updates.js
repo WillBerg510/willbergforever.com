@@ -9,6 +9,7 @@ router.post("/", auth, async (req, res) => {
     const newUpdate = await Update.create({
       text,
       date,
+      reactions: {},
     });
     res.status(201).json({update: newUpdate});
   } catch (err) {
@@ -37,7 +38,7 @@ router.delete("/one/:id", auth, async (req, res) => {
   } catch (err) {
     res.status(500).json({error: "Error deleting update"});
   }
-})
+});
 
 router.delete("/clear", auth, async (req, res) => {
   try {
@@ -45,6 +46,32 @@ router.delete("/clear", auth, async (req, res) => {
     res.status(204).json({message: "Updates cleared"});
   } catch (err) {
     res.status(500).json({error: "Error clearing updates"});
+  }
+});
+
+router.patch("/react/:id", async (req, res) => {
+  try {
+    const {reaction} = req.body;
+    await Update.findOneAndUpdate(
+      {_id: req.params.id},
+      {$inc: {[`reactions.${reaction}`]: 1}},
+    );
+    res.status(204).json({message: `Reaction ${reaction} added`});
+  } catch (err) {
+    res.status(500).json({error: "Error reacting"});
+  }
+});
+
+router.patch("/unreact/:id", async (req, res) => {
+  try {
+    const {reaction} = req.body;
+    await Update.findOneAndUpdate(
+      {_id: req.params.id},
+      {$inc: {[`reactions.${reaction}`]: -1}},
+    );
+    res.status(204).json({message: `Reaction ${reaction} removed`});
+  } catch (err) {
+    res.status(500).json({error: "Error removing reaction"});
   }
 });
 

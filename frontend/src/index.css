@@ -13,6 +13,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+button {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  cursor: pointer;
+}
+
 a {
   font-weight: 500;
   color: #646cff;

@@ -9,6 +9,11 @@ const update = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  reactions: {
+    type: Map,
+    of: Number,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("Update", update);

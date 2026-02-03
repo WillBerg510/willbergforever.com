@@ -39,6 +39,19 @@ h1, h2, h3, p {
   position: absolute;
 }
 
+.reactions {
+  bottom: 10px;
+  left: 10px;
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+}
+
+.reaction {
+  margin-right: 5px;
+  font-weight: bold;
+}
+
 textarea {
   resize: none;
 }
