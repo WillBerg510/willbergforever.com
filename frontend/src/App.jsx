@@ -79,6 +79,23 @@ function App() {
     verify();
   }
 
+  const deleteUpdate = (_id) => {
+    fetch(`${BACKEND}/updates/${_id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("auth_token")}`,
+      }
+    }).then(res => {
+      if (!res.ok) {
+        throw new Error(`Response status ${res.status}`);
+      }
+    }).then(() => {
+      getUpdates();
+    }).catch(error => {
+      alert(error);
+    });
+  }
+
   const clearUpdates = () => {
     fetch(`${BACKEND}/updates/clear`, {
       method: "DELETE",
@@ -124,6 +141,9 @@ function App() {
             minute: "numeric",
             hour12: true,
           })}</p>
+          {isAdmin &&
+            <button class="deleteUpdate" onClick={() => deleteUpdate(update._id)}>Delete</button>
+          }
         </div>
       )}
       {isAdmin &&
