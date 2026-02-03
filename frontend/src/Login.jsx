@@ -42,7 +42,7 @@ const Login = () => {
   return (
     <>
       <h2>Login</h2>
-      <input onChange={changePassword} value={password} onKeyDown={inputKeyDown}/>
+      <input type="password" onChange={changePassword} value={password} onKeyDown={inputKeyDown}/>
       <button onClick={login}>Log In</button>
     </>
   )
