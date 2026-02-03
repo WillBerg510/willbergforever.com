@@ -39,6 +39,9 @@ function App() {
       }
       return res.json();
     }).then(data => {
+      data.updates.forEach((update) => {
+        update.date = new Date(update.date);
+      });
       setUpdates(data.updates);
     }).catch(error => {
       alert(error);
@@ -117,9 +120,16 @@ function App() {
         </div>
       }
       {updates.toReversed().map((update, i) =>
-        <div index={i}>
+        <div index={i} class="update">
           <h2>{update.text}</h2>
-          <h3>{update.date}</h3>
+          <h3>{update.date.toLocaleString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          })}</h3>
         </div>
       )}
       {isAdmin &&
