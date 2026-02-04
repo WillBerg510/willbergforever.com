@@ -24,9 +24,9 @@ if (process.env.DEV_MODE) {
     }));
 }
 else {
-    app.use(cors({
-        origin: 'http://willbergforever.com',
-    }))
+    //app.use(cors({
+    //    origin: 'http://willbergforever.com',
+    //}))
 }
 app.use(express.json());
 app.use('/updates', updatesRouter);
