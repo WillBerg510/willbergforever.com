@@ -18,7 +18,16 @@ mongoose.connect(process.env.MONGO_URI)
     console.error('MongoDB connection error:', err);
 });
 
-app.use(cors());
+if (process.env.DEV_MODE) {
+    app.use(cors({
+        origin: 'http://localhost:5173',
+    }));
+}
+else {
+    app.use(cors({
+        origin: 'http://willbergforever.com',
+    }))
+}
 app.use(express.json());
 app.use('/updates', updatesRouter);
 app.use('/login', loginRouter);
