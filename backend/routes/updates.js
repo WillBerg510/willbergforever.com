@@ -17,7 +17,7 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", cors(), async (req, res) => {
   try {
     const updates = await Update.find();
     res.status(200).json({updates});
