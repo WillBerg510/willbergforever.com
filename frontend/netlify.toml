@@ -1,0 +1,6 @@
+[[redirects]]
+ from = "https://insta.willbergforever.com/*"
+ to = "https://instagram.com/the.fanciest.one/:splat"
+ status = 200
+ force = true
+ headers = {X-From = "Netlify"}
