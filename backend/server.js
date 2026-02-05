@@ -28,6 +28,7 @@ if (process.env.DEV_MODE) {
 else {
     app.use(cors({
         origin: 'https://willbergforever.com',
+        credentials: true,
     }))
 }
 app.use(express.json());
