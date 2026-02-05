@@ -1,3 +1,1 @@
-const BACKEND_VALUE = "https://server.willbergforever.com"
-//const BACKEND_VALUE = "http://localhost:5050"
-export const BACKEND = BACKEND_VALUE;
+export const BACKEND = import.meta.env.VITE_BACKEND_URL || "https://server.willbergforever.com";
