@@ -52,6 +52,7 @@ function App() {
       data.updates.forEach((update) => {
         update.date = new Date(update.date);
       });
+      console.log(data.updates);
       setUpdates(data.updates);
     }).catch(error => {
       alert(error);
@@ -284,7 +285,7 @@ function App() {
                   backgroundColor: update.reacted[reactionName] ? "lightgreen" : "lightgrey",
                 }}
                 onClick={() => toggleReaction(update, reactionName)}>
-                {reactionEmoji} {update.reactionNums[reactionName] + update.reacted?.[reactionName]}
+                {reactionEmoji} {(update.reactionNums?.[reactionName] || 0) + (update.reacted?.[reactionName] || 0)}
               </button>
             )}
           </div>
