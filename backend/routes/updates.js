@@ -23,7 +23,7 @@ router.get("/", cors(), async (req, res) => {
   const user_token = req.headers.authorization?.split(' ')[1];
   try {
     const updates = await Update.find().lean();
-    if (user_token) {
+    if (user_token && user_token != "null") {
       const decoded = jwt.verify(user_token, process.env.USER_ACCESS_TOKEN_SECRET);
       updates.forEach(update => {
         update.reacted = {};

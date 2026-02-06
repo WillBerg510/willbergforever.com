@@ -126,16 +126,17 @@ function App() {
       }
       return res.json();
     }).then(data => {
-      if (data.token != "n/a") localStorage.setItem("user_auth_token", data.token);
+      if (data.token != "n/a") {
+        localStorage.setItem("user_auth_token", data.token);
+        getUpdates();
+      }
+      else getUser();
     }).catch(() => {});
   }
 
   useEffect(() => {
     if (!localStorage.getItem("user_auth_token")) {
       userRefresh();
-      if (!localStorage.getItem("user_auth_token")) {
-        getUser();
-      }
     }
     else {
       getUpdates();
