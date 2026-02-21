@@ -68,7 +68,8 @@
   align-items: center;
   gap: 6px;
   z-index: 2;
-  width: 110px;
+  max-width: 110px;
+  width: 18%;
 }
 
 .willIcon {
