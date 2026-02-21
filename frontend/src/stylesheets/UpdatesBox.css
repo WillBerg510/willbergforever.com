@@ -23,8 +23,8 @@
 }
 
 .willUpdateCircle {
-  width: 90px;
-  height: 90px;
+  width: 16%;
+  max-width: 110px;
   background-color: aliceblue;
   border-radius: 55px;
 }
@@ -47,8 +47,8 @@
   height: 0;
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
-  border-right: 12px solid white;
-  left: -10px;
+  border-right: 14px solid white;
+  left: -12px;
 }
 
 .updateDate {

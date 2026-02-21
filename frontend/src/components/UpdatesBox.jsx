@@ -12,7 +12,7 @@ const UpdatesBox = (props) => {
           <div className="updateTriangle"></div>
           <div>
             <p className="updateDate">{update.date.toLocaleString("en-US", {
-              month: "long",
+              month: "short",
               day: "numeric",
               year: "numeric",
               hour: "numeric",
