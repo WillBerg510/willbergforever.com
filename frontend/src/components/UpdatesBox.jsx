@@ -7,7 +7,7 @@ const UpdatesBox = (props) => {
     <div className="updatesBox">
       <h2 className="updatesHeader">LATEST UPDATES</h2>
       {updates?.toReversed().map(update => (<div className="updateRow">
-        <img src="../../public/Will.png"className="willUpdateCircle" />
+        <img src="/Will.png" className="willUpdateCircle" />
         <div className="updateBubble">
           <div className="updateTriangle"></div>
           <div>
