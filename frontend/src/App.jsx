@@ -108,6 +108,16 @@ function App() {
     }));
   }
 
+  const toggleSeeMore = () => {
+    if (allUpdatesOpen) {
+      setAllUpdatesOpen(false);
+      document.body.style.overflowY = "visible";
+    } else {
+      setAllUpdatesOpen(true);
+      document.body.style.overflowY = "hidden";
+    }
+  }
+
   // Delete update from its ID
   const deleteUpdate = (_id) => {
     updatesAPI.deleteUpdate(localStorage.getItem("auth_token"), _id).then(() => {
@@ -136,9 +146,9 @@ function App() {
           <button id="postUpdate" onClick={postUpdate} style={{marginBottom: "30px"}}>Post an update</button>
         </div>
       }
-      <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={false} setAllUpdatesOpen={setAllUpdatesOpen} deleteUpdate={deleteUpdate} />
-      {allUpdatesOpen && <div className="windowOnTop" onClick={() => setAllUpdatesOpen(false)}>
-        <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={true} setAllUpdatesOpen={setAllUpdatesOpen} deleteUpdate={deleteUpdate} />
+      <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} deleteUpdate={deleteUpdate} />
+      {allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
+        <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} deleteUpdate={deleteUpdate} />
       </div>}
     </div>
   )

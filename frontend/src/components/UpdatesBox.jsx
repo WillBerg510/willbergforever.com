@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import UpdateBubble from './UpdateBubble.jsx';
 
 const UpdatesBox = (props) => {
-  const { updates, toggleReaction, isAdmin, full, setAllUpdatesOpen, deleteUpdate } = props;
+  const { updates, toggleReaction, isAdmin, full, toggleSeeMore, deleteUpdate } = props;
   const boxRef = useRef(null);
   const [expanded, setExpanded] = useState(full);
   const [screenChange, setScreenChange] = useState(0);
@@ -49,10 +49,10 @@ const UpdatesBox = (props) => {
           </div>
         ))}
       </div>
-      {!full && (<div className="updatesButton" onClick={() => {setAllUpdatesOpen(true)}}>
+      {!full && (<div className="updatesButton" onClick={toggleSeeMore}>
         <p className="updatesButtonText">SEE MORE</p>
       </div>)}
-      {full && (<div className="updatesButton updatesClose" onClick={() => {setAllUpdatesOpen(false)}}>
+      {full && (<div className="updatesButton updatesClose" onClick={toggleSeeMore}>
         <p className="updatesButtonText updatesCloseText">CLOSE</p>
       </div>)}
     </div>
