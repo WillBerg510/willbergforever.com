@@ -11,12 +11,6 @@ function App() {
   const [updates, setUpdates] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
-  
-  const reactions = {
-    "heart": "❤️",
-    "fire": "🔥",
-    "surprise": "😯"
-  };
 
   // Verify whether the user's access tokens are valid upon page load, from which further setup actions are performed
   useEffect(() => {
@@ -142,9 +136,9 @@ function App() {
           <button id="postUpdate" onClick={postUpdate} style={{marginBottom: "30px"}}>Post an update</button>
         </div>
       }
-      <UpdatesBox updates={updates} reactions={reactions} toggleReaction={toggleReaction} isAdmin={isAdmin} full={false} setAllUpdatesOpen={setAllUpdatesOpen} deleteUpdate={deleteUpdate} />
+      <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={false} setAllUpdatesOpen={setAllUpdatesOpen} deleteUpdate={deleteUpdate} />
       {allUpdatesOpen && <div className="windowOnTop" onClick={() => setAllUpdatesOpen(false)}>
-        <UpdatesBox updates={updates} reactions={reactions} toggleReaction={toggleReaction} isAdmin={isAdmin} full={true} setAllUpdatesOpen={setAllUpdatesOpen} deleteUpdate={deleteUpdate} />
+        <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={true} setAllUpdatesOpen={setAllUpdatesOpen} deleteUpdate={deleteUpdate} />
       </div>}
     </div>
   )

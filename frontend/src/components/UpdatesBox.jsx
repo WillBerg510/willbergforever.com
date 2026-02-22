@@ -1,8 +1,9 @@
 import '../stylesheets/UpdatesBox.css';
 import { useRef, useState, useEffect } from 'react';
+import UpdateBubble from './UpdateBubble.jsx';
 
 const UpdatesBox = (props) => {
-  const { updates, reactions, toggleReaction, isAdmin, full, setAllUpdatesOpen, deleteUpdate } = props;
+  const { updates, toggleReaction, isAdmin, full, setAllUpdatesOpen, deleteUpdate } = props;
   const boxRef = useRef(null);
   const [expanded, setExpanded] = useState(full);
   const [screenChange, setScreenChange] = useState(0);
@@ -17,15 +18,13 @@ const UpdatesBox = (props) => {
 
   useEffect(() => {
     var i = 0;
-    const onScreenChange = () => {
+    
+    const resizeObserver = new ResizeObserver(() => {
       setScreenChange(i + 1);
       i = i + 1;
-    }
-    
-    window.addEventListener("resize", onScreenChange);
-    return () => {
-      window.removeEventListener("resize", onScreenChange);
-    }
+    });
+
+    resizeObserver.observe(boxRef?.current);
   }, []);
 
   return (
@@ -40,41 +39,13 @@ const UpdatesBox = (props) => {
       >
         <h2 className="updatesHeader">{full ? "WILL'S UPDATES" :"LATEST UPDATES"}</h2>
         {(!expanded && boxRef.current?.scrollHeight > boxRef.current?.offsetHeight) && (<div className="updatesBoxOverflow" />)}
-        {(full ? updates : updates.slice(0, 1)).map((update, index) => (
-          <div className={`updateRow${ full ? " updateRowFull" : " updateRowPreview"}`} key={index}>
+        {(full ? updates : updates.slice(0, 1)).map((update) => (
+          <div className={`updateRow${ full ? " updateRowFull" : " updateRowPreview"}`} key={update._id}>
             <div className="updateIcon">
               <img src="/Will.png" className="willIcon" />
               <div className="updateTriangle"></div>
             </div>
-            <div className="updateBubble">
-              <div>
-                <p className="updateDate">{update.date.toLocaleString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                })}</p>
-                <p className="updateText">{update.text}</p>
-                <div className="updateReactionsBar">
-                  {Object.entries(reactions).map(([reactionName, reactionEmoji]) => 
-                    <button
-                      className={`updateLowerButton${update.reacted[reactionName]
-                        ? " updateReactionSelected"
-                        : ""
-                      }`}
-                      onClick={() => toggleReaction(update, reactionName)} key={index + reactionName}>
-                      <p className="updateReactionEmoji">{reactionEmoji}</p>
-                      <p className="updateReactionNumber">{(update.reactionNums?.[reactionName] || 0) + (update.reacted?.[reactionName] || 0)}</p>
-                    </button>
-                  )}
-                </div>
-                {isAdmin && <button className="updateLowerButton updateDelete" onClick={() => deleteUpdate(update._id)}>
-                  Delete
-                </button>}
-              </div>
-            </div>
+            <UpdateBubble full={full} update={update} isAdmin={isAdmin} toggleReaction={toggleReaction} deleteUpdate={deleteUpdate} />
           </div>
         ))}
       </div>
