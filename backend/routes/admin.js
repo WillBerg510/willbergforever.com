@@ -14,7 +14,7 @@ router.post("/login", async (req, res) => {
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       sameSite: 'None',
-      secure: true,
+      secure: (process.env.DEV_MODE ? false : true),
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     res.status(200).json({token: accessToken});
@@ -34,7 +34,7 @@ router.post("/refresh", async (req, res) => {
       res.cookie('refresh_token', newRefreshToken, {
         httpOnly: true,
         sameSite: 'None',
-        secure: true,
+        secure: (process.env.DEV_MODE ? false : true),
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       res.status(200).json({token: accessToken});

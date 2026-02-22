@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
     res.cookie('user_refresh_token', refreshToken, {
       httpOnly: true,
       sameSite: 'None',
-      secure: true,
+      secure: (process.env.DEV_MODE ? false : true),
       maxAge: 365 * 24 * 60 * 60 * 1000,
     });
     res.status(200).json({token: accessToken});
@@ -42,7 +42,7 @@ router.post("/refresh", async (req, res) => {
       res.cookie('user_refresh_token', newRefreshToken, {
         httpOnly: true,
         sameSite: 'None',
-        secure: true,
+        secure: (process.env.DEV_MODE ? false : true),
         maxAge: 365 * 24 * 60 * 60 * 1000,
       });
       res.status(200).json({token: accessToken});

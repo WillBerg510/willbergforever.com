@@ -20,10 +20,17 @@ mongoose.connect(process.env.DEV_MODE ? process.env.DEV_MONGO_URI : process.env.
     console.error('MongoDB connection error:', err);
 });
 
-app.use(cors({
-    origin: process.env.DEV_MODE ? 'http://localhost:5173' : 'https://willbergforever.com',
-    credentials: true,
-}));
+if (process.env.DEV_MODE) {
+    app.use(cors({
+        credentials: true,
+        origin: true,
+    }));
+} else {
+    app.use(cors({
+        origin: 'https://willbergforever.com',
+        credentials: true,
+    }));
+}
 app.use(express.json());
 app.use(cookieparser());
 app.use(express.urlencoded({ extended: false }));
