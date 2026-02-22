@@ -112,11 +112,11 @@ function App() {
     if (allUpdatesOpen) {
       setAllUpdatesOpen(false);
       document.body.style.overflowY = "visible";
-      document.body.style.maxHeight = "none";
+      document.body.overscrollBehavior = "auto";
     } else {
       setAllUpdatesOpen(true);
       document.body.style.overflowY = "hidden";
-      document.body.style.maxHeight = "100vh";
+      document.body.overscrollBehavior = "none";
     }
   }
 
