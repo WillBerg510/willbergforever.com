@@ -1,5 +1,6 @@
 import '../stylesheets/UpdatesBox.css';
 import { useRef, useState, useEffect } from 'react';
+import WillIcon from '../assets/Will.png';
 import UpdateBubble from './UpdateBubble.jsx';
 
 const UpdatesBox = (props) => {
@@ -42,7 +43,7 @@ const UpdatesBox = (props) => {
         {(full ? updates : updates.slice(0, 1)).map((update) => (
           <div className={`updateRow${ full ? " updateRowFull" : " updateRowPreview"}`} key={update._id}>
             <div className="updateIcon">
-              <img src="/Will.png" className="willIcon" />
+              <img src={WillIcon} className="willIcon" />
               <div className="updateTriangle"></div>
             </div>
             <UpdateBubble full={full} update={update} isAdmin={isAdmin} toggleReaction={toggleReaction} deleteUpdate={deleteUpdate} />
