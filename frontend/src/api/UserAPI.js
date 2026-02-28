@@ -3,19 +3,19 @@ import API from "./BaseAPI.js";
 const userAPI = {
   verify: async (user_auth_token) => {
     try {
-      return API.get("/user/verify", {
+      return await API.get("/user/verify", {
         headers: {
           "Authorization": `Bearer ${user_auth_token}`,
         },
       });
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   },
 
   getUser: async () => {
     try {
-      return API.post("/user", {}, {
+      return await API.post("/user", {}, {
         withCredentials: "include",
       });
     } catch (error) {
@@ -25,7 +25,7 @@ const userAPI = {
 
   refresh: async () => {
     try {
-      return API.post("/user/refresh", {}, {
+      return await API.post("/user/refresh", {}, {
         withCredentials: "include",
       });
     } catch (error) {

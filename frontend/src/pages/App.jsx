@@ -11,6 +11,7 @@ function App() {
   const [updates, setUpdates] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
+  const [userVerifyFailed, setUserVerifyFailed] = useState(false);
 
   // Verify whether the user's access tokens are valid upon page load, from which further setup actions are performed
   useEffect(() => {
@@ -49,18 +50,24 @@ function App() {
   // Determine whether the user's admin access token is valid, and then attempt a refresh with the refresh token
   const adminVerify = () => {
     adminAPI.verify(localStorage.getItem("auth_token")).then(res => {
-      setIsAdmin(res.data.admin);
-      refresh();
+      if (res) {
+        setIsAdmin(res.data.admin);
+        refresh();
+      }
     });
   }
 
   // Determine whether the user's standard access token is valid, and then attempt a refresh with the refresh token
   const userVerify = () => {
     userAPI.verify(localStorage.getItem("user_auth_token")).then(res => {
-      if (res.data.valid) {
-        getUpdates();
+      if (!res) {
+        setUserVerifyFailed(true);
+      } else {
+        if (res.data.valid) {
+          getUpdates();
+        }
+        userRefresh();
       }
-      userRefresh();
     });
   }
 
@@ -148,9 +155,9 @@ function App() {
           <button id="postUpdate" onClick={postUpdate} style={{marginBottom: "30px"}}>Post an update</button>
         </div>
       }
-      <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} deleteUpdate={deleteUpdate} />
+      <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} deleteUpdate={deleteUpdate} userVerifyFailed={userVerifyFailed} />
       {allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
-        <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} deleteUpdate={deleteUpdate} />
+        <UpdatesBox updates={updates} toggleReaction={toggleReaction} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} deleteUpdate={deleteUpdate} userVerifyFailed={userVerifyFailed} />
       </div>}
     </div>
   )

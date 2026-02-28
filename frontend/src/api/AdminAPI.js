@@ -21,11 +21,7 @@ const adminAPI = {
         }
       });
     } catch (error) {
-      return {
-        data: {
-          admin: false,
-        },
-      };
+      console.log(error);
     }
   },
 

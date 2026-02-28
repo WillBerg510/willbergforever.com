@@ -4,7 +4,7 @@ import WillIcon from '../assets/Will.png';
 import UpdateBubble from './UpdateBubble.jsx';
 
 const UpdatesBox = (props) => {
-  const { updates, toggleReaction, isAdmin, full, toggleSeeMore, deleteUpdate } = props;
+  const { updates, toggleReaction, isAdmin, full, toggleSeeMore, deleteUpdate, userVerifyFailed } = props;
   const boxRef = useRef(null);
   const [expanded, setExpanded] = useState(full);
   const [screenChange, setScreenChange] = useState(0);
@@ -38,8 +38,9 @@ const UpdatesBox = (props) => {
           ${(!expanded && boxRef.current?.scrollHeight > boxRef.current?.offsetHeight) ? " updatesBoxClickable" : ""}
         `}
       >
-        <h2 className="updatesHeader">{full ? "WILL'S UPDATES" :"LATEST UPDATES"}</h2>
+        <h2 className="updatesHeader">{full ? "WILL'S UPDATES" : "LATEST UPDATES"}</h2>
         {(!expanded && boxRef.current?.scrollHeight > boxRef.current?.offsetHeight) && (<div className="updatesBoxOverflow" />)}
+        {userVerifyFailed && <h2>Unable to connect with backend server.</h2>}
         {(full ? updates : updates.slice(0, 1)).map((update) => (
           <div className={`updateRow${ full ? " updateRowFull" : " updateRowPreview"}`} key={update._id}>
             <div className="updateIcon">
