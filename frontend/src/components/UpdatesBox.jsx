@@ -7,7 +7,7 @@ const UpdatesBox = (props) => {
   const { updates, toggleReaction, isAdmin, full, toggleSeeMore, deleteUpdate, userVerifyFailed, getUpdates } = props;
   const boxRef = useRef(null);
   const [expanded, setExpanded] = useState(full);
-  const [screenChange, setScreenChange] = useState(0);
+  const [showGradient, setShowGradient] = useState(false);
   const [imagesReady, setImagesReady] = useState(false);
 
   const expandPreview = () => {
@@ -19,29 +19,36 @@ const UpdatesBox = (props) => {
   }
 
   useEffect(() => {
-    var i = 0;
-    
     const resizeObserver = new ResizeObserver(() => {
-      setScreenChange(i + 1);
-      i = i + 1;
+      setShowGradient(boxRef.current?.scrollHeight > boxRef.current?.offsetHeight);
     });
 
     resizeObserver.observe(boxRef?.current);
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setShowGradient(boxRef.current?.scrollHeight > boxRef.current?.offsetHeight);
+    }, 200);
+  }, [imagesReady, updates]);
+
+  const onImagesReady = () => {
+    setImagesReady(true);
+  }
+
   return (
     <div className={`updatesBoxAndButton${full ? " updatesBoxAndButtonFull" : ""}`} onClick={receiveClick}>
-      <img src={WillIcon} style={{display: "none"}} onLoad={() => setImagesReady(true)}/>
+      <img src={WillIcon} style={{display: "none"}} onLoad={onImagesReady}/>
       <div ref={boxRef}
         onClick={expandPreview}
         className={`updatesBox
           ${full ? " updatesBoxFull" : ""}
           ${!expanded ? " updatesBoxCollapsed" : ""}
-          ${(!expanded && boxRef.current?.scrollHeight > boxRef.current?.offsetHeight) ? " updatesBoxClickable" : ""}
+          ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}
         `}
       >
         <h2 className="updatesHeader">{full ? "WILL'S UPDATES" : "LATEST UPDATES"}</h2>
-        {(!expanded && boxRef.current?.scrollHeight > boxRef.current?.offsetHeight) && (<div className="updatesBoxOverflow" />)}
+        {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
         {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
         {getUpdates.isLoading && <p className="updatesBoxInfo">Loading...</p>}
         {imagesReady && (full ? updates : updates?.slice(0, 1))?.map((update) => (

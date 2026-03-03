@@ -45,6 +45,12 @@
   height: 40px;
   background-image: linear-gradient(to bottom, transparent, lightgreen);
   z-index: 1;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 1;
+}
+
+.transparent {
+  opacity: 0;
 }
 
 .updatesHeader {
@@ -57,10 +63,10 @@
 .updatesBoxInfo {
   font-size: 24px;
   font-family: wbf2;
-  animation: fadeIn 1s ease-in-out;
+  animation: glideIn 1s ease-in-out;
 }
 
-@keyframes fadeIn {
+@keyframes glideIn {
   0% {
     opacity: 0;
     transform: translateY(5px);
@@ -76,7 +82,7 @@
   align-items: center;
   margin: 0px 15px 15px 15px;
   width: calc(100% - 30px);
-  animation: fadeIn 0.2s ease-in-out;
+  animation: glideIn 0.2s ease-in-out;
 }
 
 .updateRowPreview {
@@ -130,6 +136,7 @@
   font-size: 17px;
   line-height: 18.5px;
   letter-spacing: 0.4px;
+  overflow-wrap: anywhere;
 }
 
 .updateReactionsBar {
