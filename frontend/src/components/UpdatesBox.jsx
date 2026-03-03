@@ -38,7 +38,7 @@ const UpdatesBox = (props) => {
 
   return (
     <div className={`updatesBoxAndButton${full ? " updatesBoxAndButtonFull" : ""}`} onClick={receiveClick}>
-      <img src={WillIcon} style={{display: "none"}} onLoad={onImagesReady}/>
+      <img src={WillIcon} style={{opacity: 0, position: "fixed"}} draggable="false" onLoad={onImagesReady}/>
       <div ref={boxRef}
         onClick={expandPreview}
         className={`updatesBox
