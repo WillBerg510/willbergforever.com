@@ -28,18 +28,15 @@ if (process.env.DEV_MODE) {
 } else {
     app.use(cors({
         origin: (origin, callback) => {
-            console.log(origin);
             try {
                 const host = (new URL(origin)).hostname;
                 if (host == "willbergforever.com" || host.endsWith(".willbergforever.com")) {
                     callback(null, origin);
                 } else {
                     callback(null);
-                    console.log("Invalid host");
                 }
             } catch {
                 callback(null);
-                console.log("Unparsable host");
             }
         },
         credentials: true,
