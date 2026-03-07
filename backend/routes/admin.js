@@ -53,7 +53,7 @@ router.post("/signout", async (req, res) => {
 });
 
 // Verify whether admin access token is valid
-router.post("/verify", async (req, res) => {
+router.get("/verify", async (req, res) => {
   const token = req.cookies?.auth_token;
   if (token) {
     try {

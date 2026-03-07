@@ -2,7 +2,7 @@ import API from "./BaseAPI.js";
 
 const userAPI = {
   verify: async () => {
-    return await API.post("/user/verify");
+    return await API.get("/user/verify");
   },
 
   getUser: async () => {

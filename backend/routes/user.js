@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const cookieOptions = require('../utils/cookieOptions');
 
 // Verify whether a user's access token is valid
-router.post("/verify", async (req, res) => {
+router.get("/verify", async (req, res) => {
   const token = req.cookies?.user_auth_token;
   if (token) {
     try {

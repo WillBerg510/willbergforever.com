@@ -8,7 +8,7 @@ const adminAPI = {
   },
 
   verify: async () => {
-    return await API.post("/admin/verify");
+    return await API.get("/admin/verify");
   },
 
   signOut: async () => {
