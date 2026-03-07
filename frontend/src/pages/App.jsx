@@ -80,7 +80,7 @@ function App() {
   });
 
   const toggleSeeMore = async () => {
-    await client.invalidateQueries(["updates"]);
+    client.invalidateQueries(["updates"]);
     if (allUpdatesOpen) {
       setAllUpdatesOpen(false);
       document.body.style.overflowY = "visible";
