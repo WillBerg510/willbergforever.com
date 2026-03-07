@@ -6,6 +6,7 @@ import updatesAPI from "../api/UpdatesAPI.js";
 import adminAPI from "../api/AdminAPI.js";
 import userAPI from "../api/UserAPI.js";
 import UpdatesBox from '../components/UpdatesBox.jsx';
+import Island from '../components/Island.jsx';
 
 function App() {
   const [update, setUpdate] = useState("");
@@ -117,6 +118,7 @@ function App() {
       {allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
         <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
       </div>}
+      <Island />
     </div>
   )
 }

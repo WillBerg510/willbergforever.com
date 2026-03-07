@@ -20,15 +20,14 @@ h1, h2, h3, p {
   font-size: 75px;
   letter-spacing: 3px;
   margin: 0;
+  line-height: 55px;
 }
 
 .mainSubtitle {
   font-weight: 500;
   font-size: 30px;
-  margin: 0;
+  margin: 5px 0 15px 0;
   font-family: wbf2;
-  margin-top: 10px;
-  margin-bottom: 25px;
 }
 
 textarea {
