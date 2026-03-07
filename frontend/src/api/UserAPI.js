@@ -2,25 +2,15 @@ import API from "./BaseAPI.js";
 
 const userAPI = {
   verify: async () => {
-    return await API.post("/user/verify", {}, {
-      withCredentials: "include",
-    });
+    return await API.post("/user/verify");
   },
 
   getUser: async () => {
-    return await API.post("/user", {}, {
-      withCredentials: "include",
-    });
+    return await API.get("/user");
   },
 
   refresh: async () => {
-    try {
-      return await API.post("/user/refresh", {}, {
-        withCredentials: "include",
-      });
-    } catch (error) {
-      alert(error);
-    }
+    return await API.post("/user/refresh");
   },
 };
 

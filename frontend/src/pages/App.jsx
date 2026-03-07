@@ -10,18 +10,20 @@ import UpdatesBox from '../components/UpdatesBox.jsx';
 function App() {
   const [update, setUpdate] = useState("");
   const [updates, setUpdates] = useState([]);
+  const [userTokenGiven, setUserTokenGiven] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
-  const [userVerifyFailed, setUserVerifyFailed] = useState(false);
   const client = useQueryClient();
 
   // Verify whether the user's access tokens are valid upon page load, from which further setup actions are performed
   useEffect(() => {
     userVerify();
+    adminVerify();
   }, []);
 
   // Add new update and clear update input
   const postUpdate = useMutation({
-    mutationFn: () => (update != "") ? updatesAPI.postUpdate(localStorage.getItem("auth_token"), update) : null,
+    mutationFn: () => (update != "") ? updatesAPI.postUpdate(update) : null,
     onSuccess: () => {
       client.invalidateQueries(["updates"]);
       setUpdate("");
@@ -32,6 +34,7 @@ function App() {
   const getUpdates = useQuery({
     queryKey: ["updates"],
     queryFn: () => {
+      if (!userTokenGiven) return [];
       return updatesAPI.getUpdates().then(res => {
         res.data.updates.forEach((update) => {
           update.date = new Date(update.date);
@@ -94,58 +97,58 @@ function App() {
     }
   });
 
-  // Attempt renewal of admin tokens, and revoke admin privileges if unsuccessful
-  const refresh = () => {
-    adminAPI.refresh().then(res => {
-      //setIsAdmin(res.data.token != "n/a");
-      if (res.data.token != "n/a") localStorage.setItem("auth_token", res.data.token);
-    });
-  }
-
   // Determine whether the user's admin access token is valid, and then attempt a refresh with the refresh token
-  const { data: isAdmin } = useQuery({
-    queryKey: ["isAdmin"],
-    queryFn: () => adminAPI.verify().then(res => {
-      return res.data;
-    }),
+  const { mutate: adminVerify } = useMutation({
+    mutationFn: () => adminAPI.verify(),
+    onSuccess: (res) => {
+      setIsAdmin(res.data);
+      adminRefresh();
+    },
+  });
+
+  // Attempt renewal of admin tokens, and revoke admin privileges if unsuccessful
+  const { mutate: adminRefresh } = useMutation({
+    mutationFn: () => adminAPI.refresh(),
+    onSuccess: (res) => setIsAdmin(res.data),
   });
 
   // Determine whether the user's standard access token is valid, and then attempt a refresh with the refresh token
-  const { mutate: userVerify } = useMutation({
-    mutationFn: () => userAPI.verify().then(res => {
-      if (!res) {
-        setUserVerifyFailed(true);
-      }
-      else {
-        setUserVerifyFailed(false);
+  const { mutate: userVerify, isError: userVerifyFailed } = useMutation({
+    mutationFn: () => userAPI.verify(),
+    onSuccess: (res) => {
+      if (res.data) {
+        setUserTokenGiven(true);
         client.invalidateQueries(["updates"]);
-        userRefresh(true);
       }
-    }),
+      userRefresh();
+    },
+  });
+
+  // Attempt renewal of user tokens, and get all updates if successful; otherwise, get a new user
+  const { mutate: userRefresh } = useMutation({
+    mutationFn: () => userAPI.refresh(),
+    onSuccess: (res) => {
+      if (res.data) {
+        setUserTokenGiven(true);
+        client.invalidateQueries(["updates"]);
+      }
+      else getUser();
+    }
   });
 
   // Acquire new user access token, and get all updates
-  const getUser = () => {
-    userAPI.getUser().then(res => {
+  const { mutate: getUser } = useMutation({
+    mutationFn: () => userAPI.getUser(),
+    onSuccess: () => {
+      setUserTokenGiven(true);
       client.invalidateQueries(["updates"]);
-    });
-  }
-
-  // Attempt renewal of user tokens, and get all updates if successful; otherwise, get a new user
-  const userRefresh = (getUpdates) => {
-    userAPI.refresh().then(res => {
-      if (res.data.token != "n/a") {
-        localStorage.setItem("user_auth_token", res.data.token);
-        if (getUpdates) client.invalidateQueries(["updates"]);
-      }
-      else getUser();
-    });
-  }
+    },
+  });
 
   // Remove admin access token, remove admin refresh token, and revoke admin privileges
   const { mutate: signOut } = useMutation({
     mutationFn: adminAPI.signOut,
-    onSuccess: () => client.invalidateQueries(["isAdmin"]),
+    onSuccess: () => setIsAdmin(false),
   });
 
   const toggleSeeMore = () => {

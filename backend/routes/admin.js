@@ -20,7 +20,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Admin token renewal
+// Admin token renewal, return whether it is a success
 router.post("/refresh", async (req, res) => {
   const refreshToken = req.cookies?.refresh_token;
   if (refreshToken) {
@@ -30,12 +30,12 @@ router.post("/refresh", async (req, res) => {
       res.cookie('auth_token', accessToken, cookieOptions({hours: 2}));
       const newRefreshToken = jwt.sign({admin: true}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "7d"});
       res.cookie('refresh_token', newRefreshToken, cookieOptions({days: 7}));
-      res.status(200).json();
+      res.status(200).json(true);
     } catch (err) {
-      res.status(200).json({token: "n/a"});
+      res.status(200).json(false);
     }
   } else {
-    res.status(200).json({token: "n/a"});
+    res.status(200).json(false);
   }
 });
 
@@ -52,7 +52,7 @@ router.post("/signout", async (req, res) => {
   res.status(200).json({message: "Signed out"});
 });
 
-// Verify if admin access token is valid
+// Verify whether admin access token is valid
 router.post("/verify", async (req, res) => {
   const token = req.cookies?.auth_token;
   if (token) {

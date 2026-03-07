@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const cookieOptions = require('../utils/cookieOptions');
 
-// Verify that a user's access token is valid
+// Verify whether a user's access token is valid
 router.post("/verify", async (req, res) => {
   const token = req.cookies?.user_auth_token;
   if (token) {
@@ -19,7 +19,7 @@ router.post("/verify", async (req, res) => {
 });
 
 // User token acquisition
-router.post("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const userId = crypto.randomUUID();
     const accessToken = jwt.sign({user: userId}, process.env.USER_ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
@@ -32,22 +32,22 @@ router.post("/", async (req, res) => {
   }
 });
 
-// User token renewal
+// User token renewal, return whether it is a success
 router.post("/refresh", async (req, res) => {
   const refreshToken = req.cookies?.user_refresh_token;
   if (refreshToken) {
     try {
       const decoded = jwt.verify(refreshToken, process.env.USER_REFRESH_TOKEN_SECRET);
-      const accessToken = jwt.sign({user: userId}, process.env.USER_ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
+      const accessToken = jwt.sign({user: decoded.user}, process.env.USER_ACCESS_TOKEN_SECRET, {expiresIn: "30m"});
       res.cookie('user_auth_token', accessToken, cookieOptions({minutes: 30}));
       const newRefreshToken = jwt.sign({user: decoded.user}, process.env.USER_REFRESH_TOKEN_SECRET, {expiresIn: "365d"});
       res.cookie('user_refresh_token', newRefreshToken, cookieOptions({days: 365}));
-      res.status(200).json();
+      res.status(200).json(true);
     } catch (err) {
-      res.status(200).json({token: "n/a"});
+      res.status(200).json(false);
     }
   } else {
-    res.status(200).json({token: "n/a"});
+    res.status(200).json(false);
   }
 });
 
