@@ -79,7 +79,8 @@ function App() {
     onSuccess: () => setIsAdmin(false),
   });
 
-  const toggleSeeMore = () => {
+  const toggleSeeMore = async () => {
+    await client.invalidateQueries(["updates"]);
     if (allUpdatesOpen) {
       setAllUpdatesOpen(false);
       document.body.style.overflowY = "visible";
@@ -89,7 +90,6 @@ function App() {
       document.body.style.overflowY = "hidden";
       document.body.style.overscrollBehavior = "none";
     }
-    client.invalidateQueries(["updates"]);
   }
 
   // On change of update textarea

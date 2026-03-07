@@ -8,12 +8,16 @@ const UpdateBubble = (props) => {
   const { allUpdatesOpen, update, full, isAdmin, userRefresh } = props;
   const [confirmDelete, setConfirmDelete] = useState();
   const [reactionStates, setReactionStates] = useState({});
+  const [reactionNums, setReactionNums] = useState({});
   const [imageReady, setImageReady] = useState(false);
   const client = useQueryClient();
 
   const getReactionStates = () => {
     setReactionStates(Object.fromEntries(
       Object.keys(reactions).map(reaction => [reaction, update.reacted?.[reaction] || 0])
+    ));
+    setReactionNums(Object.fromEntries(
+      Object.keys(reactions).map(reaction => [reaction, update.reactionNums?.[reaction] || 0])
     ));
   }
   
@@ -106,7 +110,7 @@ const UpdateBubble = (props) => {
                 }`}
                 onClick={() => toggleReaction(reactionName)} key={update._id + reactionName}>
                 <p className="updateReactionEmoji">{reactionEmoji}</p>
-                <p className="updateReactionNumber">{(update.reactionNums?.[reactionName] || 0) + reactionStates[reactionName]}</p>
+                <p className="updateReactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
               </button>
             )}
           </div>}
