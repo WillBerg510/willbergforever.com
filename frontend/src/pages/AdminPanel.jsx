@@ -134,10 +134,6 @@ const AdminPanel = () => {
     setProjectInput({...projectInput, position: projectInput.position.with(e.target.name == "positionY", e.target.valueAsNumber)});
   }
 
-  useEffect(() => {
-    console.log(projectInput);
-  }, [projectInput]);
-
   return (
     <>
       {isAdmin &&
