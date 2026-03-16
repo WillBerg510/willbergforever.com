@@ -15,7 +15,7 @@ router.post("/", uploadFile.single("thumbnail"), async (req, res) => {
       icon: "i",
       position: [0, 0],
       reactions: {},
-      thumbnail: `${req.protocol}://${req.hostname}:${process.env.PORT || 5050}/image_uploads/${req.file.filename}`,
+      thumbnail: `${req.protocol}://${req.hostname}${process.env.DEV_MODE ? ":" + process.env.PORT || 5050 : ""}/image_uploads/${req.file.filename}`,
     });
     /*const newProject = await Project.create({
       name,
