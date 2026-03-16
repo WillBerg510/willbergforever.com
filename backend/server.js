@@ -46,6 +46,8 @@ if (process.env.DEV_MODE) {
 app.use(express.json());
 app.use(cookieparser());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static("public"));
+
 app.use('/updates', updatesRouter);
 app.use('/admin', adminRouter);
 app.use('/user', userRouter);

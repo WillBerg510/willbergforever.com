@@ -3,10 +3,25 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from "react-router-dom";
 import adminAPI from "../api/AdminAPI.js";
 import updatesAPI from "../api/UpdatesAPI.js";
+import projectsAPI from "../api/ProjectsAPI.js";
 import "../stylesheets/AdminPanel.css";
 
 const AdminPanel = () => {
   const [updateInput, setUpdateInput] = useState("");
+  const [projectInput, setProjectInput] = useState({
+    name: "",
+    year: 2020,
+    month: 1,
+    day: 1,
+    description: "",
+    thumbnail: null,
+    gallery: [],
+    links: {},
+    groups: [],
+    region: "",
+    icon: "",
+    position: [-1, -1],
+  });
   const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
@@ -17,7 +32,9 @@ const AdminPanel = () => {
 
   // Add new update and clear update input
   const { mutate: postUpdate, isSuccess: updatePosted } = useMutation({
-    mutationFn: () => (updateInput != "") ? updatesAPI.postUpdate(updateInput) : updatePosted = false,
+    mutationFn: (updateInput != "") ? () => updatesAPI.postUpdate(updateInput) : () => {
+      throw new Error;
+    },
     onSuccess: () => setUpdateInput(""),
   });
 
@@ -52,6 +69,16 @@ const AdminPanel = () => {
     setUpdateInput(e.target.value);
   }
 
+  const onThumbnailUpload = (e) => {
+    const file = e.target.files[0];
+    setProjectInput({...projectInput, thumbnail: file});
+    try {
+      projectsAPI.postProject(file).then(res => console.log(res));
+    } catch (err) {
+      
+    }
+  }
+
   return (
     <>
       {isAdmin &&
@@ -63,8 +90,11 @@ const AdminPanel = () => {
           <h1>ADMIN PANEL</h1>
           <div className="enterUpdate">
             <textarea onChange={changeUpdate} cols="50" rows="5" value={updateInput} />
-            <button className="postUpdate" onClick={postUpdate} style={{marginBottom: "30px"}}>Post an update</button>
+            <button className="postUpdate" onClick={postUpdate}>Post an update</button>
             {updatePosted && <p>Update successfully posted</p>}
+          </div>
+          <div className="enterProject">
+            <input name="thumbnail" type="file" accept="image/*" onChange={onThumbnailUpload} />
           </div>
         </div>
       }
