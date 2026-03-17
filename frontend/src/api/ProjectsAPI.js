@@ -24,8 +24,20 @@ const projectsAPI = {
   },
 
   getProject: async (project_id) => {
-    return await API.get(`/projects/${project_id}`);
-  }
+    return await API.get(`/projects/${project_id}?requireUserToken=true`);
+  },
+
+  addReaction: async (project_id, reaction) => {
+    return await API.patch(`/projects/react/${project_id}`, {
+      reaction: reaction,
+    });
+  },
+
+  removeReaction: async (project_id, reaction) => {
+    return await API.patch(`/projects/unreact/${project_id}`, {
+      reaction: reaction,
+    });
+  },
 };
 
 export default projectsAPI;

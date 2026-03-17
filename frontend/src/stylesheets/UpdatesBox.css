@@ -150,7 +150,7 @@
 .updateLowerButton {
   min-width: 45px;
   border: 1px solid black;
-  background-color: transparent;
+  background-color: white;
   border-radius: 100px;
   display: flex;
   align-items: center;
@@ -175,20 +175,20 @@
   background-color: #FFAAAA;
 }
 
-.updateReactionEmoji {
+.reactionEmoji {
   margin: 0px 5px 1px 0px;
   font-family: wbf2;
   font-size: 12px;
 }
 
-.updateReactionNumber {
+.reactionNumber {
   margin: 3px 0px 0px 0px;
   font-family: wbf2;
   font-weight: 500;
   font-size: 14px;
 }
 
-.updateReactionSelected, .updateReactionSelected:hover {
+.reactionSelected, .reactionSelected:hover {
   background-color: black;
   color: white;
 }

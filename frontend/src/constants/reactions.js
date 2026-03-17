@@ -1,7 +1,11 @@
-const reactions = {
+export const updateReactions = {
   "heart": "❤️",
   "fire": "🔥",
   "surprise": "😯"
 };
 
-export default reactions;
+export const projectReactions = {
+  "heart": "❤️",
+  "fire": "🔥",
+  "sunglasses": "😎",
+}

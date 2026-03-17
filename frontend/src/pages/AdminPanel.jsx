@@ -15,6 +15,7 @@ const defaultProjectInput = {
   gallery: [],
   links: {},
   groups: [],
+  specialReaction: "",
   region: "",
   icon: "",
   position: [0, 0],
@@ -195,6 +196,8 @@ const AdminPanel = () => {
               )}
               <button onClick={addInputItem} style={{width: "50px", height: "50px", fontSize: "16px"}} name="groups">Add</button>
             </div>
+            <p>Special Reaction</p>
+            <input name="specialReaction" style={{width: "50px"}} maxlength="1" type="text" value={projectInput.specialReaction} onChange={onProjectChange} />
             <p>Region</p>
             <select name="region" type="text" onChange={onProjectChange} value={projectInput.region}>
               <option value=""></option>

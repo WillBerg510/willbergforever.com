@@ -35,7 +35,8 @@ router.get("/", async (req, res) => {
           Object.entries(update.reactions).forEach(([reaction, users]) => {
             update.reacted[reaction] = users.includes(decoded.user);
             update.reactionNums[reaction] = users.length - users.includes(decoded.user);
-          })
+          });
+          delete update.reactions;
         });
       }
       res.status(200).json({updates});

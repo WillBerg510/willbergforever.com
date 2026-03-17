@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import updatesAPI from '../api/UpdatesAPI.js';
 import WillIcon from '../assets/Will.png';
-import reactions from "../constants/reactions.js";
+import { updateReactions } from "../constants/reactions.js";
 
 const UpdateBubble = (props) => {
   const { allUpdatesOpen, update, full, isAdmin, userRefresh } = props;
@@ -14,10 +14,10 @@ const UpdateBubble = (props) => {
 
   const getReactionStates = () => {
     setReactionStates(Object.fromEntries(
-      Object.keys(reactions).map(reaction => [reaction, update.reacted?.[reaction] || 0])
+      Object.keys(updateReactions).map(reaction => [reaction, update.reacted?.[reaction] || 0])
     ));
     setReactionNums(Object.fromEntries(
-      Object.keys(reactions).map(reaction => [reaction, update.reactionNums?.[reaction] || 0])
+      Object.keys(updateReactions).map(reaction => [reaction, update.reactionNums?.[reaction] || 0])
     ));
   }
   
@@ -102,15 +102,15 @@ const UpdateBubble = (props) => {
           })}</p>
           <p className="updateText">{update.text}</p>
           {Object.keys(reactionStates).length > 0 && <div className="updateReactionsBar">
-            {Object.entries(reactions).map(([reactionName, reactionEmoji]) => 
+            {Object.entries(updateReactions).map(([reactionName, reactionEmoji]) => 
               <button
                 className={`updateLowerButton${reactionStates[reactionName]
-                  ? " updateReactionSelected"
+                  ? " reactionSelected"
                   : ""
                 }`}
                 onClick={() => toggleReaction(reactionName)} key={update._id + reactionName}>
-                <p className="updateReactionEmoji">{reactionEmoji}</p>
-                <p className="updateReactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
+                <p className="reactionEmoji">{reactionEmoji}</p>
+                <p className="reactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
               </button>
             )}
           </div>}

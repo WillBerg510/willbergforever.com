@@ -35,6 +35,9 @@ const project = new mongoose.Schema({
     type: Array,
     of: String,
   },
+  specialReaction: {
+    type: String,
+  },
   region: {
     type: String,
     required: true,

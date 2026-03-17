@@ -90,3 +90,9 @@
   background-color: lightgray;
   pointer-events: none;
 }
+
+.projectReactionsBar {
+  margin-top: 7px;
+  display: flex;
+  gap: 7px;
+}
