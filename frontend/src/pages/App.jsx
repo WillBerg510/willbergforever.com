@@ -99,7 +99,7 @@ function App() {
         <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
       </div>}
       {projectOpen && <div className="windowOnTop" onClick={() => setProjectOpen(false)}>
-        <Project project_id={"69b8aa4ba84f272b63cd85b1"} userRefresh={userRefresh} />
+        <Project project_id={"69b8cc1883f27811ff03457f"} userRefresh={userRefresh} />
       </div>}
       <Island />
     </div>

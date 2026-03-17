@@ -97,10 +97,11 @@ const Project = (props) => {
           <p className="projectDate">{project.date.toLocaleString("en-US", {
             month: "short",
             day: "numeric",
-            year: "numeric"
+            year: "numeric",
+            timeZone: "UTC",
           }).toUpperCase()}</p>
           {project.groups.map(group => 
-            <p className="projectGroup">{projectGroups[group].toUpperCase()}</p>
+            <p key={group} className="projectGroup">{projectGroups[group].toUpperCase()}</p>
           )}
           {Object.keys(reactionStates).length > 0 && <div className="projectReactionsBar">
             {Object.entries(allReactions).map(([reactionName, reactionEmoji]) => 
@@ -126,6 +127,7 @@ const Project = (props) => {
           <div className="projectLinks">
             {["youtube", "spotify", "link"].map(linkType =>
               <button
+                key={linkType}
                 disabled={!project.links[linkType] || project.links[linkType] == ""}
                 className={`projectLink projectLink${project.links[linkType] && project.links[linkType] != "" ? "Active" : "Inactive"}`}
                 onClick={() => projectLinkClicked(linkType)}

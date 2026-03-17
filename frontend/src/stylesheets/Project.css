@@ -13,6 +13,7 @@
 
 .projectInfo {
   display: flex;
+  width: 100%;
 }
 
 .leftProjectColumn {
@@ -49,6 +50,7 @@
 
 .projectGroup {
   margin: 0;
+  line-height: 17px;
 }
 
 .projectDescription {
@@ -59,7 +61,7 @@
   width: 100%;
   overflow-x: scroll;
   scrollbar-width: none;
-  height: 40%;
+  height: 18.5%;
   display: flex;
   gap: 5px;
 }
