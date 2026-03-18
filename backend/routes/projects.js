@@ -10,6 +10,26 @@ const jwt = require('jsonwebtoken');
 router.post("/", auth, formidable(), async (req, res) => {
   const { name, date, description, youtube, spotify, link, groups, specialReaction, region, icon, position } = req.fields;
   try {
+    const newProject = new Project({
+      name,
+      date,
+      description,
+      thumbnail: "placeholder",
+      links: {
+        youtube,
+        spotify,
+        link,
+      },
+      groups: groups.split(','),
+      specialReaction,
+      region,
+      icon,
+      position: position.split(','),
+      reactions: {},
+      awards: {},
+    });
+    await newProject.validate();
+
     const imageURLs = {
       thumbnail: null,
       gallery: [],
@@ -27,25 +47,9 @@ router.post("/", auth, formidable(), async (req, res) => {
       return imageURL;
     });
     await Promise.all(promises);
-    const newProject = await Project.create({
-      name,
-      date,
-      description,
-      thumbnail: imageURLs.thumbnail,
-      gallery: imageURLs.gallery,
-      links: {
-        youtube,
-        spotify,
-        link,
-      },
-      groups: groups.split(','),
-      specialReaction,
-      region,
-      icon,
-      position: position.split(','),
-      reactions: {},
-      awards: {},
-    });
+    newProject.thumbnail = imageURLs.thumbnail;
+    newProject.gallery = imageURLs.gallery;
+    newProject.save();
     res.status(201).json({Project: newProject});
   } catch (err) {
     console.log(err);
@@ -60,6 +64,17 @@ router.patch("/:id", auth, formidable(), async (req, res) => {
   else {
     try {
       const { deleteGallery, youtube, spotify, link, groups, position } = req.fields;
+      project.links = {
+        youtube,
+        spotify,
+        link
+      };
+      project.groups = groups.split(",");
+      project.position = position.split(",");
+      ["name", "date", "description", "specialReaction", "region", "icon"].forEach(field => {
+        project[field] = req.fields[field];
+      });
+      await project.validate();
       if (deleteGallery != "") {
         for (const index of deleteGallery.split(",")) {
           await deleteFromS3(project.gallery[index].split(process.env.S3_BUCKET + "/")[1]);
@@ -82,23 +97,32 @@ router.patch("/:id", auth, formidable(), async (req, res) => {
         return imageURL;
       });
       await Promise.all(promises);
-      ["name", "date", "description", "specialReaction", "region", "icon"].forEach(field => {
-        project[field] = req.fields[field];
-      });
       project.thumbnail = imageURLs.thumbnail;
       project.gallery = imageURLs.gallery;
-      project.links = {
-        youtube,
-        spotify,
-        link
-      };
-      project.groups = groups.split(",");
-      project.position = position.split(",");
       const updatedProject = project.save();
       res.status(200).json({updatedProject});
     } catch (err) {
       res.status(500).json({error: err});
     }
+  }
+});
+
+// Delete a project from its ID
+router.delete("/one/:id", auth, async (req, res) => {
+  try {
+    const project = await Project.findByIdAndDelete(req.params.id);
+    await deleteFromS3(project.thumbnail.split(process.env.S3_BUCKET + "/")[1]);
+    for (const image of project.gallery) {
+      await deleteFromS3(image.split(process.env.S3_BUCKET + "/")[1]);
+    }
+    if (!project) {
+      res.status(404).json({error: "Project with that ID does not exist"});
+    }
+    else {
+      res.status(204).json({message: "Project deleted"});
+    }
+  } catch (err) {
+    res.status(500).json({error: "Error deleting project"});
   }
 });
 

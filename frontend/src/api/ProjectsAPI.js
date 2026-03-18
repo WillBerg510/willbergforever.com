@@ -70,6 +70,10 @@ const projectsAPI = {
       reaction: reaction,
     });
   },
+
+  deleteProject: async (project_id) => {
+    return await API.delete(`/projects/one/${project_id}`);
+  },
 };
 
 export default projectsAPI;

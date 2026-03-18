@@ -33,6 +33,7 @@ const AdminPanel = () => {
   const [projectInput, setProjectInput] = useState(defaultProjectInput);
   const [projectImagePreviews, setProjectImagePreviews] = useState(defaultProjectImagePreviews);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState();
   const projectThumbnailRef = useRef(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -175,6 +176,21 @@ const AdminPanel = () => {
     navigate("/");
   }
 
+  const { mutate: deleteProject, isError: projectDeleteError } = useMutation({
+    mutationFn: () => projectsAPI.deleteProject(editProject),
+    onSuccess: returnHome,
+  });
+
+  const deleteClicked = () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => {
+        setConfirmDelete(false);
+      }, 2000);
+    }
+    else deleteProject();
+  }
+
   return (
     <>
       <button onClick={returnHome}>Return to Home Page</button>
@@ -265,9 +281,11 @@ const AdminPanel = () => {
             <input name="positionY" min="0" style={{width: "50px"}} type="number" onChange={onPositionChange} value={projectInput.position[1]} />
             <p />
             {(projectPostLoading || projectEditLoading) && <p>Uploading project...</p>}
-            {(projectPosted || (projectEdited && !projectPostError && !projectPostLoading)) && <p>Project successfully uploaded</p>}
+            {(projectPosted || projectEdited) && <p>Project successfully uploaded</p>}
             {(projectPostError || projectEditError) && <p>Error uploading project</p>}
-            <button onClick={editProject ? submitEdit : submitProject}>{editProject ? "Edit" : "Submit"}</button>
+            {(projectDeleteError) && <p>Error deleting project</p>}
+            <button onClick={editProject ? submitEdit : submitProject}>{editProject ? "Edit" : "Submit"}</button><p />
+            {editProject && <button onClick={deleteClicked}>{confirmDelete ? "Confirm" : "Delete Project"}</button>}
           </div>
         </div>
       }
