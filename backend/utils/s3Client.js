@@ -1,6 +1,7 @@
 const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { Upload } = require("@aws-sdk/lib-storage");
 const { createReadStream } = require("fs");
+const sharp = require("sharp");
 const path = require("path");
 const { fileTypeFromFile } = require("file-type");
 
@@ -16,16 +17,16 @@ const s3Client = new S3Client({
 
 const uploadToS3 = async (file) => {
   try {
-    const fileName = `${crypto.randomUUID()}${path.extname(file.name)}`;
-    const fileType = await fileTypeFromFile(file.path);
+    const compressedFile = await sharp(file.path).jpeg({quality: 75}).toBuffer();
+    const fileName = `${crypto.randomUUID()}.jpg`;
 
     const upload = new Upload({
       client: s3Client,
       params: {
         Bucket: process.env.S3_BUCKET,
         Key: fileName,
-        Body: createReadStream(file.path),
-        ContentType: fileType.mime,
+        Body: compressedFile,
+        ContentType: "image/jpeg",
       },
       queueSize: 10,
     });
