@@ -22,7 +22,7 @@ router.post("/", auth, async (req, res) => {
 // Get all updates and provide specific information if a valid user made the call
 router.get("/", async (req, res) => {
   const user_token = req.cookies?.user_auth_token;
-  const requireUserToken = req.query?.requireUserToken;
+  const requireUserToken = req.query?.requireUserToken == "true";
   if (!user_token && requireUserToken) res.status(500).json({error: "Missing cookie"});
   else {
     try {

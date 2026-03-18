@@ -1,4 +1,4 @@
-const { S3Client } = require("@aws-sdk/client-s3");
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { Upload } = require("@aws-sdk/lib-storage");
 const { createReadStream } = require("fs");
 const path = require("path");
@@ -38,4 +38,15 @@ const uploadToS3 = async (file) => {
   }
 };
 
-module.exports = { uploadToS3 };
+const deleteFromS3 = async (fileName) => {
+  try {
+    await s3Client.send(new DeleteObjectCommand({
+      Bucket: process.env.S3_BUCKET,
+      Key: fileName,
+    }));
+  } catch (err) {
+    throw err;
+  }
+};
+
+module.exports = { uploadToS3, deleteFromS3 };

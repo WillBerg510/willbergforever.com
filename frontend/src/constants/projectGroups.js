@@ -10,6 +10,7 @@ const projectGroups = {
   originals: "Original Songs",
   lunacyToday: "Lunacy Today",
   december: "December",
+  profilePics: "Profile Pics",
   favorites: "Will's Favorites",
 }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import adminAPI from "../api/AdminAPI.js";
 import updatesAPI from "../api/UpdatesAPI.js";
 import projectsAPI from "../api/ProjectsAPI.js";
@@ -20,6 +20,7 @@ const defaultProjectInput = {
   region: "",
   icon: "",
   position: [0, 0],
+  deleteGallery: [],
 };
 
 const defaultProjectImagePreviews = {
@@ -34,10 +35,43 @@ const AdminPanel = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const projectThumbnailRef = useRef(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editProject = searchParams.get("editProject");
 
   useEffect(() => {
     adminVerify();
+    if (editProject) getProjectToEdit();
   }, []);
+
+  const { mutate: getProjectToEdit } = useMutation({
+    mutationFn: () => projectsAPI.getProjectInfo(editProject),
+    onSuccess: async (res) => {
+      const { name, date, description, thumbnail, gallery, links, groups, specialReaction, region, icon, position } = res.data.project;
+      setProjectInput({
+        name,
+        date: new Date(date).toISOString().slice(0, 10),
+        description,
+        thumbnail,
+        gallery,
+        links,
+        groups,
+        specialReaction,
+        region,
+        icon,
+        position,
+        deleteGallery: [],
+      });
+      setProjectImagePreviews({
+        thumbnail,
+        gallery,
+      });
+    },
+  });
+
+  const { mutate: submitEdit, isSuccess: projectEdited, isPending: projectEditLoading, isError: projectEditError } = useMutation({
+    mutationFn: () => projectsAPI.editProject(editProject, projectInput),
+    onSuccess: () => setTimeout(getProjectToEdit, 200),
+  });
 
   const { mutate: submitProject, isSuccess: projectPosted, isPending: projectPostLoading, isError: projectPostError } = useMutation({
     mutationFn: () => projectsAPI.postProject(projectInput),
@@ -129,16 +163,21 @@ const AdminPanel = () => {
   }
 
   const deleteGalleryItem = (e, index) => {
-    deleteInputItem(e, index);
     setProjectImagePreviews({...projectImagePreviews, gallery: projectImagePreviews.gallery.filter((v, i) => i != index)});
+    setProjectInput({...projectInput, [e.target.name]: projectInput[e.target.name].filter((v, i) => i != index), deleteGallery: [...projectInput.deleteGallery, index]});
   }
 
   const onPositionChange = (e) => {
     setProjectInput({...projectInput, position: projectInput.position.with(e.target.name == "positionY", e.target.valueAsNumber)});
   }
 
+  const returnHome = () => {
+    navigate("/");
+  }
+
   return (
     <>
+      <button onClick={returnHome}>Return to Home Page</button>
       {isAdmin &&
         <div className="adminPanel">
           <div style={{display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
@@ -152,7 +191,7 @@ const AdminPanel = () => {
             {updatePosted && <p>Update successfully posted</p>}
           </div>
           <div className="enterProject" style={{height: "500px", overflowY: "scroll"}}>
-            <h2>Upload new project</h2>
+            <h2>{editProject ? "Update project" : "Upload new project"}</h2>
             <p>Name</p>
             <input name="name" type="text" value={projectInput.name} onChange={onProjectChange} />
             <p>Date</p>
@@ -177,11 +216,11 @@ const AdminPanel = () => {
             </div>
             <p>Links</p>
             <label htmlFor="youtube">YouTube  </label>
-            <input name="youtube" id="youtube" type="text" onChange={onLinkChange} value={projectInput.links.youtube ? projectInput.links.youtube : ""} /><p />
+            <input name="youtube" id="youtube" type="text" onChange={onLinkChange} value={projectInput.links?.youtube ? projectInput.links.youtube : ""} /><p />
             <label htmlFor="spotify">Spotify  </label>
-            <input name="spotify" id="spotify" type="text" onChange={onLinkChange} value={projectInput.links.spotify ? projectInput.links.spotify : ""} /><p />
+            <input name="spotify" id="spotify" type="text" onChange={onLinkChange} value={projectInput.links?.spotify ? projectInput.links.spotify : ""} /><p />
             <label htmlFor="generalLink">General Link  </label>
-            <input name="link" id="generalLink" type="text" onChange={onLinkChange} value={projectInput.links.link ? projectInput.links.link : ""} /><p />
+            <input name="link" id="generalLink" type="text" onChange={onLinkChange} value={projectInput.links?.link ? projectInput.links.link : ""} /><p />
             <p>Groups</p>
             <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
               {projectInput.groups.map((group, index) =>
@@ -198,7 +237,7 @@ const AdminPanel = () => {
               <button onClick={addInputItem} style={{width: "50px", height: "50px", fontSize: "16px"}} name="groups">Add</button>
             </div>
             <p>Special Reaction</p>
-            <input name="specialReaction" style={{width: "50px"}} maxlength="2" type="text" value={projectInput.specialReaction} onChange={onProjectChange} />
+            <input name="specialReaction" style={{width: "30px", textAlign: "center"}} maxLength="2" type="text" value={projectInput.specialReaction} onChange={onProjectChange} />
             <p>Region</p>
             <select name="region" type="text" onChange={onProjectChange} value={projectInput.region}>
               <option value=""></option>
@@ -225,10 +264,10 @@ const AdminPanel = () => {
             <input name="positionX" min="0" style={{width: "50px"}} type="number" onChange={onPositionChange} value={projectInput.position[0]} />
             <input name="positionY" min="0" style={{width: "50px"}} type="number" onChange={onPositionChange} value={projectInput.position[1]} />
             <p />
-            {projectPostLoading && <p>Uploading project...</p>}
-            {projectPosted && <p>Project successfully posted</p>}
-            {projectPostError && <p>Error uploading project</p>}
-            <button onClick={submitProject}>Submit</button>
+            {(projectPostLoading || projectEditLoading) && <p>Uploading project...</p>}
+            {(projectPosted || (projectEdited && !projectPostError && !projectPostLoading)) && <p>Project successfully uploaded</p>}
+            {(projectPostError || projectEditError) && <p>Error uploading project</p>}
+            <button onClick={editProject ? submitEdit : submitProject}>{editProject ? "Edit" : "Submit"}</button>
           </div>
         </div>
       }

@@ -2,6 +2,7 @@ import '../stylesheets/App.css'
 import '../stylesheets/fonts.css'
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import adminAPI from "../api/AdminAPI.js";
 import userAPI from "../api/UserAPI.js";
 import UpdatesBox from '../components/UpdatesBox.jsx';
@@ -11,8 +12,9 @@ import Project from '../components/Project.jsx';
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
-  const [projectOpen, setProjectOpen] = useState(true);
+  const [openProject, setOpenProject] = useState(null);
   const client = useQueryClient();
+  const navigate = useNavigate();
 
   // Verify whether the user's access tokens are valid upon page load, from which further setup actions are performed
   useEffect(() => {
@@ -84,11 +86,16 @@ function App() {
     }
   }
 
+  const toAdminPanel = () => {
+    navigate("/admin");
+  };
+
   return (
     <div id="app">
       {isAdmin &&
         <div style={{display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <h2 style={{margin: "0"}}>Logged in as admin</h2>
+          <button style={{margin: "0"}} onClick={toAdminPanel}>Admin Panel</button>
           <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>
         </div>
       }
@@ -98,10 +105,10 @@ function App() {
       {allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
         <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
       </div>}
-      {projectOpen && <div className="windowOnTop" onClick={() => setProjectOpen(false)}>
-        <Project project_id={"69ba01910742689aef598a7d"} userRefresh={userRefresh} />
+      {openProject && <div className="windowOnTop" onClick={() => setOpenProject(null)}>
+        <Project project_id={openProject} userRefresh={userRefresh} isAdmin={isAdmin} />
       </div>}
-      <Island />
+      <Island setOpenProject={setOpenProject} />
     </div>
   )
 }

@@ -9,11 +9,13 @@ const regions = [
         name: "West",
         code: "west",
         position: [25, 50],
+        arrow: [50, "down"],
       },
       {
         name: "East",
         code: "east",
         position: [75, 50],
+        arrow: [50, "down"],
       }
     ],
     holdsProjects: true,
@@ -28,11 +30,13 @@ const regions = [
         name: "Downtown",
         code: "downtown",
         position: [40, 75],
+        arrow: [50, "down"],
       },
       {
         name: "Uptown",
         code: "uptown",
         position: [60, 25],
+        arrow: [50, "down"],
       }
     ],
     holdsProjects: true,
@@ -47,11 +51,13 @@ const regions = [
         name: "Lower Level",
         code: "lower",
         position: [25, 60],
+        arrow: [50, "down"],
       },
       {
         name: "Upper Level",
         code: "upper",
         position: [75, 40],
+        arrow: [50, "down"],
       }
     ],
     holdsProjects: true,

@@ -1,8 +1,8 @@
 const RegionName = (props) => {
-  const { region, fullX, fullY } = props;
+  const { region, fullX, fullY, enterRegion } = props;
 
   return (
-    <div className="regionName" style={{
+    <div className="regionName" onClick={() => enterRegion(region)} style={{
       position: "absolute",
       left: `calc(${(region.position[0] / 100) * fullX}px - 80px)`,
       top: `calc(${(region.position[1] / 100) * fullY}px - 30px)`,

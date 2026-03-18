@@ -1,15 +1,17 @@
 import projectsAPI from "../api/ProjectsAPI.js";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { projectReactions } from "../constants/reactions.js";
 import projectGroups from "../constants/projectGroups.js";
 import '../stylesheets/Project.css';
 
 const Project = (props) => {
-  const { project_id, userRefresh } = props;
+  const { project_id, userRefresh, isAdmin } = props;
   const [reactionStates, setReactionStates] = useState({});
   const [reactionNums, setReactionNums] = useState({});
   const [allReactions, setAllReactions] = useState(projectReactions);
+  const navigate = useNavigate();
 
   const getReactionStates = (reactions) => {
     setReactionStates(Object.fromEntries(
@@ -56,7 +58,7 @@ const Project = (props) => {
     }
   }
 
-  const { data: project, isLoading: projectLoading, isSuccess: projectLoaded } = useQuery({
+  const { data: project, isLoading: projectLoading } = useQuery({
     queryKey: [`project-${project_id}`],
     queryFn: () => {
       return projectsAPI.getProject(project_id).then(res => {
@@ -76,7 +78,7 @@ const Project = (props) => {
         getReactionStates(projectReactions);
       }
     }
-  }, [projectLoaded]);
+  }, [project]);
 
   const projectLinkClicked = (linkType) => {
     window.open(project.links[linkType], "_blank");
@@ -84,7 +86,11 @@ const Project = (props) => {
 
   const receiveClick = (e) => {
     e.stopPropagation();
-  }
+  };
+
+  const editProject = () => {
+    navigate(`/admin?editProject=${project_id}`);
+  };
 
   return (
     <div className="projectWindow" onClick={receiveClick}>
@@ -116,6 +122,7 @@ const Project = (props) => {
               </button>
             )}
           </div>}
+          {isAdmin && <button onClick={editProject}>Edit project</button>}
         </div>
         <div className="rightProjectColumn">
           <p className="projectDescription">{project.description}</p>
@@ -128,8 +135,8 @@ const Project = (props) => {
             {["youtube", "spotify", "link"].map(linkType =>
               <button
                 key={linkType}
-                disabled={!project.links[linkType] || project.links[linkType] == ""}
-                className={`projectLink projectLink${project.links[linkType] && project.links[linkType] != "" ? "Active" : "Inactive"}`}
+                disabled={!project.links?.[linkType] || project.links[linkType] == ""}
+                className={`projectLink projectLink${project.links?.[linkType] && project.links[linkType] != "" ? "Active" : "Inactive"}`}
                 onClick={() => projectLinkClicked(linkType)}
               >
                 {linkType.toUpperCase()}
