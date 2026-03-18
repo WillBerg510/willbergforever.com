@@ -34,15 +34,13 @@ router.post("/", auth, formidable(), async (req, res) => {
       thumbnail: null,
       gallery: [],
     };
-    let galleryIndex = 0;
     const promises = Object.entries(req.files).map(async ([key, image]) => {
       const imageName = await uploadToS3(image);
       const imageURL = `https://s3.us-east-1.amazonaws.com/${process.env.S3_BUCKET}/${imageName}`;
       if (key == "thumbnail") {
         imageURLs.thumbnail = imageURL;
       } else if (key.startsWith("gallery")) {
-        imageURLs.gallery[galleryIndex] = imageURL;
-        galleryIndex += 1;
+        imageURLs.gallery[key.split("gallery")[1]] = imageURL;
       }
       return imageURL;
     });
