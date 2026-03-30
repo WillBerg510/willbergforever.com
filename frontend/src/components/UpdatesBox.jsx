@@ -63,7 +63,7 @@ const UpdatesBox = (props) => {
         <h2 className="updatesHeader">{full ? "WILL'S UPDATES" : "LATEST UPDATES"}</h2>
         {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
         {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
-        {isLoading && <p className="updatesBoxInfo">Loading...</p>}
+        {(isLoading && !userVerifyFailed) && <p className="updatesBoxInfo">Loading...</p>}
         {(full ? updates : updates?.slice(0, 1))?.map((update) => (
           <UpdateBubble key={update._id} allUpdatesOpen={allUpdatesOpen} full={full} update={update} isAdmin={isAdmin} userRefresh={userRefresh} />
         ))}
