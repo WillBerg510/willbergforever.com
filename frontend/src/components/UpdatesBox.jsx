@@ -23,7 +23,7 @@ const UpdatesBox = (props) => {
     },
   });
   useEffect(() => {
-    if (getUpdatesError?.response.status == 500) {
+    if (getUpdatesError?.response?.status == 500) {
       userRefresh();
     }
   }, [getUpdatesError]);
