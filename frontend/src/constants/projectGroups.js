@@ -3,6 +3,8 @@ import ProgramsIcon from "../assets/Programs Group.png";
 import ArtIcon from "../assets/Art Group.png";
 import PhotosIcon from "../assets/Photos Group.png";
 import VideosIcon from "../assets/Videos Group.png";
+import CartoonsIcon from "../assets/Cartoons Group.png";
+import CoversIcon from "../assets/Covers Group.png";
 
 const projectGroups = {
   music: {
@@ -27,11 +29,11 @@ const projectGroups = {
   },
   cartoons: {
     name: "Cartoons",
-    icon: ArtIcon,
+    icon: CartoonsIcon,
   },
   covers: {
     name: "Covers & Parodies",
-    icon: MusicIcon,
+    icon: CoversIcon,
   },
   teamProjects: {
     name: "Team Projects",
@@ -47,7 +49,7 @@ const projectGroups = {
   },
   covers2025: {
     name: "2025 Covers",
-    icon: MusicIcon,
+    icon: CoversIcon,
   },
   december: {
     name: "December",
