@@ -5,6 +5,7 @@ import PhotosIcon from "../assets/Photos Group.png";
 import VideosIcon from "../assets/Videos Group.png";
 import CartoonsIcon from "../assets/Cartoons Group.png";
 import CoversIcon from "../assets/Covers Group.png";
+import TeamProjectsIcon from "../assets/Team Projects Group.png";
 
 const projectGroups = {
   music: {
@@ -37,7 +38,7 @@ const projectGroups = {
   },
   teamProjects: {
     name: "Team Projects",
-    icon: ProgramsIcon,
+    icon: TeamProjectsIcon,
   },
   originals: {
     name: "Original Songs",
@@ -53,7 +54,7 @@ const projectGroups = {
   },
   december: {
     name: "December",
-    icon: MusicIcon,
+    icon: ProgramsIcon,
   },
   profilePics: {
     name: "Profile Pics",
