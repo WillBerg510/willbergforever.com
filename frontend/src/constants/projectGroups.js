@@ -6,6 +6,7 @@ import VideosIcon from "../assets/Videos Group.png";
 import CartoonsIcon from "../assets/Cartoons Group.png";
 import CoversIcon from "../assets/Covers Group.png";
 import TeamProjectsIcon from "../assets/Team Projects Group.png";
+import OriginalSongsIcon from "../assets/Original Songs Group.png";
 
 const projectGroups = {
   music: {
@@ -42,7 +43,7 @@ const projectGroups = {
   },
   originals: {
     name: "Original Songs",
-    icon: MusicIcon,
+    icon: OriginalSongsIcon,
   },
   lunacyToday: {
     name: "Lunacy Today",
