@@ -9,6 +9,9 @@ import TeamProjectsIcon from "../assets/Team Projects Group.png";
 import OriginalSongsIcon from "../assets/Original Songs Group.png";
 import LunacyTodayIcon from "../assets/Lunacy Today Group.png";
 import Covers2025Icon from "../assets/2025 Covers Group.png";
+import DecemberIcon from "../assets/December Group.png";
+import ProfilePicsIcon from "../assets/Profile Pics Group.png";
+import FavoritesIcon from "../assets/Favorites Group.png";
 
 const projectGroups = {
   music: {
@@ -57,15 +60,15 @@ const projectGroups = {
   },
   december: {
     name: "December",
-    icon: ProgramsIcon,
+    icon: DecemberIcon,
   },
   profilePics: {
     name: "Profile Pics",
-    icon: ArtIcon,
+    icon: ProfilePicsIcon,
   },
   favorites: {
     name: "Will's Favorites",
-    icon: PhotosIcon,
+    icon: FavoritesIcon,
   },
 }
 
