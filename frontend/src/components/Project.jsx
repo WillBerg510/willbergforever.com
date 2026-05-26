@@ -66,7 +66,14 @@ const Project = (props) => {
         res.data.project.date = new Date(res.data.project.date);
         return res.data.project;
       });
-    }
+    },
+    retry: (count, error) => {
+      if (error.response.status == 500 && count < 1) {
+        userRefresh();
+        return true;
+      }
+      return false;
+    },
   });
 
   useEffect(() => {
