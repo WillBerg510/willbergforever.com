@@ -7,7 +7,7 @@ import projectsAPI from '../api/ProjectsAPI.js';
 import regions from '../constants/regions.js';
 
 const Island = (props) => {
-  const { setOpenProject } = props;
+  const { setOpenProject, isAdmin } = props;
   const [fullX, setFullX] = useState(0);
   const [fullY, setFullY] = useState(0);
   const [focusRegion, setFocusRegion] = useState(null);
@@ -59,9 +59,9 @@ const Island = (props) => {
               <button className="otherRegion" key={`other-${division.name}`} onClick={() => setFocusDivision(division)}>
                 Go to {division.name}
               </button>
-              <button className="otherRegion" onClick={() => getRegionProjects()}>
+              {isAdmin && <button className="otherRegion" onClick={() => getRegionProjects()}>
                 Refresh
-              </button>
+              </button>}
             </>
           ) : null}
         </div>
