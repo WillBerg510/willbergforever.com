@@ -55,12 +55,18 @@ const Island = (props) => {
           )}
           <button className="returnFromRegion" onClick={() => {setFocusRegion(null); setFocusDivision(null)}}>Return to Full Map</button>
           {focusRegion ? focusRegion.divisions.filter(division => division != focusDivision).map(division =>
-            <button className="otherRegion" key={`other-${division.name}`} onClick={() => setFocusDivision(division)}>
-              Go to {division.name}
-            </button>
+            <>
+              <button className="otherRegion" key={`other-${division.name}`} onClick={() => setFocusDivision(division)}>
+                Go to {division.name}
+              </button>
+              <button className="otherRegion" onClick={() => getRegionProjects()}>
+                Refresh
+              </button>
+            </>
           ) : null}
         </div>
       }
+      {(focusRegion?.image || focusDivision?.image) && <img className="islandImage" src={focusRegion?.image || focusDivision?.image} draggable="false" />}
     </div>
   );
 }

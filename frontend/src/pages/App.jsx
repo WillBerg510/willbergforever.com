@@ -146,10 +146,10 @@ function App() {
         {openPlayer && <Player project_id={openPlayer} />}
       </div>}
       {((!groupProjects || groupProjects.length == 0) && !gettingProjects) && <Island setOpenProject={setOpenProject} />}
-      <div style={{display: "flex", gap: "10px", justifyContent: "center", margin: "20px 0"}}>
+      <div style={{display: "flex", gap: "10px", zIndex: "5", justifyContent: "center", margin: "20px 0"}}>
         {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}
       </div>
-      <div style={{display: "flex", gap: "30px", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
+      <div style={{display: "flex", gap: "30px", zIndex: "5", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
         {Object.keys(levels).map(level => 
           racesData[level] && (
           <div style={{border: "1px solid #ccc", padding: "10px", borderRadius: "5px"}}>

@@ -1,3 +1,6 @@
+import BeachWest from "../assets/Palm Tree Paradise West.png";
+import BeachEast from "../assets/Palm Tree Paradise East.png";
+
 const regions = [
   {
     name: "Palm Tree Paradise",
@@ -10,12 +13,14 @@ const regions = [
         code: "west",
         position: [25, 50],
         arrow: [50, "down"],
+        image: BeachWest,
       },
       {
         name: "East",
         code: "east",
         position: [75, 50],
         arrow: [50, "down"],
+        image: BeachEast,
       }
     ],
     holdsProjects: true,
