@@ -20,8 +20,8 @@ const ProjectIcon = (props) => {
   return (
     <div className="projectIconFull" style={{
       position: "absolute",
-      left: `calc(${(project.position[0] / 100) * fullX}px - 36px)`,
-      top: `calc(${(project.position[1] / 100) * fullY}px - 36px)`,
+      left: `calc(${(project.position[0] / 100) * fullX}px - 33px)`,
+      top: `calc(${(project.position[1] / 100) * fullY}px - 33px)`,
       '--glide-delay': `${Math.random() * 0.08}s`,
       zIndex: hovered ? 3 : 2
     }}>

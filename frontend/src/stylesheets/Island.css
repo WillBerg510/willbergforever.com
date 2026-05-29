@@ -45,14 +45,14 @@
 }
 
 .projectIcon {
-  width: 72px;
+  width: 66px;
   cursor: pointer;
   transition: transform 0.1s ease-out;
   transform: scale(1);
 }
 
 .projectIcon:hover {
-  transform: scale(125%);
+  transform: scale(135%);
 }
 
 .projectTooltip {
