@@ -66,7 +66,7 @@ const Island = (props) => {
           ) : null}
         </div>
       }
-      {(focusRegion?.image || focusDivision?.image) && <img className="islandImage" src={focusRegion?.image || focusDivision?.image} draggable="false" />}
+      {(focusRegion?.image || focusDivision?.image) && <img key={`${focusDivision.name}-image`} className="islandImage" src={focusRegion?.image || focusDivision?.image} draggable="false" />}
     </div>
   );
 }
