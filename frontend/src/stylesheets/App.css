@@ -60,6 +60,17 @@ textarea {
   }
 }
 
+@keyframes slideUpIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 5px));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
 @keyframes zoomIn {
   0% {
     opacity: 0;

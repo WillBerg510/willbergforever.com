@@ -1,6 +1,6 @@
 .island {
-  height: 50vw;
-  width: 75vw;
+  height: 55vw;
+  width: 80vw;
   position: relative;
 }
 
@@ -14,7 +14,9 @@
   line-height: 24px;
   cursor: pointer;
   opacity: 0;
-  animation: glideIn 0.3s ease-out var(--glide-delay) forwards;
+  animation: slideUpIn 0.3s ease-out var(--glide-delay) forwards;
+  position: absolute;
+  transform: translate(-50%, -50%);
 }
 
 .regionTriangle {
@@ -39,20 +41,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 5.5%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
   opacity: 0;
-  animation: glideIn 0.3s ease-out var(--glide-delay) forwards;
-  transform: translateY(0);
+  animation: slideUpIn 0.3s ease-out var(--glide-delay) forwards;
 }
 
 .projectIcon {
-  width: 66px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   cursor: pointer;
   transition: transform 0.1s ease-out;
   transform: scale(1);
 }
 
 .projectIcon:hover {
-  transform: scale(135%);
+  transform: scale(135%) translateY(-4.5%);
 }
 
 .projectTooltip {
@@ -72,10 +79,16 @@
 
 .regionDivision {
   z-index: 2;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .islandImage {
-  width: 95%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   object-fit: cover;
   pointer-events: none;

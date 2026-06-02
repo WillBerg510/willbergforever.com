@@ -14,14 +14,14 @@ const icons = {
 }
 
 const ProjectIcon = (props) => {
-  const { project, fullX, fullY, setOpenProject } = props;
+  const { project, setOpenProject } = props;
   const [hovered, setHovered] = useState(false);
 
   return (
     <div className="projectIconFull" style={{
       position: "absolute",
-      left: `calc(${(project.position[0] / 100) * fullX}px - 33px)`,
-      top: `calc(${(project.position[1] / 100) * fullY}px - 33px)`,
+      left: `${project.position[0]}%`,
+      top: `${project.position[1]}%`,
       '--glide-delay': `${Math.random() * 0.08}s`,
       zIndex: hovered ? 3 : 2
     }}>
