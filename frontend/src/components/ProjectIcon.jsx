@@ -28,7 +28,10 @@ const ProjectIcon = (props) => {
       <img className="projectIcon" src={icons[project.icon] || MusicIcon} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => setOpenProject(project._id)}/>
       {hovered &&
         <div className="projectTooltip">
-          {project.name.toUpperCase()}
+          <div className="projectTooltipBox">
+            {project.name.toUpperCase()}
+          </div>
+          <div className="projectTriangle"/>
         </div>
       }
     </div>

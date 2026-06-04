@@ -14,7 +14,7 @@
   line-height: 24px;
   cursor: pointer;
   opacity: 0;
-  animation: slideUpIn 0.3s ease-out var(--glide-delay) forwards;
+  animation: iconSlideIn 0.3s ease-out var(--glide-delay) forwards;
   position: absolute;
   transform: translate(-50%, -50%);
 }
@@ -46,7 +46,18 @@
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   opacity: 0;
-  animation: slideUpIn 0.3s ease-out var(--glide-delay) forwards;
+  animation: iconSlideIn 0.3s ease-out var(--glide-delay) forwards;
+}
+
+@keyframes iconSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 5px));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .projectIcon {
@@ -59,22 +70,44 @@
 }
 
 .projectIcon:hover {
-  transform: scale(135%) translateY(-4.5%);
+  transform: scale(135%) translateY(-5.5%);
 }
 
 .projectTooltip {
-  font-family: wbf3;
-  font-weight: 500;
   position: absolute;
-  background-color: antiquewhite;
-  top: -40px;
+  bottom: -42px;
   height: 30px;
-  line-height: 30px;
-  padding: 0 15px 0 15px;
-  white-space: nowrap;
-  z-index: 1;
   pointer-events: none;
   animation: glideIn 0.2s ease-in-out;
+}
+
+.projectTooltipBox {
+  position: relative;
+  font-family: wbf3;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.6px;
+  background-color: white;
+  line-height: 30px;
+  padding: 0 18px 0 18px;
+  border-radius: 999px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.projectTriangle {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  position: absolute;
+  top: -9px;
+  border-bottom: 10px solid white;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+  z-index: 1;
 }
 
 .regionDivision {
