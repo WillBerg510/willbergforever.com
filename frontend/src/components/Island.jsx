@@ -3,6 +3,7 @@ import RegionName from './RegionName.jsx';
 import ProjectIcon from './ProjectIcon.jsx';
 import { useState, useEffect, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'motion/react';
 import projectsAPI from '../api/ProjectsAPI.js';
 import regions from '../constants/regions.js';
 
@@ -10,6 +11,7 @@ const Island = (props) => {
   const { setOpenProject, isAdmin } = props;
   const [focusRegion, setFocusRegion] = useState(null);
   const [focusDivision, setFocusDivision] = useState(null);
+  const [loadedDivision, setLoadedDivision] = useState(null);
   const islandRef = useRef(null);
 
   const enterRegion = (region) => {
@@ -25,8 +27,22 @@ const Island = (props) => {
   });
 
   useEffect(() => {
-    getRegionProjects();
+    if (!focusDivision?.projects) getRegionProjects();
+    if (!focusDivision?.image) setLoadedDivision(focusDivision);
   }, [focusDivision]);
+
+  useEffect(() => {
+    if (regionProjects) setFocusDivision(prev => {return {...prev, projects: regionProjects}});
+  }, [regionProjects]);
+
+  const switchRegion = (division) => {
+    setFocusDivision(division);
+  };
+
+  const leaveRegion = () => {
+    setFocusRegion(null);
+    setFocusDivision(null);
+  }
 
   return (
     <div className="island" ref={islandRef}>
@@ -34,28 +50,61 @@ const Island = (props) => {
       {!focusDivision && focusRegion &&
         <div className="region">
           {focusRegion.divisions.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} />)}
-          <button className="returnFromRegion" onClick={() => setFocusRegion(null)}>Return to Full Map</button>
+          <button className="returnFromRegion" onClick={leaveRegion}>Return to Full Map</button>
         </div>
       }
       {focusDivision &&
-        <div className="regionDivision">
-          {regionProjects && regionProjects.map(project =>
-            <ProjectIcon key={project.name} project={project} setOpenProject={setOpenProject} />
-          )}
-          <button className="returnFromRegion" onClick={() => {setFocusRegion(null); setFocusDivision(null)}}>Return to Full Map</button>
-          {focusRegion ? focusRegion.divisions.filter(division => division != focusDivision).map(division =>
-            <>
-              <button className="otherRegion" key={`other-${division.name}`} onClick={() => setFocusDivision(division)}>
-                Go to {division.name}
-              </button>
-              {isAdmin && <button className="otherRegion" onClick={() => getRegionProjects()}>
-                Refresh
-              </button>}
-            </>
+        <div className="divisionButtons">
+          <button className="returnFromRegion" onClick={leaveRegion}>Return to Full Map</button>
+          {focusRegion ? focusRegion.divisions.filter(division => division.name != focusDivision.name).map(division =>
+            <button className="otherRegion" key={`other-${division.name}`} onClick={() => switchRegion(division)}>
+              Go to {division.name}
+            </button>
           ) : null}
+          {isAdmin && <button className="otherRegion" onClick={() => getRegionProjects()}>
+            Refresh
+          </button>}
         </div>
       }
-      {(focusRegion?.image || focusDivision?.image) && <img key={`${focusDivision.name}-image`} className="islandImage" src={focusRegion?.image || focusDivision?.image} draggable="false" />}
+      {focusDivision && focusDivision.projects && (focusDivision != loadedDivision) && focusDivision.image &&
+        <img src={focusDivision.image} style={{display: "none"}} onLoad={() => {
+          setLoadedDivision(focusDivision);
+        }}/>
+      }
+      {loadedDivision && focusDivision &&
+        <div className="regionPresence">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              className="regionDivision"
+              key={loadedDivision.name}
+              initial={{
+                opacity: 0.1,
+                x: loadedDivision.direction[0],
+                y: loadedDivision.direction[1],
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                y: 0,
+                transition: {ease: [.1, .5, .67, 1], duration: 0.2},
+              }}
+              exit={{
+                opacity: 0.1,
+                x: loadedDivision.direction[0],
+                y: loadedDivision.direction[1],
+                transition: {ease: [.5, 0, 1, .67], duration: 0.2},
+              }}
+            >
+              {loadedDivision?.projects && loadedDivision.projects.map(project =>
+                <ProjectIcon key={project.name} project={project} setOpenProject={setOpenProject} />
+              )}
+              {loadedDivision?.image &&
+                <img key={`${loadedDivision.name}-image`} className="islandImage" src={loadedDivision.image} draggable="false" alt="" />
+              }
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      }
     </div>
   );
 }

@@ -14,6 +14,7 @@ const regions = [
         position: [25, 50],
         arrow: [50, "down"],
         image: BeachWest,
+        direction: [-25, 0],
       },
       {
         name: "East",
@@ -21,6 +22,7 @@ const regions = [
         position: [75, 50],
         arrow: [50, "down"],
         image: BeachEast,
+        direction: [25, 0],
       }
     ],
     holdsProjects: true,
@@ -36,12 +38,14 @@ const regions = [
         code: "downtown",
         position: [40, 75],
         arrow: [50, "down"],
+        direction: [-20, 30],
       },
       {
         name: "Uptown",
         code: "uptown",
         position: [60, 25],
         arrow: [50, "down"],
+        direction: [20, -30],
       }
     ],
     holdsProjects: true,
@@ -57,12 +61,14 @@ const regions = [
         code: "lower",
         position: [25, 60],
         arrow: [50, "down"],
+        direction: [-30, 20],
       },
       {
         name: "Upper Level",
         code: "upper",
         position: [75, 40],
         arrow: [50, "down"],
+        direction: [30, -20],
       }
     ],
     holdsProjects: true,
