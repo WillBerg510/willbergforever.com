@@ -78,7 +78,7 @@ const Island = (props) => {
               className="regionDivision"
               key={loadedDivision.name}
               initial={{
-                opacity: 0.1,
+                opacity: 0,
                 x: loadedDivision.direction[0],
                 y: loadedDivision.direction[1],
               }}
@@ -89,7 +89,7 @@ const Island = (props) => {
                 transition: {ease: [.1, .5, .67, 1], duration: 0.2},
               }}
               exit={{
-                opacity: 0.1,
+                opacity: 0,
                 x: loadedDivision.direction[0],
                 y: loadedDivision.direction[1],
                 transition: {ease: [.5, 0, 1, .67], duration: 0.2},
