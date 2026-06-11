@@ -35,14 +35,10 @@ const Island = (props) => {
     if (regionProjects) setFocusDivision(prev => {return {...prev, projects: regionProjects}});
   }, [regionProjects]);
 
-  const switchRegion = (division) => {
-    setFocusDivision(division);
-  };
-
   const leaveRegion = () => {
     setFocusRegion(null);
     setFocusDivision(null);
-  }
+  };
 
   return (
     <div className="island" ref={islandRef}>
@@ -56,11 +52,6 @@ const Island = (props) => {
       {focusDivision &&
         <div className="divisionButtons">
           <button className="returnFromRegion" onClick={leaveRegion}>Return to Full Map</button>
-          {focusRegion ? focusRegion.divisions.filter(division => division.name != focusDivision.name).map(division =>
-            <button className="otherRegion" key={`other-${division.name}`} onClick={() => switchRegion(division)}>
-              Go to {division.name}
-            </button>
-          ) : null}
           {isAdmin && <button className="otherRegion" onClick={() => getRegionProjects()}>
             Refresh
           </button>}
@@ -100,6 +91,9 @@ const Island = (props) => {
               )}
               {loadedDivision?.image &&
                 <img key={`${loadedDivision.name}-image`} className="islandImage" src={loadedDivision.image} draggable="false" alt="" />
+              }
+              {loadedDivision?.exit &&
+                <ProjectIcon key={`${loadedDivision.name}-exit`} division={loadedDivision} setFocusDivision={setFocusDivision} otherDivision={focusRegion.divisions.filter(division => division.name != loadedDivision.name)[0]} />
               }
             </motion.div>
           </AnimatePresence>
