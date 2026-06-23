@@ -24,7 +24,7 @@ const regions = [
         arrow: [50, "down"],
         image: BeachEast,
         direction: [25, 0],
-        exit: [18, 41],
+        exit: [19, 41],
       }
     ],
     holdsProjects: true,
@@ -49,7 +49,7 @@ const regions = [
         position: [60, 25],
         arrow: [50, "down"],
         direction: [20, -30],
-        exit: [50, 90],
+        exit: [50, 80],
       }
     ],
     holdsProjects: true,

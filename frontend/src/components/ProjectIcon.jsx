@@ -4,7 +4,7 @@ import InteractiveIcon from '../assets/Interactive Map Icon.png';
 import VideoIcon from '../assets/Video Map Icon.png';
 import ArtIcon from '../assets/Art Map Icon.png';
 import PhotosIcon from '../assets/Photos Map Icon.png';
-import ExitArrow from '../assets/Interactive Icon.png';
+import ExitArrow from '../assets/Exit Icon.png';
 
 const icons = {
   "music": MusicIcon,
@@ -40,7 +40,7 @@ const ProjectIcon = (props) => {
         onMouseLeave={() => setHovered(false)}
       >
         <img className={`exitIcon ${hovered ? "exitIconHover" : ""}`} src={ExitArrow} style={{
-          rotate: division ? `${Math.atan2(-1 * division.direction[1], -1 * division.direction[0]) + Math.PI/2.5}rad` : null,
+          rotate: division ? `${Math.atan2(-1 * division.direction[1], -1 * division.direction[0])}rad` : null,
         }}/>
         <p className={`exitText ${hovered ? "exitTextHover" : ""}`}>TO {otherDivision.name.toUpperCase()}</p>
       </div>}

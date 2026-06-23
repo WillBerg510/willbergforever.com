@@ -15,7 +15,7 @@ const Island = (props) => {
   const islandRef = useRef(null);
 
   const enterRegion = (region) => {
-    if (region.divisions) {
+    if (!region.direction) {
       setFocusRegion(region);
     } else {
       setFocusDivision(region);
@@ -45,16 +45,17 @@ const Island = (props) => {
       {!focusDivision && !focusRegion && regions.map(region => <RegionName key={region.name} region={region} enterRegion={enterRegion} />)}
       {!focusDivision && focusRegion &&
         <div className="region">
-          {focusRegion.divisions.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} />)}
-          <button className="returnFromRegion" onClick={leaveRegion}>Return to Full Map</button>
+          {focusRegion.divisions?.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} />)}
         </div>
       }
-      {focusDivision &&
-        <div className="divisionButtons">
-          <button className="returnFromRegion" onClick={leaveRegion}>Return to Full Map</button>
-          {isAdmin && <button className="otherRegion" onClick={() => getRegionProjects()}>
-            Refresh
-          </button>}
+      {focusRegion &&
+        <div className="regionHeader">
+            <button className="returnFromRegion" onClick={leaveRegion}>RETURN TO FULL MAP</button>
+            {isAdmin && <button className="returnFromRegion refreshButton" onClick={() => getRegionProjects()}>
+              REFRESH
+            </button>}
+            <h2 className="regionHeaderName">{focusRegion.name.toUpperCase()}</h2>
+            {focusDivision && <h3 className="divisionHeaderName">{focusDivision.name.toUpperCase()}</h3>}
         </div>
       }
       {focusDivision && focusDivision.projects && (focusDivision != loadedDivision) && focusDivision.image &&
@@ -70,8 +71,8 @@ const Island = (props) => {
               key={loadedDivision.name}
               initial={{
                 opacity: 0,
-                x: loadedDivision.direction[0],
-                y: loadedDivision.direction[1],
+                x: loadedDivision.direction ? loadedDivision.direction[0] : 0,
+                y: loadedDivision.direction ? loadedDivision.direction[1] : 0,
               }}
               animate={{
                 opacity: 1,
@@ -81,8 +82,8 @@ const Island = (props) => {
               }}
               exit={{
                 opacity: 0,
-                x: loadedDivision.direction[0],
-                y: loadedDivision.direction[1],
+                x: loadedDivision.direction ? loadedDivision.direction[0] : 0,
+                y: loadedDivision.direction ? loadedDivision.direction[1] : 0,
                 transition: {ease: [.5, 0, 1, .67], duration: 0.2},
               }}
             >

@@ -127,29 +127,28 @@ function App() {
   return (
     <div id="app">
       {isAdmin &&
-        <div style={{display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
-          <h2 style={{margin: "0"}}>Logged in as admin</h2>
+        <div style={{position: "absolute", right: 0, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
+          <p style={{margin: "0"}}>Logged in as admin</p>
           <button style={{margin: "0"}} onClick={toAdminPanel}>Admin Panel</button>
           <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>
         </div>
       }
       <img className="mainHeading" src={WillBergLogo} />
-      <h2 className="mainSubtitle">AND THE WEBSITE ON THE INTERNET</h2>
-      <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
-      {allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
+      {/*<UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />*/}
+      {/*allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
         <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
-      </div>}
-      <GroupMenu getGroupProjects={getGroupProjects} />
+      </div>*/}
+      {/*<GroupMenu getGroupProjects={getGroupProjects} />*/}
       {groupProjects && <GroupList groupProjects={groupProjects} setOpenProject={setOpenProject} />}
       {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
         {openProject && <Project project_id={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
         {openPlayer && <Player project_id={openPlayer} />}
       </div>}
       {((!groupProjects || groupProjects.length == 0) && !gettingProjects) && <Island setOpenProject={setOpenProject} isAdmin={isAdmin} />}
-      <div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
+      {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
         {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}
-      </div>
-      <div style={{display: "flex", gap: "30px", zIndex: "4", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
+      </div>*/}
+      {/*<div style={{display: "flex", gap: "30px", zIndex: "4", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
         {Object.keys(levels).map(level => 
           racesData[level] && (
           <div style={{border: "1px solid #ccc", padding: "10px", borderRadius: "5px"}}>
@@ -161,7 +160,7 @@ function App() {
             </ul>
           </div>
         ))}
-      </div>
+      </div>*/}
     </div>
   )
 }
