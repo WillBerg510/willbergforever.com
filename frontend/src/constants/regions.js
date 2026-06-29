@@ -1,5 +1,6 @@
 import BeachWest from "../assets/Palm Tree Paradise West.png";
 import BeachEast from "../assets/Palm Tree Paradise East.png";
+import CityDowntown from "../assets/Commute City Downtown.png";
 
 const regions = [
   {
@@ -40,15 +41,16 @@ const regions = [
         code: "downtown",
         position: [40, 75],
         arrow: [50, "down"],
-        direction: [-20, 30],
-        exit: [50, 10],
+        image: CityDowntown,
+        direction: [-15, 30],
+        exit: [41, 16],
       },
       {
         name: "Uptown",
         code: "uptown",
         position: [60, 25],
         arrow: [50, "down"],
-        direction: [20, -30],
+        direction: [15, -30],
         exit: [50, 80],
       }
     ],
