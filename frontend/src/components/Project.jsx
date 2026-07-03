@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { projectReactions } from "../constants/reactions.js";
 import projectGroups from "../constants/projectGroups.js";
+import regions from "../constants/regions.js";
 import '../stylesheets/Project.css';
 
 const Project = (props) => {
@@ -12,6 +13,7 @@ const Project = (props) => {
   const [reactionNums, setReactionNums] = useState({});
   const [allReactions, setAllReactions] = useState(projectReactions);
   const [imagesReady, setImagesReady] = useState(0);
+  const [thumbnailReady, setThumbnailReady] = useState(false);
   const navigate = useNavigate();
 
   const getReactionStates = (reactions) => {
@@ -104,18 +106,36 @@ const Project = (props) => {
     setImagesReady(prev => prev + 1);
   };
 
+  const onThumbnailReady = () => {
+    setThumbnailReady(true);
+  };
+
   const onPlayerOpen = () => {
     closeWindows();
     setOpenPlayer(project_id);
   };
 
+  const regionDetails = regions.filter(region => region.code == project?.region.split("-")[0])[0];
+  const regionColor = regionDetails?.color || "#e830c0";
+
   return (
-    <div style={imagesReady > project?.gallery?.length ? {display: "flex"} : {display: "none"}} className="projectWindow" onClick={receiveClick}>
+    <div style={{
+      display: project ? "flex" : "none",
+      backgroundColor: regionColor,
+    }} className="projectWindow" onClick={receiveClick}>
       {projectLoading && <p>Loading...</p>}
       {!projectLoading && !project && <p>Unable to load project.</p>}
       {project && <div className="projectInfo">
         <div className="leftProjectColumn">
-          <img src={project.thumbnail} className="projectThumbnail" onLoad={onImageReady} />
+          <div className="projectThumbnail">
+            <div className={`projectThumbnailCover ${thumbnailReady && "projectThumbnailCoverHidden"}`} style={{
+              backgroundColor: regionColor,
+            }} />
+            <div className={`projectThumbnailCover projectThumbnailCoverTwo ${thumbnailReady && "projectThumbnailCoverHidden"}`} style={{
+              backgroundColor: regionColor,
+            }} />
+            <img src={project.thumbnail} className="projectThumbnailImage" onLoad={onThumbnailReady} />
+          </div>
           <h1 className="projectName">{project.name}</h1>
           <p className="projectDate">{project.date.toLocaleString("en-US", {
             month: "long",

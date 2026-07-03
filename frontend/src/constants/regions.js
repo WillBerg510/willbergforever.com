@@ -8,6 +8,7 @@ const regions = [
     code: "beach",
     position: [30, 30],
     arrow: [70, "down"],
+    color: "#b3e89f",
     divisions: [
       {
         name: "West",
@@ -35,6 +36,7 @@ const regions = [
     code: "city",
     position: [50, 60],
     arrow: [50, "up"],
+    color: "#adcaf5",
     divisions: [
       {
         name: "Downtown",
@@ -43,7 +45,7 @@ const regions = [
         arrow: [50, "down"],
         image: CityDowntown,
         direction: [-15, 30],
-        exit: [41, 16],
+        exit: [42, 14],
       },
       {
         name: "Uptown",
@@ -61,6 +63,7 @@ const regions = [
     code: "club",
     position: [70, 30],
     arrow: [30, "down"],
+    color: "#f5e599",
     divisions: [
       {
         name: "Lower Level",

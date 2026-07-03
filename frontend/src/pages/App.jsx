@@ -141,7 +141,7 @@ function App() {
       {/*<GroupMenu getGroupProjects={getGroupProjects} />*/}
       {groupProjects && <GroupList groupProjects={groupProjects} setOpenProject={setOpenProject} />}
       {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
-        {openProject && <Project project_id={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
+        {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
         {openPlayer && <Player project_id={openPlayer} />}
       </div>}
       {((!groupProjects || groupProjects.length == 0) && !gettingProjects) && <Island setOpenProject={setOpenProject} isAdmin={isAdmin} />}

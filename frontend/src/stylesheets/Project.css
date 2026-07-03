@@ -4,13 +4,13 @@
   height: auto;
   display: flex;
   position: relative;
-  background-color: lightgreen;
   border-radius: 65px;
   aspect-ratio: 2;
   justify-content: center;
   padding: 30px;
   animation: zoomIn 0.3s ease-out;
   box-shadow: 2px 2px 16px 0px rgba(0, 0, 0, 0.7);
+  will-change: transform;
 }
 
 .projectInfo {
@@ -38,9 +38,52 @@
   aspect-ratio: 16 / 9;
   height: auto;
   object-fit: contain;
-  border-radius: 35px;
+  border-radius: 15px;
   background-color: black;
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  position: relative;
+}
+
+.projectThumbnail::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 8px 4px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
+.projectThumbnailCover {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  inset: 0;
+  transition: transform 0.7s cubic-bezier(.43,0,.29,1) 0.2s;
+  transform: translateX(-25%) translateY(-25%) rotate(-45deg);
+  z-index: 4;
+  filter: brightness(75%) saturate(100%) hue-rotate(-5deg);
+  box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.4);
+  will-change: transform;
+}
+
+.projectThumbnailCoverTwo {
+  z-index: 3;
+  filter: brightness(45%) saturate(100%) hue-rotate(-10deg);
+  transition: transform 0.7s cubic-bezier(.43,0,.29,1) 0.3s;
+}
+
+.projectThumbnailCoverHidden {
+  transform: translateX(53.75%) translateY(-25%) rotate(-45deg);
+}
+
+.projectThumbnailImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 1;
 }
 
 .projectName {
