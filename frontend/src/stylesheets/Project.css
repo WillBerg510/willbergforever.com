@@ -4,19 +4,22 @@
   height: auto;
   display: flex;
   position: relative;
-  border-radius: 65px;
+  border-radius: 1em;
   aspect-ratio: 2;
   justify-content: center;
-  padding: 30px;
+  padding: 2em;
   animation: zoomIn 0.3s ease-out;
+  background-color: var(--project-color);
   box-shadow: 2px 2px 16px 0px rgba(0, 0, 0, 0.7);
   will-change: transform;
+  container-type: inline-size;
 }
 
 .projectInfo {
   display: flex;
   width: 100%;
   font-family: wbf3;
+  font-size: 2cqw;
 }
 
 .leftProjectColumn {
@@ -38,7 +41,7 @@
   aspect-ratio: 16 / 9;
   height: auto;
   object-fit: contain;
-  border-radius: 15px;
+  border-radius: 0.5em;
   background-color: black;
   overflow: hidden;
   position: relative;
@@ -60,6 +63,7 @@
   height: 200%;
   inset: 0;
   transition: transform 0.7s cubic-bezier(.43,0,.29,1) 0.2s;
+  background-color: var(--project-color);
   transform: translateX(-25%) translateY(-25%) rotate(-45deg);
   z-index: 4;
   filter: brightness(75%) saturate(100%) hue-rotate(-5deg);
@@ -69,6 +73,7 @@
 
 .projectThumbnailCoverTwo {
   z-index: 3;
+  background-color: var(--project-color);
   filter: brightness(45%) saturate(100%) hue-rotate(-10deg);
   transition: transform 0.7s cubic-bezier(.43,0,.29,1) 0.3s;
 }
@@ -87,22 +92,106 @@
 }
 
 .projectName {
-  font-size: 32px;
-  line-height: 34px;
+  font-size: 1.8em;
+  line-height: 1em;
   font-weight: 700;
-  margin: 5px 0px 1px 0px;
+  margin: 0.3em 0 0 0;
 }
 
 .projectDate {
-  font-size: 18px;
-  font-weight: 500;
-  margin: 0;
+  font-size: 1.1em;
+  font-weight: 450;
+  margin: 0 0 0 0;
+  line-height: 1.7em;
+}
+
+.projectGroups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex-wrap: wrap;
+  column-gap: 0.3em;
 }
 
 .projectGroup {
+  display: flex;
+  gap: 0.15em;
+  align-items: center;
+  padding-right: 1em;
+  flex: 1;
+  margin: 0.2em 0;
+  background-color: rgba(0, 0, 0, 0.075);
+  border-radius: 999px;
+  position: relative;
+  isolation: isolate;
+}
+
+.projectGroupIcon {
+  height: 1.7em;
+  margin: -0.1em 0 -0.1em 0.25em;
+}
+
+.projectGroupText {
   margin: 0;
-  margin-top: 3px;
-  line-height: 17px;
+  font-weight: 400;
+  font-size: 0.825em;
+  line-height: 1em;
+}
+
+.projectReactionsBar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.projectReaction {
+  display: flex;
+  flex: 1;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: inherit;
+  background-color: hsl(from var(--project-color) h s calc(l + 10));
+  box-shadow: inset 0 0 0.2em 0.1em rgba(0, 0, 0, 0.3);
+  border-radius: 999px;
+  transition: background-color 0.15s ease-out,
+  color 0.15s ease-out;
+  overflow: hidden;
+}
+
+.projectReaction:hover, .projectReactionSelected {
+  background-color: hsl(from var(--project-color) h s calc(l - 45));
+  color: white;
+}
+
+.projectReactionEmoji {
+  font-size: 0.9em;
+  margin: 0;
+  line-height: 1.8em;
+  filter: drop-shadow(0 0 0.2em rgba(0, 0, 0, 0.3));
+  transition: filter 0.15s ease-out;
+}
+
+.projectReactionSelected .projectReactionEmoji,
+.projectReaction:hover .projectReactionEmoji {
+  filter: drop-shadow(0 0 0.2em rgba(255, 255, 255, 0.3));
+}
+
+.projectReactionNumber {
+  font-family: wbf3;
+  font-size: 0.9em;
+  line-height: 1em;
+  margin: 0 0.1em 0 0;
+  padding: 0.15em;
+  min-width: 0.7em;
+}
+
+.editProject {
+  margin: 0.5em 0 0 0;
+  font-size: 0.8em;
+  font-weight: 500;
+  padding: 0.2em 1.5em;
+  font-family: wbf3;
 }
 
 .projectDescription {

@@ -115,25 +115,18 @@ const Project = (props) => {
     setOpenPlayer(project_id);
   };
 
-  const regionDetails = regions.filter(region => region.code == project?.region.split("-")[0])[0];
-  const regionColor = regionDetails?.color || "#e830c0";
-
   return (
     <div style={{
       display: project ? "flex" : "none",
-      backgroundColor: regionColor,
+      '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
     }} className="projectWindow" onClick={receiveClick}>
       {projectLoading && <p>Loading...</p>}
       {!projectLoading && !project && <p>Unable to load project.</p>}
       {project && <div className="projectInfo">
         <div className="leftProjectColumn">
           <div className="projectThumbnail">
-            <div className={`projectThumbnailCover ${thumbnailReady && "projectThumbnailCoverHidden"}`} style={{
-              backgroundColor: regionColor,
-            }} />
-            <div className={`projectThumbnailCover projectThumbnailCoverTwo ${thumbnailReady && "projectThumbnailCoverHidden"}`} style={{
-              backgroundColor: regionColor,
-            }} />
+            <div className={`projectThumbnailCover ${thumbnailReady && "projectThumbnailCoverHidden"}`} />
+            <div className={`projectThumbnailCover projectThumbnailCoverTwo ${thumbnailReady && "projectThumbnailCoverHidden"}`} />
             <img src={project.thumbnail} className="projectThumbnailImage" onLoad={onThumbnailReady} />
           </div>
           <h1 className="projectName">{project.name}</h1>
@@ -143,26 +136,28 @@ const Project = (props) => {
             year: "numeric",
             timeZone: "UTC",
           })}</p>
-          {project.groups?.map(group => 
-            <div style={{display: "flex", gap: "3px"}}>
-              <img height="25" src={projectGroups[group]?.icon} />
-              <p key={group} className="projectGroup">{projectGroups[group]?.name.toUpperCase()}</p>
-            </div>
-          )}
+          <div className="projectGroups">
+            {project.groups?.map(group => 
+              <div key={group} className="projectGroup">
+                <img key={`${group}-icon`} className="projectGroupIcon" src={projectGroups[group]?.icon} />
+                <p key={`${group}-text`} className="projectGroupText">{projectGroups[group]?.name.toUpperCase()}</p>
+              </div>
+            )}
+          </div>
           {Object.keys(reactionStates).length > 0 && <div className="projectReactionsBar">
             {Object.entries(allReactions).map(([reactionName, reactionEmoji]) => 
               <button
-                className={`updateLowerButton${reactionStates[reactionName]
-                  ? " reactionSelected"
+                className={`projectReaction${reactionStates[reactionName]
+                  ? " projectReactionSelected"
                   : ""
                 }`}
                 onClick={() => toggleReaction(reactionName)} key={project._id + reactionName}>
-                <p className="reactionEmoji">{reactionEmoji}</p>
-                <p className="reactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
+                <p className="projectReactionEmoji">{reactionEmoji}</p>
+                <p className="projectReactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
               </button>
             )}
           </div>}
-          {isAdmin && <button onClick={editProject}>Edit project</button>}
+          {isAdmin && <button className="projectReaction editProject" onClick={editProject}>Edit project</button>}
         </div>
         <div className="rightProjectColumn">
           <p className="projectDescription">{project.description}</p>
