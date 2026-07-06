@@ -170,10 +170,8 @@ const Project = (props) => {
           {isAdmin && <button className="projectReaction editProject" onClick={editProject}>Edit project</button>}
         </div>
         <div className="rightProjectColumn">
-          <p className="projectDescription" style={{
-            minHeight: project.gallery.length ? "10.5em" : "15em",
-          }}>{project.description}</p>
-          <div className="projectGallery">
+          <p className="projectDescription">{project.description}</p>
+          <div className={`projectGallery ${imagesReady == project.gallery.length && "projectGalleryReady"}`}>
             {project.gallery.map((image, index) =>
               <div className="projectGalleryImageContainer" key={`gallery${index}`}>
                 <img className="projectGalleryImage" src={image} onLoad={onImageReady} />
