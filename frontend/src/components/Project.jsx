@@ -6,6 +6,16 @@ import { projectReactions } from "../constants/reactions.js";
 import projectGroups from "../constants/projectGroups.js";
 import regions from "../constants/regions.js";
 import '../stylesheets/Project.css';
+import YouTubeIcon from "../assets/YouTube.svg";
+import SpotifyIcon from "../assets/Spotify.svg";
+import GlobeIcon from "../assets/Globe.svg";
+import ViewIcon from "../assets/View.svg";
+
+const linkIcons = {
+  youtube: YouTubeIcon,
+  spotify: SpotifyIcon,
+  link: GlobeIcon,
+}
 
 const Project = (props) => {
   const { project_id, userRefresh, isAdmin, setOpenPlayer, closeWindows } = props;
@@ -119,7 +129,7 @@ const Project = (props) => {
     <div style={{
       display: project ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
-    }} className="projectWindow" onClick={receiveClick}>
+    }} key={project_id|| "projectWindow"} className="projectWindow" onClick={receiveClick}>
       {projectLoading && <p>Loading...</p>}
       {!projectLoading && !project && <p>Unable to load project.</p>}
       {project && <div className="projectInfo">
@@ -160,30 +170,36 @@ const Project = (props) => {
           {isAdmin && <button className="projectReaction editProject" onClick={editProject}>Edit project</button>}
         </div>
         <div className="rightProjectColumn">
-          <p className="projectDescription">{project.description}</p>
+          <p className="projectDescription" style={{
+            minHeight: project.gallery.length ? "10.5em" : "15em",
+          }}>{project.description}</p>
           <div className="projectGallery">
             {project.gallery.map((image, index) =>
-              <img className="projectGalleryImage" key={`gallery${index}`} src={image} onLoad={onImageReady} />
+              <div className="projectGalleryImageContainer" key={`gallery${index}`}>
+                <img className="projectGalleryImage" src={image} onLoad={onImageReady} />
+              </div>
             )}
           </div>
           <div className="projectLinks">
             {["youtube", "spotify", "link"].map(linkType =>
-              <button
+              <div
                 key={linkType}
                 disabled={!project.links?.[linkType] || project.links[linkType] == ""}
                 className={`projectLink projectLink${project.links?.[linkType] && project.links[linkType] != "" ? "Active" : "Inactive"}`}
                 onClick={() => projectLinkClicked(linkType)}
               >
-                {linkType.toUpperCase()}
-              </button>
+                <img src={linkIcons[linkType]} className="projectLinkIcon" />
+                <p className="projectLinkText">{linkType.toUpperCase()}</p>
+              </div>
             )}
-            <button
+            <div
               disabled={!project.content || project.content.length == 0}
               className={`projectLink projectLink${project.content && project.content.length > 0 ? "Active" : "Inactive"}`}
               onClick={onPlayerOpen}
             >
-              {project.icon == "photos" || project.icon == "art" ? "VIEW" : "PLAY"}
-            </button>
+              <img src={ViewIcon} className="projectLinkIcon" />
+              <p className="projectLinkText">{project.icon == "photos" || project.icon == "art" ? "VIEW" : "PLAY"}</p>
+            </div>
           </div>
         </div>
       </div>}
