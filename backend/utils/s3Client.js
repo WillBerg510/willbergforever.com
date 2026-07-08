@@ -23,7 +23,17 @@ const uploadToS3 = async (file, key) => {
     let fileName;
 
     if (fileType && fileType.mime.startsWith('image/')) {
-      body = (key == "content") ? createReadStream(file.path) : await sharp(file.path).jpeg({ quality: 75 }).toBuffer();
+      body = (key == "content")
+        ? createReadStream(file.path)
+        : await sharp(file.path)
+            .resize({
+              width: key.startsWith("gallery") ? 720 : undefined,
+              height: key.startsWith("gallery") ? 720 : undefined,
+              fit: "inside",
+              withoutEnlargement: true,
+            })
+            .jpeg({ quality: 75 })
+            .toBuffer();
       contentType = "image/jpeg";
       fileName = `${crypto.randomUUID()}.jpg`;
     } else {

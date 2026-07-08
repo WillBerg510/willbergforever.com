@@ -48,6 +48,7 @@
   transform: translate(-50%, -50%);
   opacity: 0;
   animation: iconSlideIn 0.3s ease-out var(--glide-delay) forwards;
+  user-select: none;
 }
 
 @keyframes iconSlideIn {

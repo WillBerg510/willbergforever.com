@@ -63,7 +63,7 @@ const regions = [
     code: "club",
     position: [70, 30],
     arrow: [30, "down"],
-    color: "#f5e599",
+    color: "#ede096",
     divisions: [
       {
         name: "Lower Level",

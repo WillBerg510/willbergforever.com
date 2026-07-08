@@ -89,6 +89,11 @@ const Project = (props) => {
   });
 
   useEffect(() => {
+    setThumbnailReady(false);
+    setImagesReady(0);
+  }, []);
+
+  useEffect(() => {
     if (project) {
       if (project.specialReaction) {
         const reactions = {...projectReactions, special: project.specialReaction};
@@ -117,7 +122,9 @@ const Project = (props) => {
   };
 
   const onThumbnailReady = () => {
-    setThumbnailReady(true);
+    window.requestAnimationFrame(() => {
+      setThumbnailReady(true);
+    });
   };
 
   const onPlayerOpen = () => {
@@ -129,7 +136,7 @@ const Project = (props) => {
     <div style={{
       display: project ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
-    }} key={project_id|| "projectWindow"} className="projectWindow" onClick={receiveClick}>
+    }} key={project_id} className="projectWindow" onClick={receiveClick}>
       {projectLoading && <p>Loading...</p>}
       {!projectLoading && !project && <p>Unable to load project.</p>}
       {project && <div className="projectInfo">
@@ -171,7 +178,7 @@ const Project = (props) => {
         </div>
         <div className="rightProjectColumn">
           <p className="projectDescription">{project.description}</p>
-          <div className={`projectGallery ${imagesReady == project.gallery.length && "projectGalleryReady"}`}>
+          <div className={`projectGallery ${(thumbnailReady && imagesReady >= project.gallery.length) && "projectGalleryReady"}`}>
             {project.gallery.map((image, index) =>
               <div className="projectGalleryImageContainer" key={`gallery${index}`}>
                 <img className="projectGalleryImage" src={image} onLoad={onImageReady} />

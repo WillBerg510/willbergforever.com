@@ -221,6 +221,10 @@ const AdminPanel = () => {
     if (projectInput.contentType != "gallery") projectContentRef.current.value = null;
   }
 
+  const onContentTypeChange = (e) => {
+    setProjectInput({...projectInput, contentType: e.target.value, contentNames: [""]});
+  }
+
   const onContentNameChange = (e, index) => {
     setProjectInput({...projectInput, contentNames: projectInput.contentNames.with(index, e.target.value)});
   }
@@ -270,7 +274,7 @@ const AdminPanel = () => {
             <p>Date</p>
             <input name="date" type="date" value={projectInput.date} onChange={onProjectChange} />
             <p>Description</p>
-            <textarea name="description" onChange={onProjectChange} value={projectInput.description} cols="50" rows="5" />
+            <textarea name="description" onChange={onProjectChange} value={projectInput.description} cols="50" />
             <p>Thumbnail</p>
             {projectFilePreviews.thumbnail && <img height="100" src={projectFilePreviews.thumbnail} />}<p />
             <label htmlFor="thumbnail" className="fileUpload">Upload Image</label>
@@ -337,7 +341,7 @@ const AdminPanel = () => {
             <input name="positionX" min="0" style={{width: "50px"}} type="number" onChange={onPositionChange} value={projectInput.position[0]} />
             <input name="positionY" min="0" style={{width: "50px"}} type="number" onChange={onPositionChange} value={projectInput.position[1]} />
             <p>Content Type</p>
-            <select name="contentType" type="text" onChange={onProjectChange} value={projectInput.contentType}>
+            <select name="contentType" type="text" onChange={onContentTypeChange} value={projectInput.contentType}>
               <option value=""></option>
               <option value="audio">Audio</option>
               <option value="image">Image</option>
