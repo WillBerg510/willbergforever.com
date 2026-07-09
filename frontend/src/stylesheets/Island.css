@@ -49,6 +49,7 @@
   opacity: 0;
   animation: iconSlideIn 0.3s ease-out var(--glide-delay) forwards;
   user-select: none;
+  will-change: opacity, transform;
 }
 
 @keyframes iconSlideIn {

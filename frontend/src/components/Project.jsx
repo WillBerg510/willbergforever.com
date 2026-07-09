@@ -161,7 +161,7 @@ const Project = (props) => {
               </div>
             )}
           </div>
-          {Object.keys(reactionStates).length > 0 && <div className="projectReactionsBar">
+          <div className="projectReactionsBar">
             {Object.entries(allReactions).map(([reactionName, reactionEmoji]) => 
               <button
                 className={`projectReaction${reactionStates[reactionName]
@@ -173,7 +173,7 @@ const Project = (props) => {
                 <p className="projectReactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
               </button>
             )}
-          </div>}
+          </div>
           {isAdmin && <button className="projectReaction editProject" onClick={editProject}>Edit project</button>}
         </div>
         <div className="rightProjectColumn">

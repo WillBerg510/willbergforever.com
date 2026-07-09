@@ -1,0 +1,201 @@
+.playerWindow {
+  position: relative;
+  width: auto;
+  border-radius: 1em;
+  justify-content: center;
+  animation: zoomIn 0.3s ease-out;
+  background-color: var(--project-color);
+  box-shadow: 2px 2px 16px 0px rgba(0, 0, 0, 0.7);
+  will-change: opacity, transform;
+}
+
+.projectPlayer {
+  padding: 0.6em 0.6em 0 0.6em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: wbf3;
+  font-size: min(2.3vw, 3.3vh);
+  height: auto;
+  min-height: 0;
+}
+
+.playerTitle {
+  font-size: 1em;
+  margin: 0 0 0.35em 0;
+  font-family: wbf2;
+  font-weight: 650;
+  width: 100%;
+  text-align: center;
+}
+
+.playerContent {
+  height: 19em;
+  width: 0;
+  padding: 0.6em 0;
+  margin: 0.4em 0 0.2 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(from var(--project-color) h calc(s - 25) calc(l - 25));
+  box-shadow: inset 0 0 0.25em 0.1em rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  transition: width 0.5s cubic-bezier(.43,0,.29,1) 0.2s,
+  padding 0.5s cubic-bezier(.43,0,.29,1) 0.2s;
+  z-index: 2;
+  will-change: width, padding;
+}
+
+.playerContentReady {
+  width: auto;
+  padding: 0.6em;
+}
+
+.playerImage {
+  height: 100%;
+  box-shadow: 0 0 0.25em 0.1em rgba(0, 0, 0, 0.3);
+}
+
+.playerControls {
+  width: 0;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.4em;
+  z-index: 1;
+  transition: opacity 0.5s cubic-bezier(.43,0,.29,1) 0.5s;
+  will-change: opactiy;
+}
+
+.playerControlsReady {
+  opacity: 1;
+}
+
+.playerControlsTop {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.playerControlsBottom {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6em 0;
+  width: 10em;
+}
+
+.playerControl {
+  border: none;
+  border-radius: 999px;
+  font-size: 0.8em;
+  width: 5em;
+  font-family: wbf3;
+  margin: 0 0.25em;
+}
+
+.playerSliderText {
+  position: absolute;
+  font-size: 0.9em;
+}
+
+.playerSliderLeft {
+  left: -4em;
+  width: 3em;
+  text-align: right;
+}
+
+.playerSliderRight {
+  right: -4em;
+  width: 3em;
+  text-align: left;
+}
+
+.playerSlider {
+  --slider-fill-color: rgb(147, 91, 149);
+  --slider-track-color: hsl(from var(--project-color) h calc(s - 25) calc(l - 25));
+  --slider-thumb-color: hsl(from var(--project-color) h s calc(l - 10));
+  flex-shrink: 0;
+  width: 100%;
+  font-size: inherit;
+  font-size: 0.7em;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+.playerSlider::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--slider-fill-color) 0%,
+    var(--slider-fill-color) var(--slider-progress),
+    var(--slider-track-color) var(--slider-progress),
+    var(--slider-track-color) 100%
+  );
+  background-size: calc(100% - var(--thumb-offset)) 100%;
+  background-repeat: no-repeat;
+  background-position: center left;
+  box-shadow: inset 0 0 0.25em 0.1em rgba(0, 0, 0, 0.2);
+  height: 0.5em;
+  border-radius: 999px;
+}
+
+.playerSlider::-moz-range-track {
+  background: linear-gradient(
+    to right,
+    var(--slider-fill-color) 0%,
+    var(--slider-fill-color) var(--slider-progress),
+    var(--slider-track-color) var(--slider-progress),
+    var(--slider-track-color) 100%
+  );
+  background-size: calc(100% - var(--thumb-offset)) 100%;
+  background-repeat: no-repeat;
+  background-position: center left;
+  box-shadow: inset 0 0 0.25em 0.1em rgba(0, 0, 0, 0.2);
+  height: 0.5em;
+  border-radius: 999px;
+}
+
+.playerSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -0.45em;
+  height: 1.4em;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background-color: var(--project-color);
+  box-shadow: 0.05em 0.05em 0.2em 0.05em rgba(0, 0, 0, 0.3),
+  inset 0.1em 0.1em 0.2em 0.1em rgba(255, 255, 255, 0.7),
+  inset -0.1em -0.1em 0.2em 0.1em rgba(0, 0, 0, 0.3);
+  transition: background-color 0.1s ease-out, transform 0.1s ease-out;
+}
+
+.playerSlider::-moz-range-thumb {
+  border: none;
+  border-radius: 999px;
+  height: 1em;
+  aspect-ratio: 1;
+  background-color: var(--project-color);
+  box-shadow: 0.05em 0.05em 0.2em 0.1em rgba(0, 0, 0, 0.3),
+  inset 0.1em 0.1em 0.2em 0.1em rgba(255, 255, 255, 0.7),
+  inset -0.1em -0.1em 0.2em 0.1em rgba(0, 0, 0, 0.3);
+  transition: background-color 0.1s ease-out, transform 0.1s ease-out;
+}
+
+.playerSlider::-webkit-slider-thumb:hover {
+  background-color: var(--slider-thumb-color);
+  transform: scale(130%);
+}
+
+.playerSlider::-moz-range-thumb:hover {
+  background-color: var(--slider-thumb-color);
+  transform: scale(130%);
+}
+
+.playerSlider:focus {
+  outline: none;
+}

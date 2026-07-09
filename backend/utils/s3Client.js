@@ -28,7 +28,7 @@ const uploadToS3 = async (file, key) => {
         : await sharp(file.path)
             .resize({
               width: key.startsWith("gallery") ? 720 : undefined,
-              height: key.startsWith("gallery") ? 720 : undefined,
+              height: key.startsWith("gallery") ? 720 : key == "thumbnail" ? 1080 : undefined,
               fit: "inside",
               withoutEnlargement: true,
             })
