@@ -22,7 +22,7 @@
 
 .playerTitle {
   font-size: 1em;
-  margin: 0 0 0.35em 0;
+  margin: 0;
   font-family: wbf2;
   font-weight: 650;
   width: 100%;
@@ -33,7 +33,7 @@
   height: 19em;
   width: 0;
   padding: 0.6em 0;
-  margin: 0.4em 0 0.2 0;
+  margin: 0.4em 0 0.2em 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,17 +89,35 @@
 }
 
 .playerControl {
-  border: none;
-  border-radius: 999px;
-  font-size: 0.8em;
-  width: 5em;
-  font-family: wbf3;
-  margin: 0 0.25em;
+  cursor: pointer;
+  width: 1.2em;
+  height: 1.2em;
+  overflow: hidden;
+  margin: -0.1em 0.5em;
+  padding: 0.2em;
+  filter: drop-shadow(0 0 0.1em rgba(0, 0, 0, 0.3));
+  transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+}
+
+.playerControlCenter {
+  transform: scale(130%);
+}
+
+.playerControlIcon {
+  width: 100%;
+  filter: drop-shadow(0 1.4em 0 hsl(from var(--project-color) h calc(s - 40) calc(l - 40)));
+  transform: translateY(-1.4em);
+  transition: filter 0.1s ease-out;
+}
+
+.playerControl:hover .playerControlIcon, .playerControlOn .playerControlIcon, .playerControlCenter .playerControlIcon {
+  filter: drop-shadow(0 1.4em 0 hsl(from var(--project-color) h calc(s - 10) calc(l - 70)));
 }
 
 .playerSliderText {
   position: absolute;
   font-size: 0.9em;
+  user-select: none;
 }
 
 .playerSliderLeft {
@@ -117,7 +135,7 @@
 .playerSlider {
   --slider-fill-color: rgb(147, 91, 149);
   --slider-track-color: hsl(from var(--project-color) h calc(s - 25) calc(l - 25));
-  --slider-thumb-color: hsl(from var(--project-color) h s calc(l - 10));
+  --slider-thumb-color: hsl(from var(--project-color) h calc(s - 15) calc(l - 15));
   flex-shrink: 0;
   width: 100%;
   font-size: inherit;

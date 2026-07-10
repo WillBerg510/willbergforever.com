@@ -3,6 +3,10 @@ import { useState, useEffect, useRef } from "react";
 import projectsAPI from "../api/ProjectsAPI.js";
 import regions from "../constants/regions.js";
 import "../stylesheets/Player.css";
+import PlayIcon from "../assets/Play.svg";
+import PauseIcon from "../assets/Pause.svg";
+import RewindIcon from "../assets/Rewind.svg";
+import LoopIcon from "../assets/Loop.svg";
 
 const Player = ({ project_id }) => {
   const [contentReady, setContentReady] = useState(0);
@@ -152,9 +156,9 @@ const Player = ({ project_id }) => {
         <div className={`playerControls ${(contentReady >= project.content.length) && "playerControlsReady"}`}>
           {project.contentType == "audio" ? <>
             <div className="playerControlsTop">
-              <button className="playerControl" onClick={rewind}>Rewind</button>
-              <button className="playerControl" onClick={playPause}>{playing ? "Pause" : "Play"}</button>
-              <button className="playerControl" onClick={loop}>{!looping ? "Loop" : "No Loop"}</button>
+              <div className="playerControl" onClick={rewind}><img className="playerControlIcon" src={RewindIcon} /></div>
+              <div className="playerControl playerControlCenter" onClick={playPause}><img src={playing ? PauseIcon : PlayIcon} className="playerControlIcon" /></div>
+              <div className={`playerControl ${looping && "playerControlOn"}`} onClick={loop}><img src={LoopIcon} className="playerControlIcon" /></div>
             </div>
             <div className="playerControlsBottom">
               <p className="playerSliderText playerSliderLeft">
