@@ -7,8 +7,10 @@ import PlayIcon from "../assets/Play.svg";
 import PauseIcon from "../assets/Pause.svg";
 import RewindIcon from "../assets/Rewind.svg";
 import LoopIcon from "../assets/Loop.svg";
+import FullscreenIcon from "../assets/Fullscreen.svg";
+import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 
-const Player = ({ project_id }) => {
+const Player = ({ project_id, closeWindows, setOpenProject }) => {
   const [contentReady, setContentReady] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [position, setPosition] = useState(0);
@@ -16,11 +18,20 @@ const Player = ({ project_id }) => {
   const [playing, setPlaying] = useState(false);
   const [sliding, setSliding] = useState(false);
   const [looping, setLooping] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [buttonsShown, setButtonsShown] = useState(false);
   const queryClient = useQueryClient();
 
-  const audioRef = useRef(null);
+  const mediaRef = useRef(null);
   const durationRef = useRef(0);
   const slidingRef = useRef(false);
+  const playingRef = useRef(false);
+  const positionRef = useRef(0);
+  const loopingRef = useRef(false);
+  const isFullscreenRef = useRef(false);
+  const fullscreenRef = useRef(null);
+  const buttonsRef = useRef(0);
+  const buttonsHoverRef = useRef(false);
 
   const { data: project } = useQuery({
     queryKey: [`project-${project_id}`],
@@ -33,9 +44,26 @@ const Player = ({ project_id }) => {
   });
 
   useEffect(() => {
+    const handleFullscreenChange = () => {
+      setFullscreen(document.fullscreenElement);
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.code === "Space") {
+        e.preventDefault();
+        playPause();
+        showButtons();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      if (mediaRef.current) {
+        mediaRef.current.pause();
         setPosition(0);
         setPlaying(false);
       }
@@ -47,58 +75,109 @@ const Player = ({ project_id }) => {
   }, [sliding]);
 
   useEffect(() => {
+    playingRef.current = playing;
+  }, [playing]);
+
+  useEffect(() => {
+    positionRef.current = position;
+  }, [position]);
+
+  useEffect(() => {
+    loopingRef.current = looping;
+  }, [looping]);
+
+  useEffect(() => {
+    isFullscreenRef.current = fullscreen;
+  }, [fullscreen]);
+
+  const processMedia = (media) => {
+    const handleTimeUpdate = () => {
+      if (!slidingRef.current) {
+        setPosition(Math.min(durationRef.current, media.currentTime));
+      }
+    };
+
+    const handleEnd = () => {
+      setPlaying(false);
+    };
+
+    const handleLoad = () => {
+      setDuration(Math.floor(media.duration));
+      durationRef.current = Math.floor(media.duration);
+      onContentReady();
+    }
+
+    media.addEventListener('timeupdate', handleTimeUpdate);
+    media.addEventListener('ended', handleEnd);
+    if (project?.contentType == "audio") media.addEventListener('loadedmetadata', handleLoad);
+
+    return () => {
+      media.removeEventListener('timeupdate', handleTimeUpdate);
+      media.removeEventListener('ended', handleEnd);
+      media.removeEventListener('loadedmetadata', handleLoad);
+    };
+  }
+
+  useEffect(() => {
     if (project?.contentType == "audio") {
       const audio = new Audio(project.content[0]);
-      audioRef.current = audio;
-
-      const handleTimeUpdate = () => {
-        if (!slidingRef.current) {
-          setPosition(Math.min(durationRef.current, audio.currentTime));
-        }
-      };
-
-      const handleAudioEnd = () => {
-        setPlaying(false);
-      };
-
-      const handleAudioLoad = () => {
-        setDuration(Math.floor(audio.duration));
-        durationRef.current = Math.floor(audio.duration);
-        onContentReady();
-      }
-
-      audio.addEventListener('timeupdate', handleTimeUpdate);
-      audio.addEventListener('ended', handleAudioEnd);
-      audio.addEventListener('loadedmetadata', handleAudioLoad);
-
-      return () => {
-        audio.removeEventListener('timeupdate', handleTimeUpdate);
-        audio.removeEventListener('ended', handleAudioEnd);
-        audio.removeEventListener('loadedmetadata', handleAudioLoad);
-      };
+      mediaRef.current = audio;
+      processMedia(audio);
     }
   }, [project?.content]);
 
+  const rewind = () => {
+    if (!mediaRef.current) return;
+
+    mediaRef.current.currentTime = 0;
+    setPosition(0);
+    positionRef.current = 0;
+  };
+
   const playPause = () => {
-    if (!playing) {
-      if (position >= duration) rewind();
-      audioRef.current.play();
+    if (!mediaRef.current) return;
+
+    if (!playingRef.current) {
+      if (positionRef.current >= durationRef.current) rewind();
+      mediaRef.current.play();
       setPlaying(true);
     } else {
-      audioRef.current.pause();
+      mediaRef.current.pause();
       setPlaying(false);
     }
   };
 
-  const rewind = () => {
-    audioRef.current.currentTime = 0;
-    setPosition(0);
+  const loop = () => {
+    mediaRef.current.loop = !mediaRef.current.loop;
+    setLooping(prev => !prev);
+    loopingRef.current = !loopingRef.current;
   };
 
-  const loop = () => {
-    audioRef.current.loop = !audioRef.current.loop;
-    setLooping(!looping);
+  const showButtons = () => {
+    if (!isFullscreenRef.current) return;
+    setButtonsShown(true);
+    const id = buttonsRef.current + 1;
+    buttonsRef.current = id;
+    setTimeout(() => {
+      if (buttonsRef.current == id && !buttonsHoverRef.current) {
+        setButtonsShown(false);
+      }
+    }, 2500);
+  };
+
+  const buttonsHover = () => {
+    buttonsHoverRef.current = true;
+    showButtons();
   }
+
+  const toggleFullscreen = async () => {
+    if (fullscreen) await document.exitFullscreen();
+    else {
+      await fullscreenRef.current.requestFullscreen();
+      setButtonsShown(true);
+      showButtons();
+    }
+  };
 
   const changePosition = (e) => {
     setPosition(e.target.value);
@@ -107,15 +186,15 @@ const Player = ({ project_id }) => {
   const positionMouseDown = () => {
     slidingRef.current = true;
     setSliding(true);
-  }
+  };
 
   const positionMouseUp = () => {
-    audioRef.current.currentTime = position;
+    mediaRef.current.currentTime = position;
     if (position >= duration) {
       if (looping) {
         rewind();
       } else {
-        audioRef.current.pause();
+        mediaRef.current.pause();
         setPlaying(false);
       }
     }
@@ -125,6 +204,11 @@ const Player = ({ project_id }) => {
 
   const onContentReady = () => {
     window.requestAnimationFrame(() => {
+      if (project?.contentType == "video") {
+        setDuration(Math.floor(mediaRef.current.duration));
+        durationRef.current = Math.floor(mediaRef.current.duration);
+        processMedia(mediaRef.current);
+      }
       setContentReady(prev => prev + 1);
     });
   };
@@ -141,20 +225,59 @@ const Player = ({ project_id }) => {
     setGalleryIndex(prev => prev == project.content.length - 1 ? 0 : prev + 1);
   };
 
+  const backToProject = () => {
+    closeWindows();
+    setOpenProject(project_id);
+  };
+
   return (
     <div style={{
       display: project ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
     }} key={`${project_id}-player`} className="playerWindow" onClick={receiveClick}>
       {project && <div className="projectPlayer">
-        <h1 className="playerTitle">{project.name.toUpperCase()}</h1>
-        <div className={`playerContent ${(contentReady >= project.content.length) && "playerContentReady"}`}>
-          {project.contentType == "video" ? <video className="playerImage" controls src={project.content[0]} onLoadedData={onContentReady} />
-          : <img className="playerImage" onLoad={onContentReady} src={project.contentType == "audio" ? project.content[1] : project.content[0]} />
-          }
+        <div className="playerHeader">
+          <div className="playerHeaderButton" onClick={backToProject}>BACK</div>
+          <h1 className="playerTitle">{project.name.toUpperCase()}</h1>
+          <div className="playerHeaderButton" onClick={closeWindows}>CLOSE</div>
+        </div>
+        <div className={`playerContent ${(contentReady >= project.content.length) && "playerContentReady"} ${fullscreen && "playerContentFullscreen"}`}>
+          <div className={`fullscreenInterface ${fullscreen && "fullscreenInterfaceOpen"} ${fullscreen && !buttonsShown && "fullscreenInterfaceFocus"}`} ref={fullscreenRef} onMouseMove={showButtons} onClick={showButtons}>
+            {project.contentType == "video" ? <video className="playerImage" ref={mediaRef} src={project.content[0]} onLoadedData={onContentReady} onClick={playPause} />
+            : <img className="playerImage" onLoad={onContentReady} src={project.contentType == "audio" ? project.content[1] : project.content[0]} onClick={playPause} />
+            }
+            {fullscreen && <div className={`fullscreenButtons ${!buttonsShown && "fullscreenButtonsHidden"} ${project.contentType == "image" && "fullscreenButtonsSmall"}`} onMouseEnter={buttonsHover} onMouseLeave={() => {buttonsHoverRef.current = false}}>
+              {(project.contentType == "audio" || project.contentType == "video") && <>
+                <div className="playerControl" onClick={rewind}><img className="playerControlIcon" src={RewindIcon} /></div>
+                <div className="playerControl" onClick={playPause}><img src={playing ? PauseIcon : PlayIcon} className="playerControlIcon" /></div>
+                <div className={`playerControl ${looping && "playerControlOn"}`} onClick={loop}><img src={LoopIcon} className="playerControlIcon" /></div>
+                <p className="playerSliderText playerSliderLeft">
+                  {Math.floor(position / 60)}:{Math.floor(position % 60).toString().padStart(2, "0")}
+                </p>
+                {mediaRef.current && <input
+                  className="playerSlider"
+                  style={{ '--slider-progress': `${duration > 0 ? (position / duration) * 100 : 0}%` }}
+                  type="range"
+                  min="0"
+                  step="0.01"
+                  max={duration}
+                  value={position}
+                  onChange={changePosition}
+                  onMouseDown={positionMouseDown}
+                  onTouchStart={positionMouseDown}
+                  onTouchEnd={positionMouseUp}
+                  onMouseUp={positionMouseUp}
+                />}
+                <p className="playerSliderText playerSliderRight">
+                  {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, "0")}
+                </p>
+              </>}
+              <div className="playerControl" onClick={toggleFullscreen}><img src={ExitFullscreenIcon} className="playerControlIcon" /></div>
+            </div>}
+          </div>
         </div>
         <div className={`playerControls ${(contentReady >= project.content.length) && "playerControlsReady"}`}>
-          {project.contentType == "audio" ? <>
+          {(project.contentType == "audio" || project.contentType == "video") && <>
             <div className="playerControlsTop">
               <div className="playerControl" onClick={rewind}><img className="playerControlIcon" src={RewindIcon} /></div>
               <div className="playerControl playerControlCenter" onClick={playPause}><img src={playing ? PauseIcon : PlayIcon} className="playerControlIcon" /></div>
@@ -164,12 +287,12 @@ const Player = ({ project_id }) => {
               <p className="playerSliderText playerSliderLeft">
                 {Math.floor(position / 60)}:{Math.floor(position % 60).toString().padStart(2, "0")}
               </p>
-              {audioRef.current && <input
+              {mediaRef.current && <input
                 className="playerSlider"
                 style={{ '--slider-progress': `${duration > 0 ? (position / duration) * 100 : 0}%` }}
                 type="range"
                 min="0"
-                step="0.001"
+                step="0.01"
                 max={duration}
                 value={position}
                 onChange={changePosition}
@@ -182,7 +305,8 @@ const Player = ({ project_id }) => {
                 {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, "0")}
               </p>
             </div>
-          </> : null}
+          </>}
+          <div className="playerSideButton" onClick={toggleFullscreen}><img className="playerSideButtonIcon" src={FullscreenIcon} /></div>
         </div>
         {/*project.content.length > 0 && (
           project.contentType == "image" ? <img height="550" src={project.content[0]} onLoad={onContentReady} />

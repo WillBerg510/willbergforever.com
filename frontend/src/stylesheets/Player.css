@@ -1,7 +1,7 @@
 .playerWindow {
   position: relative;
   width: auto;
-  border-radius: 1em;
+  border-radius: min(2.3vw, 3.3vh);
   justify-content: center;
   animation: zoomIn 0.3s ease-out;
   background-color: var(--project-color);
@@ -20,13 +20,28 @@
   min-height: 0;
 }
 
+.playerHeader {
+  width: calc(100% + 0.3em);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.playerHeaderButton {
+  cursor: pointer;
+  line-height: 100%;
+  font-size: 0.7em;
+  margin-top: -0.2em;
+  padding: 0.3em;
+}
+
 .playerTitle {
   font-size: 1em;
   margin: 0;
   font-family: wbf2;
   font-weight: 650;
-  width: 100%;
   text-align: center;
+  padding: 0 1.2em;
 }
 
 .playerContent {
@@ -40,20 +55,33 @@
   background-color: hsl(from var(--project-color) h calc(s - 25) calc(l - 25));
   box-shadow: inset 0 0 0.25em 0.1em rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  transition: width 0.5s cubic-bezier(.43,0,.29,1) 0.2s,
-  padding 0.5s cubic-bezier(.43,0,.29,1) 0.2s;
+  transition: width 0.5s cubic-bezier(.43,0,.29,1) 0.2s;
   z-index: 2;
   will-change: width, padding;
 }
 
 .playerContentReady {
-  width: auto;
-  padding: 0.6em;
+  animation: playerContentOpen 0.5s cubic-bezier(.43,0,.29,1) 0.2s forwards;
+}
+
+@keyframes playerContentOpen {
+  0% {
+    width: 0;
+    padding: 0.6em 0;
+  }
+  100% {
+    width: auto;
+    padding: 0.6em;
+  }
 }
 
 .playerImage {
   height: 100%;
-  box-shadow: 0 0 0.25em 0.1em rgba(0, 0, 0, 0.3);
+  object-fit: contain;
+}
+
+video {
+  filter: grayscale(0);
 }
 
 .playerControls {
@@ -66,6 +94,7 @@
   z-index: 1;
   transition: opacity 0.5s cubic-bezier(.43,0,.29,1) 0.5s;
   will-change: opactiy;
+  min-height: 2em;
 }
 
 .playerControlsReady {
@@ -93,30 +122,42 @@
   width: 1.2em;
   height: 1.2em;
   overflow: hidden;
-  margin: -0.1em 0.5em;
+  margin: -0.1em 0.4em;
   padding: 0.2em;
   filter: drop-shadow(0 0 0.1em rgba(0, 0, 0, 0.3));
-  transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+  transition: opacity 0.1s ease-out;
 }
 
 .playerControlCenter {
   transform: scale(130%);
 }
 
-.playerControlIcon {
-  width: 100%;
-  filter: drop-shadow(0 1.4em 0 hsl(from var(--project-color) h calc(s - 40) calc(l - 40)));
-  transform: translateY(-1.4em);
-  transition: filter 0.1s ease-out;
+@property --icon-shadow-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: white;
 }
 
-.playerControl:hover .playerControlIcon, .playerControlOn .playerControlIcon, .playerControlCenter .playerControlIcon {
-  filter: drop-shadow(0 1.4em 0 hsl(from var(--project-color) h calc(s - 10) calc(l - 70)));
+.playerControlIcon,
+.playerSideButtonIcon {
+  --icon-shadow-color: hsl(from var(--project-color) h calc(s - 40) calc(l - 40));
+  width: 100%;
+  user-select: none;
+  filter: drop-shadow(0 1.4em 0 var(--icon-shadow-color));
+  transform: translateY(-1.4em);
+  transition: --icon-shadow-color 0.1s ease-out;
+}
+
+.playerControl:hover .playerControlIcon,
+.playerControlOn .playerControlIcon,
+.playerControlCenter .playerControlIcon,
+.playerSideButton:hover .playerSideButtonIcon {
+  --icon-shadow-color: hsl(from var(--project-color) h calc(s - 10) calc(l - 70));
 }
 
 .playerSliderText {
   position: absolute;
-  font-size: 0.9em;
+  font-size: 0.8em;
   user-select: none;
 }
 
@@ -133,9 +174,8 @@
 }
 
 .playerSlider {
-  --slider-fill-color: rgb(147, 91, 149);
+  --slider-fill-color: hsl(from var(--project-color) h calc(s - 10) calc(l - 55));
   --slider-track-color: hsl(from var(--project-color) h calc(s - 25) calc(l - 25));
-  --slider-thumb-color: hsl(from var(--project-color) h calc(s - 15) calc(l - 15));
   flex-shrink: 0;
   width: 100%;
   font-size: inherit;
@@ -205,15 +245,91 @@
 }
 
 .playerSlider::-webkit-slider-thumb:hover {
-  background-color: var(--slider-thumb-color);
   transform: scale(130%);
 }
 
 .playerSlider::-moz-range-thumb:hover {
-  background-color: var(--slider-thumb-color);
   transform: scale(130%);
 }
 
 .playerSlider:focus {
   outline: none;
+}
+
+.playerSideButton {
+  width: 1.4em;
+  display: flex;
+  position: absolute;
+  right: 0.8em;
+  overflow: hidden;
+  filter: drop-shadow(0 0 0.1em rgba(0, 0, 0, 0.3));
+  cursor: pointer;
+}
+
+.fullscreenInterface {
+  height: 100%;
+  box-shadow: 0 0 0.25em 0.1em rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreenInterfaceOpen .playerImage {
+  width: 100%;
+}
+
+.fullscreenInterfaceFocus {
+  cursor: none;
+}
+
+.fullscreenButtons {
+  width: 95vw;
+  height: 2em;
+  background-color: var(--project-color);
+  position: fixed;
+  bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  padding: 0 1vw;
+  opacity: 1;
+  transition: bottom 0.4s cubic-bezier(.43,0,.29,1),
+  opacity 0.4s cubic-bezier(.43,0,.29,1);
+  box-shadow: 0 0 0.4em 0.1em rgba(0, 0, 0, 0.4);
+  border-radius: 999px;
+  will-change: bottom, opacity;
+}
+
+.fullscreenButtonsHidden {
+  bottom: -1.5em;
+  opacity: 0;
+}
+
+.fullscreenButtonsSmall {
+  width: 4vw;
+  right: 2.5vw;
+  justify-content: center;
+}
+
+.fullscreenButtons .playerControl {
+  margin: 0 0.2em;
+}
+
+.fullscreenButtons .playerSliderText {
+  position: static;
+  width: 3.3em;
+  margin: 0;
+  text-align: center;
+}
+
+.fullscreenButtons .playerSliderLeft {
+  margin-right: 0.2em;
+}
+
+.fullscreenButtons .playerSliderRight {
+  margin-left: 0.2em;
+}
+
+.fullscreenButtons .playerSlider,
+.fullscreenButtonSpacer {
+  flex: 1;
 }
