@@ -60,7 +60,7 @@
 }
 
 .playerContentReady {
-  animation: playerContentOpen 0.5s cubic-bezier(.43,0,.29,1) var(--player-content-delay) forwards;
+  animation: playerContentOpen 0.5s cubic-bezier(.43,0,.29,1) 0.2s forwards;
 }
 
 @keyframes playerContentOpen {
@@ -106,7 +106,7 @@ video {
 }
 
 .playerControlsReady {
-  animation: playerControlsOpen 0.5s cubic-bezier(.43,0,.29,1) var(--player-controls-delay) forwards;
+  animation: playerControlsOpen 0.5s cubic-bezier(.43,0,.29,1) 0.5s forwards;
 }
 
 .playerControlsTop {

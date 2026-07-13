@@ -212,6 +212,14 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
     setSliding(false);
   };
 
+  const onVideoLoaded = () => {
+    window.requestAnimationFrame(() => {
+      setTimeout(() => {
+        mediaRef.current.currentTime = 0.001;
+      }, 300);
+    });
+  }
+
   const onContentReady = () => {
     window.requestAnimationFrame(() => {
       if (contentType == "video") {
@@ -260,11 +268,9 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
           <h1 className="playerTitle">{project.name.toUpperCase()}</h1>
           <div className="playerHeaderButton" onClick={closeWindows}>CLOSE</div>
         </div>
-        <div className={`playerContent ${(contentReady >= (contentType == "audio" ? 2 : contentType == "video" ? 1 : project.content.length)) && "playerContentReady"} ${fullscreen && "playerContentFullscreen"}`}
-          style={{'--player-content-delay': contentType == "video" ? "0.5s" : "0.2s"}}
-        >
+        <div className={`playerContent ${(contentReady >= (contentType == "audio" ? 2 : contentType == "video" ? 1 : project.content.length)) && "playerContentReady"} ${fullscreen && "playerContentFullscreen"}`}>
           <div className={`fullscreenInterface ${fullscreen && "fullscreenInterfaceOpen"} ${fullscreen && !buttonsShown && "fullscreenInterfaceFocus"}`} ref={fullscreenRef} onMouseMove={showButtons} onClick={showButtons}>
-            {contentType == "video" ? <video className="playerImage" ref={mediaRef} src={project.content[0]} onLoadedData={onContentReady} onClick={playPause} />
+            {contentType == "video" ? <video className="playerImage" ref={mediaRef} src={project.content[0]} onSeeked={onContentReady} onLoadedData={onVideoLoaded} onClick={playPause} />
             : <img className="playerImage" onLoad={onContentReady} src={project.content[(contentType == "audio") + (project.contentType == "musicVideo")]} onClick={playPause} />
             }
             {fullscreen && <div className={`fullscreenButtons ${!buttonsShown && "fullscreenButtonsHidden"} ${contentType == "image" && "fullscreenButtonsSmall"}`} onMouseEnter={buttonsHover} onMouseLeave={() => {buttonsHoverRef.current = false}}>
@@ -297,9 +303,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
             </div>}
           </div>
         </div>
-        <div className={`playerControls ${(contentReady >= (contentType == "audio" ? 2 : contentType == "video" ? 1 : project.content.length)) && "playerControlsReady"}`}
-          style={{'--player-controls-delay': contentType == "video" ? "0.8s" : "0.5s"}}  
-        >
+        <div className={`playerControls ${(contentReady >= (contentType == "audio" ? 2 : contentType == "video" ? 1 : project.content.length)) && "playerControlsReady"}`}>
           {(contentType == "audio" || contentType == "video") && <>
             <div className="playerControlsTop">
               <div className="playerControl" onClick={rewind}><img className="playerControlIcon" src={RewindIcon} /></div>
