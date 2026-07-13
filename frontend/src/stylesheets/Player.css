@@ -55,13 +55,12 @@
   background-color: hsl(from var(--project-color) h calc(s - 25) calc(l - 25));
   box-shadow: inset 0 0 0.25em 0.1em rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  transition: width 0.5s cubic-bezier(.43,0,.29,1) 0.2s;
   z-index: 2;
   will-change: width, padding;
 }
 
 .playerContentReady {
-  animation: playerContentOpen 0.5s cubic-bezier(.43,0,.29,1) 0.2s forwards;
+  animation: playerContentOpen 0.5s cubic-bezier(.43,0,.29,1) var(--player-content-delay) forwards;
 }
 
 @keyframes playerContentOpen {
@@ -78,6 +77,7 @@
 .playerImage {
   height: 100%;
   object-fit: contain;
+  will-change: width;
 }
 
 video {
@@ -92,13 +92,21 @@ video {
   align-items: center;
   margin-top: 0.4em;
   z-index: 1;
-  transition: opacity 0.5s cubic-bezier(.43,0,.29,1) 0.5s;
   will-change: opactiy;
   min-height: 2em;
 }
 
+@keyframes playerControlsOpen {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .playerControlsReady {
-  opacity: 1;
+  animation: playerControlsOpen 0.5s cubic-bezier(.43,0,.29,1) var(--player-controls-delay) forwards;
 }
 
 .playerControlsTop {
@@ -126,10 +134,7 @@ video {
   padding: 0.2em;
   filter: drop-shadow(0 0 0.1em rgba(0, 0, 0, 0.3));
   transition: opacity 0.1s ease-out;
-}
-
-.playerControlCenter {
-  transform: scale(130%);
+  will-change: opacity;
 }
 
 @property --icon-shadow-color {
@@ -150,7 +155,6 @@ video {
 
 .playerControl:hover .playerControlIcon,
 .playerControlOn .playerControlIcon,
-.playerControlCenter .playerControlIcon,
 .playerSideButton:hover .playerSideButtonIcon {
   --icon-shadow-color: hsl(from var(--project-color) h calc(s - 10) calc(l - 70));
 }
@@ -257,13 +261,40 @@ video {
 }
 
 .playerSideButton {
-  width: 1.4em;
   display: flex;
   position: absolute;
-  right: 0.8em;
   overflow: hidden;
-  filter: drop-shadow(0 0 0.1em rgba(0, 0, 0, 0.3));
   cursor: pointer;
+}
+
+.playerFullscreenButton {
+  right: 0.8em;
+  filter: drop-shadow(0 0 0.1em rgba(0, 0, 0, 0.3));
+}
+
+.playerSwitchButton {
+  left: 1.23em;
+  height: 1.6em;
+  margin-top: 0.25em;
+  font-size: 0.65em;
+  background-color: hsl(from var(--project-color) h s calc(l - 10));
+  padding: 0 1em;
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0.125em 0.125em rgba(0, 0, 0, 0.3);
+  color: black;
+  transition: background-color 0.1s ease-out,
+  color 0.1s ease-out;
+}
+
+.playerSwitchButton:hover {
+  background-color: hsl(from var(--project-color) h s calc(l - 45));
+  color: white;
+}
+
+.playerSideButtonIcon {
+  width: 1.4em;
 }
 
 .fullscreenInterface {

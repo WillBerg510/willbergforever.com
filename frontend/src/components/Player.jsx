@@ -20,6 +20,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
   const [looping, setLooping] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [buttonsShown, setButtonsShown] = useState(false);
+  const [contentType, setContentType] = useState(null);
   const queryClient = useQueryClient();
 
   const mediaRef = useRef(null);
@@ -32,6 +33,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
   const fullscreenRef = useRef(null);
   const buttonsRef = useRef(0);
   const buttonsHoverRef = useRef(false);
+  const destructorRef = useRef(() => {});
 
   const { data: project } = useQuery({
     queryKey: [`project-${project_id}`],
@@ -109,7 +111,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
 
     media.addEventListener('timeupdate', handleTimeUpdate);
     media.addEventListener('ended', handleEnd);
-    if (project?.contentType == "audio") media.addEventListener('loadedmetadata', handleLoad);
+    if (contentType == "audio") media.addEventListener('loadedmetadata', handleLoad);
 
     return () => {
       media.removeEventListener('timeupdate', handleTimeUpdate);
@@ -119,12 +121,20 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
   }
 
   useEffect(() => {
-    if (project?.contentType == "audio") {
-      const audio = new Audio(project.content[0]);
-      mediaRef.current = audio;
-      processMedia(audio);
-    }
+    if (project.contentType == "musicVideo") setContentType("video");
+    else setContentType(project.contentType);
   }, [project?.content]);
+
+  useEffect(() => {
+    if (contentType == "audio") {
+      const audio = new Audio(project.content[0 + (project.contentType == "musicVideo")]);
+      mediaRef.current = audio;
+      destructorRef.current = processMedia(audio);
+    }
+    return () => {
+      if (destructorRef.current) destructorRef.current();
+    }
+  }, [contentType]);
 
   const rewind = () => {
     if (!mediaRef.current) return;
@@ -204,10 +214,10 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
 
   const onContentReady = () => {
     window.requestAnimationFrame(() => {
-      if (project?.contentType == "video") {
+      if (contentType == "video") {
         setDuration(Math.floor(mediaRef.current.duration));
         durationRef.current = Math.floor(mediaRef.current.duration);
-        processMedia(mediaRef.current);
+        destructorRef.current = processMedia(mediaRef.current);
       }
       setContentReady(prev => prev + 1);
     });
@@ -230,9 +240,18 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
     setOpenProject(project_id);
   };
 
+  const switchContentType = () => {
+    mediaRef.current.pause();
+    setPlaying(false);
+    setContentReady(0);
+    if (contentType == "audio") setContentType("video");
+    else setContentType("audio");
+    rewind();
+  };
+
   return (
     <div style={{
-      display: project ? "flex" : "none",
+      display: contentType ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
     }} key={`${project_id}-player`} className="playerWindow" onClick={receiveClick}>
       {project && <div className="projectPlayer">
@@ -241,13 +260,15 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
           <h1 className="playerTitle">{project.name.toUpperCase()}</h1>
           <div className="playerHeaderButton" onClick={closeWindows}>CLOSE</div>
         </div>
-        <div className={`playerContent ${(contentReady >= project.content.length) && "playerContentReady"} ${fullscreen && "playerContentFullscreen"}`}>
+        <div className={`playerContent ${(contentReady >= (contentType == "audio" ? 2 : contentType == "video" ? 1 : project.content.length)) && "playerContentReady"} ${fullscreen && "playerContentFullscreen"}`}
+          style={{'--player-content-delay': contentType == "video" ? "0.5s" : "0.2s"}}
+        >
           <div className={`fullscreenInterface ${fullscreen && "fullscreenInterfaceOpen"} ${fullscreen && !buttonsShown && "fullscreenInterfaceFocus"}`} ref={fullscreenRef} onMouseMove={showButtons} onClick={showButtons}>
-            {project.contentType == "video" ? <video className="playerImage" ref={mediaRef} src={project.content[0]} onLoadedData={onContentReady} onClick={playPause} />
-            : <img className="playerImage" onLoad={onContentReady} src={project.contentType == "audio" ? project.content[1] : project.content[0]} onClick={playPause} />
+            {contentType == "video" ? <video className="playerImage" ref={mediaRef} src={project.content[0]} onLoadedData={onContentReady} onClick={playPause} />
+            : <img className="playerImage" onLoad={onContentReady} src={project.content[(contentType == "audio") + (project.contentType == "musicVideo")]} onClick={playPause} />
             }
-            {fullscreen && <div className={`fullscreenButtons ${!buttonsShown && "fullscreenButtonsHidden"} ${project.contentType == "image" && "fullscreenButtonsSmall"}`} onMouseEnter={buttonsHover} onMouseLeave={() => {buttonsHoverRef.current = false}}>
-              {(project.contentType == "audio" || project.contentType == "video") && <>
+            {fullscreen && <div className={`fullscreenButtons ${!buttonsShown && "fullscreenButtonsHidden"} ${contentType == "image" && "fullscreenButtonsSmall"}`} onMouseEnter={buttonsHover} onMouseLeave={() => {buttonsHoverRef.current = false}}>
+              {(contentType == "audio" || contentType == "video") && <>
                 <div className="playerControl" onClick={rewind}><img className="playerControlIcon" src={RewindIcon} /></div>
                 <div className="playerControl" onClick={playPause}><img src={playing ? PauseIcon : PlayIcon} className="playerControlIcon" /></div>
                 <div className={`playerControl ${looping && "playerControlOn"}`} onClick={loop}><img src={LoopIcon} className="playerControlIcon" /></div>
@@ -276,18 +297,20 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
             </div>}
           </div>
         </div>
-        <div className={`playerControls ${(contentReady >= project.content.length) && "playerControlsReady"}`}>
-          {(project.contentType == "audio" || project.contentType == "video") && <>
+        <div className={`playerControls ${(contentReady >= (contentType == "audio" ? 2 : contentType == "video" ? 1 : project.content.length)) && "playerControlsReady"}`}
+          style={{'--player-controls-delay': contentType == "video" ? "0.8s" : "0.5s"}}  
+        >
+          {(contentType == "audio" || contentType == "video") && <>
             <div className="playerControlsTop">
               <div className="playerControl" onClick={rewind}><img className="playerControlIcon" src={RewindIcon} /></div>
-              <div className="playerControl playerControlCenter" onClick={playPause}><img src={playing ? PauseIcon : PlayIcon} className="playerControlIcon" /></div>
+              <div className="playerControl" onClick={playPause}><img src={playing ? PauseIcon : PlayIcon} className="playerControlIcon" /></div>
               <div className={`playerControl ${looping && "playerControlOn"}`} onClick={loop}><img src={LoopIcon} className="playerControlIcon" /></div>
             </div>
             <div className="playerControlsBottom">
               <p className="playerSliderText playerSliderLeft">
                 {Math.floor(position / 60)}:{Math.floor(position % 60).toString().padStart(2, "0")}
               </p>
-              {mediaRef.current && <input
+              {mediaRef.current ? <input
                 className="playerSlider"
                 style={{ '--slider-progress': `${duration > 0 ? (position / duration) * 100 : 0}%` }}
                 type="range"
@@ -300,19 +323,22 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
                 onTouchStart={positionMouseDown}
                 onTouchEnd={positionMouseUp}
                 onMouseUp={positionMouseUp}
-              />}
+              /> : <input type="range" className="playerSlider" />}
               <p className="playerSliderText playerSliderRight">
                 {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, "0")}
               </p>
             </div>
           </>}
-          <div className="playerSideButton" onClick={toggleFullscreen}><img className="playerSideButtonIcon" src={FullscreenIcon} /></div>
+          {project.contentType == "musicVideo" && <div className="playerSideButton playerSwitchButton" onClick={switchContentType}>
+            <p>{contentType == "audio" ? "SWITCH TO VIDEO" : "SWITCH TO AUDIO"}</p>
+          </div>}
+          <div className="playerSideButton playerFullscreenButton" onClick={toggleFullscreen}><img className="playerSideButtonIcon" src={FullscreenIcon} /></div>
         </div>
         {/*project.content.length > 0 && (
-          project.contentType == "image" ? <img height="550" src={project.content[0]} onLoad={onContentReady} />
-          : project.contentType == "audio" ? <audio controls src={project.content[0]} onLoadedData={onContentReady} />
-          : project.contentType == "video" ? <video controls height="550" src={project.content[0]} onLoadedData={onContentReady} />
-          : project.contentType == "gallery" ? <div>
+          contentType == "image" ? <img height="550" src={project.content[0]} onLoad={onContentReady} />
+          : contentType == "audio" ? <audio controls src={project.content[0]} onLoadedData={onContentReady} />
+          : contentType == "video" ? <video controls height="550" src={project.content[0]} onLoadedData={onContentReady} />
+          : contentType == "gallery" ? <div>
             {contentReady != project.content.length && project.content.map((image, index) => <img src={project.content[index]} onLoad={onContentReady} />)}
             <img height="400" src={project.content[galleryIndex]} />
             <h2 className="contentName">{project.contentNames[galleryIndex]}</h2>

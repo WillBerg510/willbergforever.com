@@ -229,6 +229,12 @@ const AdminPanel = () => {
       if (content[0] === undefined) content[0] = null;
       if (content[1] === undefined) content[1] = null;
       setProjectInput({...projectInput, contentType: e.target.value, content});
+    } else if (e.target.value == "musicVideo") {
+      const content = [...(projectInput.content ?? [])];
+      if (content[0] === undefined) content[0] = null;
+      if (content[1] === undefined) content[1] = null;
+      if (content[2] === undefined) content[2] = null;
+      setProjectInput({...projectInput, contentType: e.target.value, content});
     } else {
       setProjectInput({...projectInput, contentType: e.target.value});
     }
@@ -259,11 +265,7 @@ const AdminPanel = () => {
       }, 2000);
     }
     else deleteProject();
-  }
-
-  useEffect(() => {
-    console.log(projectInput);
-  }, [projectInput]);
+  };
 
   return (
     <>
@@ -359,21 +361,40 @@ const AdminPanel = () => {
               <option value="audio">Audio</option>
               <option value="image">Image</option>
               <option value="video">Video</option>
+              <option value="musicVideo">Music Video</option>
               <option value="gallery">Gallery</option>
             </select>
             <p>Content</p>
             {projectInput.contentType == "audio" ? <>
-              <audio controls src={projectFilePreviews.content[0]} />
+              {projectFilePreviews.content[0] && <audio controls src={projectFilePreviews.content[0]} />}
               {projectFilePreviews.content[0] && <button name="content" onClick={(e) => deleteContentItem(e, 0)}>Delete</button>}
               <p />
               <label htmlFor="content0" className="fileUpload">Upload Audio</label>
               <input name="content" id="content0" type="file" accept="audio/*" ref={projectContentRef} onChange={(e) => onContentUpload(e, 0)} />
               <p />
-              <img height="200" src={projectFilePreviews.content[1]} />
+              {projectFilePreviews.content[1] && <img height="200" src={projectFilePreviews.content[1]} />}
               {projectFilePreviews.content[1] && <button name="content" onClick={(e) => deleteContentItem(e, 1)}>Delete</button>}
               <p />
               <label htmlFor="content1" className="fileUpload">Upload Artwork</label>
               <input name="content" id="content1" type="file" accept="image/*" onChange={(e) => onContentUpload(e, 1)} />
+            </> : projectInput.contentType == "musicVideo" ? <>
+              {projectFilePreviews.content[0] && <video controls height="200" src={projectFilePreviews.content[0]} />}
+              {projectFilePreviews.content?.length > 0 && <button name="content" onClick={(e) => deleteContentItem(e, 0)}>Delete</button>}
+              <p />
+              <label htmlFor="content" className="fileUpload">Upload Video</label>
+              <input name="content" id="content" type="file" ref={projectContentRef} onChange={(e) => onContentUpload(e, 0)} />
+              <p />
+              {projectFilePreviews.content[1] && <audio controls src={projectFilePreviews.content[1]} />}
+              {projectFilePreviews.content[1] && <button name="content" onClick={(e) => deleteContentItem(e, 1)}>Delete</button>}
+              <p />
+              <label htmlFor="content0" className="fileUpload">Upload Audio</label>
+              <input name="content" id="content0" type="file" accept="audio/*" ref={projectContentRef} onChange={(e) => onContentUpload(e, 1)} />
+              <p />
+              {projectFilePreviews.content[2] && <img height="200" src={projectFilePreviews.content[2]} />}
+              {projectFilePreviews.content[2] && <button name="content" onClick={(e) => deleteContentItem(e, 2)}>Delete</button>}
+              <p />
+              <label htmlFor="content1" className="fileUpload">Upload Artwork</label>
+              <input name="content" id="content1" type="file" accept="image/*" onChange={(e) => onContentUpload(e, 2)} />
             </> : projectInput.contentType != "gallery" ? <>
               {projectFilePreviews.content?.length > 0 && (
                 projectInput.contentType == "image" ? <img height="200" src={projectFilePreviews.content[0]} />
