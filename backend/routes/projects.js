@@ -9,7 +9,9 @@ const jwt = require('jsonwebtoken');
 const lodash = require('lodash');
 
 // Post a new project using FormData which will upload files to the AWS S3 bucket
-router.post("/", auth, formidable(), async (req, res) => {
+router.post("/", auth, formidable({
+  maxFileSize: 20 * 1024 * 1024 * 1024,
+}), async (req, res) => {
   const { name, date, description, youtube, spotify, link, groups, specialReaction, region, icon, position, contentType, contentNames } = req.fields;
   try {
     const newProject = new Project({
@@ -64,7 +66,9 @@ router.post("/", auth, formidable(), async (req, res) => {
 });
 
 // Update project
-router.patch("/:id", auth, formidable(), async (req, res) => {
+router.patch("/:id", auth, formidable({
+  maxFileSize: 20 * 1024 * 1024 * 1024,
+}), async (req, res) => {
   const project = await Project.findById(req.params.id);
   if (!project) res.status(404).json({error: "Requested project does not exist"});
   else {

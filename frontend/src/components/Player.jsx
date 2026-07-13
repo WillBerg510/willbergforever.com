@@ -9,6 +9,7 @@ import RewindIcon from "../assets/Rewind.svg";
 import LoopIcon from "../assets/Loop.svg";
 import FullscreenIcon from "../assets/Fullscreen.svg";
 import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
+import BackIcon from "../assets/Back.svg";
 
 const Player = ({ project_id, closeWindows, setOpenProject }) => {
   const [contentReady, setContentReady] = useState(0);
@@ -51,9 +52,17 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
     }
 
     const handleKeyDown = (e) => {
-      if (e.code === "Space") {
+      if (e.code == "Space") {
         e.preventDefault();
+        galleryNext();
         playPause();
+        showButtons();
+      } else if (e.code == "ArrowRight" || e.code == "KeyD") {
+        galleryNext();
+      } else if (e.code == "ArrowLeft" || e.code == "KeyA") {
+        galleryPrev();
+      } else if (e.code == "KeyF") {
+        toggleFullscreen();
         showButtons();
       }
     };
@@ -181,7 +190,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
   }
 
   const toggleFullscreen = async () => {
-    if (fullscreen) await document.exitFullscreen();
+    if (isFullscreenRef.current) await document.exitFullscreen();
     else {
       await fullscreenRef.current.requestFullscreen();
       setButtonsShown(true);
@@ -270,10 +279,15 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
         </div>
         <div className={`playerContent ${(contentReady >= (contentType == "audio" ? 2 : contentType == "video" ? 1 : project.content.length)) && "playerContentReady"} ${fullscreen && "playerContentFullscreen"}`}>
           <div className={`fullscreenInterface ${fullscreen && "fullscreenInterfaceOpen"} ${fullscreen && !buttonsShown && "fullscreenInterfaceFocus"}`} ref={fullscreenRef} onMouseMove={showButtons} onClick={showButtons}>
-            {contentType == "video" ? <video className="playerImage" ref={mediaRef} src={project.content[0]} onSeeked={onContentReady} onLoadedData={onVideoLoaded} onClick={playPause} />
-            : <img className="playerImage" onLoad={onContentReady} src={project.content[(contentType == "audio") + (project.contentType == "musicVideo")]} onClick={playPause} />
-            }
-            {fullscreen && <div className={`fullscreenButtons ${!buttonsShown && "fullscreenButtonsHidden"} ${contentType == "image" && "fullscreenButtonsSmall"}`} onMouseEnter={buttonsHover} onMouseLeave={() => {buttonsHoverRef.current = false}}>
+            <div className="playerContentGrid">
+              {contentType == "video" ? <video className="playerImage" ref={mediaRef} src={project.content[0]} onSeeked={onContentReady} onLoadedData={onVideoLoaded} onClick={playPause} />
+              : <img className="playerImage" onLoad={onContentReady} src={project.content[(contentType == "audio") + (project.contentType == "musicVideo") + ((contentType == "gallery") * galleryIndex)]} onClick={playPause} />
+              }
+              {contentType == "gallery" && project.content.map(image =>
+                <img className="playerImage playerImageLoader" src={image} onLoad={onContentReady}/>
+              )}
+            </div>
+            {fullscreen && <div className={`fullscreenButtons ${!buttonsShown && "fullscreenButtonsHidden"} ${contentType == "image" ? "fullscreenButtonsSmall" : contentType == "gallery" ? "fullscreenButtonsGallery" : null}`} onMouseEnter={buttonsHover} onMouseLeave={() => {buttonsHoverRef.current = false}}>
               {(contentType == "audio" || contentType == "video") && <>
                 <div className="playerControl" onClick={rewind}><img className="playerControlIcon" src={RewindIcon} /></div>
                 <div className="playerControl" onClick={playPause}><img src={playing ? PauseIcon : PlayIcon} className="playerControlIcon" /></div>
@@ -298,6 +312,12 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
                 <p className="playerSliderText playerSliderRight">
                   {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, "0")}
                 </p>
+              </>}
+              {contentType == "gallery" && <>
+                <p className="playerGalleryTitle">{project.contentNames[galleryIndex]}</p>
+                <div className="playerGalleryButton" onClick={galleryPrev}><img className="playerGalleryButtonIcon" src={BackIcon} /></div>
+                <p className="playerGalleryText">{galleryIndex + 1} of {project.content.length}</p>
+                <div className="playerGalleryButton" onClick={galleryNext}><img className="playerGalleryButtonIcon" src={PlayIcon} /></div>
               </>}
               <div className="playerControl" onClick={toggleFullscreen}><img src={ExitFullscreenIcon} className="playerControlIcon" /></div>
             </div>}
@@ -333,25 +353,22 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
               </p>
             </div>
           </>}
+          {project.contentType == "gallery" && <>
+            <div className="playerGalleryTitleGrid">
+              <p className="playerGalleryTitle">{project.contentNames[galleryIndex]}</p>
+              {project.contentNames.map(name => <p className="playerGalleryTitle playerGalleryTitleLoader">{name}</p>)}
+            </div>
+            <div className="playerControlsTop">
+              <div className="playerGalleryButton" onClick={galleryPrev}><img className="playerGalleryButtonIcon" src={BackIcon} /></div>
+              <p className="playerGalleryText">{galleryIndex + 1} of {project.content.length}</p>
+              <div className="playerGalleryButton" onClick={galleryNext}><img className="playerGalleryButtonIcon" src={PlayIcon} /></div>
+            </div>
+          </>}
           {project.contentType == "musicVideo" && <div className="playerSideButton playerSwitchButton" onClick={switchContentType}>
             <p>{contentType == "audio" ? "SWITCH TO VIDEO" : "SWITCH TO AUDIO"}</p>
           </div>}
           <div className="playerSideButton playerFullscreenButton" onClick={toggleFullscreen}><img className="playerSideButtonIcon" src={FullscreenIcon} /></div>
         </div>
-        {/*project.content.length > 0 && (
-          contentType == "image" ? <img height="550" src={project.content[0]} onLoad={onContentReady} />
-          : contentType == "audio" ? <audio controls src={project.content[0]} onLoadedData={onContentReady} />
-          : contentType == "video" ? <video controls height="550" src={project.content[0]} onLoadedData={onContentReady} />
-          : contentType == "gallery" ? <div>
-            {contentReady != project.content.length && project.content.map((image, index) => <img src={project.content[index]} onLoad={onContentReady} />)}
-            <img height="400" src={project.content[galleryIndex]} />
-            <h2 className="contentName">{project.contentNames[galleryIndex]}</h2>
-            <button onClick={galleryPrev}>Prev</button>
-            <button onClick={galleryNext}>Next</button>
-            <p />
-          </div>
-          : null
-        )*/}
       </div>}
     </div>
   );
