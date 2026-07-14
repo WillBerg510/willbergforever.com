@@ -453,4 +453,5 @@ video {
   flex: 1;
   text-align: right;
   margin: 0 0.5em -0.2em 0.5em;
+  user-select: none;
 }

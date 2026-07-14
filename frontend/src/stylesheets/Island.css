@@ -3,6 +3,7 @@
   aspect-ratio: 1.45;
   position: relative;
   overflow: hidden;
+  container-type: inline-size;
 }
 
 .regionName {
@@ -43,7 +44,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 5.5%;
+  width: 5.5cqw;
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
   opacity: 0;
@@ -55,7 +56,7 @@
 @keyframes iconSlideIn {
   0% {
     opacity: 0;
-    transform: translate(-50%, calc(-50% + 0.3vw));
+    transform: translate(-50%, calc(-50% + 0.3cqw));
     filter: brightness(0.6);
   }
   100% {
@@ -64,7 +65,7 @@
   }
 }
 
-.projectIcon, .exitIcon {
+.projectIcon, .exitIcon, .returnIcon {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -74,60 +75,82 @@
 }
 
 .exitIconFull {
+  filter: drop-shadow(0.2cqw 0.2cqw 0.4cqw rgba(0, 0, 0, 0.8));
+}
+
+.returnIconFull {
+  filter: drop-shadow(0.2cqw 0.2cqw 0.4cqw rgba(0, 0, 0, 0.4));
+}
+
+.exitIconFull, .returnIconFull {
   cursor: pointer;
   transition: transform 0.1s ease-out;
   transform: scale(1);
   display: flex;
   justify-content: center;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8));
+  align-items: center;
 }
 
 .projectIcon:hover {
   transform: scale(135%) translateY(-5.5%);
 }
 
-.exitIconHover {
+.exitIconHover, .returnIconHover {
   transform: scale(135%);
 }
 
-.exitText {
+.exitText, .returnText {
   font-family: wbf3;
   font-weight: 600;
-  font-size: calc(1.2vw + 3px);
-  letter-spacing: calc(0.08vw + 0.5px);
-  line-height: calc(1.4vw + 3px);
+  font-size: 2cqw;
+  letter-spacing: 0.075em;
+  margin: 0;
+  line-height: 1.15em;
   position: absolute;
-  top: calc(3.3vw + 5px);
   color: white;
   text-align: center;
   transition: color 0.1s ease-out, font-weight 0.1s ease-out, transform 0.1s ease-out;
 }
 
-.exitTextHover {
+.exitText {
+  top: 2.75em;
+}
+
+.returnText {
+  width: 8em;
+  left: 1.9em;
+}
+
+.exitTextHover, .returnTextHover {
   color: #EDCF00;
   font-weight: 1000;
-  transform: translateY(calc(0.2vw + 5px));
+}
+
+.exitTextHover {
+  transform: translateY(0.35em);
+}
+
+.returnTextHover {
+  transform: translateX(0.35em);
 }
 
 .projectTooltip {
   position: absolute;
-  bottom: calc(-3.7vw - 3px);
-  height: 3vw;
+  bottom: -3.7cqw;
   pointer-events: none;
   animation: glideIn 0.2s ease-in-out;
+  filter: drop-shadow(0.2cqw 0.2cqw 0.3cqw rgba(0, 0, 0, 0.5));
 }
 
 .projectTooltipBox {
   position: relative;
   font-family: wbf3;
   font-weight: 600;
-  font-size: calc(0.8vw + 6px);
-  letter-spacing: 0.6px;
+  font-size: 1.6cqw;
+  letter-spacing: 0.05em;
   background-color: white;
-  line-height: calc(1.6vw + 6px);
-  padding: 0 calc(1.2vw + 4px);
+  padding: 0 1.1em;
   border-radius: 999px;
-  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
   white-space: nowrap;
   z-index: 2;
 }
@@ -135,14 +158,13 @@
 .projectTriangle {
   width: 0;
   height: 0;
-  border-left: calc(0.5vw + 2px) solid transparent;
-  border-right: calc(0.5vw + 2px) solid transparent;
+  border-left: 0.7cqw solid transparent;
+  border-right: 0.7cqw solid transparent;
   position: absolute;
-  top: calc(-0.5vw - 3px);
-  border-bottom: calc(0.6vw + 4px) solid white;
+  top: -0.9cqw;
+  border-bottom: 1cqw solid white;
   left: 50%;
   transform: translateX(-50%);
-  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
   z-index: 1;
 }
 
@@ -160,37 +182,19 @@
 
 .regionHeader {
   font-family: wbf3;
+  font-size: 2.1cqw;
   position: absolute;
   z-index: 3;
-  width: 100%;
+  left: 50%;
+  translate: -50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
-  top: 1%;
+  filter: drop-shadow(0.2cqw 0.2cqw 0.3cqw rgba(0, 0, 0, 0.5));
+  top: 5.5%;
   color: white;
   animation: glideIn 0.3s ease-out;
-}
-
-.returnFromRegion {
-  appearance: none;
-  border: none;
-  font-family: wbf3;
-  font-size: 1vw;
-  line-height: 1.7vw;
-  font-weight: 500;
-  color: black;
-  background-color: rgba(255, 255, 255, 0.6);
-  border-radius: 999px;
-  padding: 0 2.1vw;
-  margin-bottom: 0.7vw;
-  transition: background-color 0.15s ease-out, color 0.15s ease-out;
-}
-
-.returnFromRegion:hover {
-  background-color: rgba(0, 151, 0, 0.6);
-  color: white;
 }
 
 .refreshButton {
@@ -205,23 +209,29 @@
 }
 
 .regionHeaderName {
-  font-size: 1.5vw;
+  font-size: 1em;
   font-weight: 800;
-  line-height: 2.3vw;
+  line-height: 1.5em;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 999px;
-  padding: 0 2.1vw;
+  padding: 0 1.5em;
   margin: 0;
 }
 
 .divisionHeaderName {
-  font-size: 1.1vw;
+  font-size: 0.7em;
   font-weight: 500;
-  line-height: 0.8vw;
+  line-height: 0.8em;
   margin: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  padding: 0 1.4vw 0.5vw 1.4vw;
+  padding: 0 1.4em 0.4em 1.4em;
   border-radius: 0 0 999px 999px;
+  opacity: 1;
+  transition: opacity 0.1s ease-out;
+}
+
+.divisionHeaderHidden {
+  opacity: 0;
 }
 
 .islandImage {

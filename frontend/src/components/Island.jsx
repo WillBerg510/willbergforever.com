@@ -50,12 +50,12 @@ const Island = (props) => {
       }
       {focusRegion &&
         <div className="regionHeader">
-            <button className="returnFromRegion" onClick={leaveRegion}>RETURN TO FULL MAP</button>
-            {isAdmin && <button className="returnFromRegion refreshButton" onClick={() => getRegionProjects()}>
-              REFRESH
-            </button>}
-            <h2 className="regionHeaderName">{focusRegion.name.toUpperCase()}</h2>
-            {focusDivision && <h3 className="divisionHeaderName">{focusDivision.name.toUpperCase()}</h3>}
+          {isAdmin && <button className="returnFromRegion refreshButton" onClick={() => getRegionProjects()}>
+            REFRESH
+          </button>}
+          <h2 className="regionHeaderName">{focusRegion.name.toUpperCase()}</h2>
+          <h3 className={`divisionHeaderName ${!focusDivision && "divisionHeaderHidden"}`}>{focusDivision ? focusDivision.name.toUpperCase() : "A"}</h3>
+          {focusRegion && <ProjectIcon key="returnIcon" leaveRegion={leaveRegion} />}
         </div>
       }
       {focusDivision && focusDivision.projects && (focusDivision != loadedDivision) && focusDivision.image &&

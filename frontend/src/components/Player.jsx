@@ -63,7 +63,6 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
         galleryPrev();
       } else if (e.code == "KeyF") {
         toggleFullscreen();
-        showButtons();
       }
     };
 
@@ -181,7 +180,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
       if (buttonsRef.current == id && !buttonsHoverRef.current) {
         setButtonsShown(false);
       }
-    }, 2500);
+    }, 2000);
   };
 
   const buttonsHover = () => {
