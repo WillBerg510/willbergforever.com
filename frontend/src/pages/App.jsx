@@ -13,6 +13,7 @@ import Player from '../components/Player.jsx';
 import GroupMenu from '../components/GroupMenu.jsx';
 import GroupList from '../components/GroupList.jsx';
 import WillBergLogo from '../assets/WillBergLogo.png';
+import regions from '../constants/regions.js';
 
 const levels = {
   "Easy": 3,
@@ -26,6 +27,8 @@ function App() {
   const [openProject, setOpenProject] = useState(null);
   const [openPlayer, setOpenPlayer] = useState(null);
   const [racesData, setRacesData] = useState({});
+  const [initialLoad, setInitialLoad] = useState(regions.map(region => region.holdsProjects && region.divisions.filter(division => division?.image)).flat().filter(item => item).length);
+  const [initialLoadPeriod, setInitialLoadPeriod] = useState(true);
   const client = useQueryClient();
   const navigate = useNavigate();
 
@@ -33,6 +36,7 @@ function App() {
   useEffect(() => {
     userVerify();
     adminVerify();
+    setTimeout(() => {setInitialLoadPeriod(false)}, 2000);
   }, []);
 
   // Determine whether the user's admin access token is valid, and then attempt a refresh with the refresh token
@@ -122,6 +126,10 @@ function App() {
   const closeWindows = () => {
     setOpenProject(null);
     setOpenPlayer(null);
+  };
+
+  const onElementLoad = () => {
+    setInitialLoad(prev => prev - 1);
   }
 
   return (
@@ -144,6 +152,10 @@ function App() {
         {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
         {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} />}
       </div>}
+      {(initialLoad > 0 || initialLoadPeriod) && <>
+        <Player project_id="69bb0642e7e1a811d30693ba" loader={true} />
+        {regions.map(region => region.holdsProjects && region.divisions.map(division => <img src={division?.image} className="imageLoader" onLoad={onElementLoad}/>))}
+      </>}
       {((!groupProjects || groupProjects.length == 0) && !gettingProjects) && <Island setOpenProject={setOpenProject} isAdmin={isAdmin} />}
       {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
         {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}

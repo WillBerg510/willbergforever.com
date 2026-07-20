@@ -11,7 +11,7 @@ import FullscreenIcon from "../assets/Fullscreen.svg";
 import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 import BackIcon from "../assets/Back.svg";
 
-const Player = ({ project_id, closeWindows, setOpenProject }) => {
+const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
   const [contentReady, setContentReady] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [position, setPosition] = useState(0);
@@ -129,8 +129,8 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
   }
 
   useEffect(() => {
-    if (project.contentType == "musicVideo") setContentType("video");
-    else setContentType(project.contentType);
+    if (project?.contentType == "musicVideo") setContentType("video");
+    else setContentType(project?.contentType);
   }, [project?.content]);
 
   useEffect(() => {
@@ -269,7 +269,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
     <div style={{
       display: contentType ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
-    }} key={`${project_id}-player`} className="playerWindow" onClick={receiveClick}>
+    }} key={`${project_id}-player`} className={`playerWindow ${loader && "playerLoader"}`} onClick={receiveClick}>
       {project && <div className="projectPlayer">
         <div className="playerHeader">
           <div className="playerHeaderButton" onClick={backToProject}>BACK</div>
@@ -346,7 +346,7 @@ const Player = ({ project_id, closeWindows, setOpenProject }) => {
                 onTouchStart={positionMouseDown}
                 onTouchEnd={positionMouseUp}
                 onMouseUp={positionMouseUp}
-              /> : <input type="range" className="playerSlider" />}
+              /> : <input type="range" className="playerSlider" key="range-loader" />}
               <p className="playerSliderText playerSliderRight">
                 {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, "0")}
               </p>

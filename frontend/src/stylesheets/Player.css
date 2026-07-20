@@ -9,6 +9,14 @@
   will-change: opacity, transform;
 }
 
+.playerLoader {
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  animation: none;
+  z-index: -1;
+}
+
 .projectPlayer {
   padding: 0.6em 0.6em 0 0.6em;
   display: flex;

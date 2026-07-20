@@ -59,6 +59,13 @@ textarea {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
+.imageLoader {
+  opacity: 0;
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+}
+
 @keyframes glideIn {
   0% {
     opacity: 0;
