@@ -116,6 +116,10 @@
   top: 2.75em;
 }
 
+.exitTextOriginal {
+  opacity: 0;
+}
+
 .returnText {
   width: 8em;
   left: 1.9em;

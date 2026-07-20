@@ -44,6 +44,7 @@ const ProjectIcon = (props) => {
           rotate: division ? `${Math.atan2(-1 * division.direction[1], -1 * division.direction[0])}rad` : null,
         }}/>
         <p className={`exitText ${hovered ? "exitTextHover" : ""}`}>TO {otherDivision.name.toUpperCase()}</p>
+        <p className={`exitText exitTextOriginal`}>TO {otherDivision.name.toUpperCase()}</p>
       </div>}
       {(!project && !division) && <div
         className="returnIconFull"

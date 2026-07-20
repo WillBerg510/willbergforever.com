@@ -13,7 +13,7 @@ import Player from '../components/Player.jsx';
 import GroupMenu from '../components/GroupMenu.jsx';
 import GroupList from '../components/GroupList.jsx';
 import WillBergLogo from '../assets/WillBergLogo.png';
-import regions from '../constants/regions.js';
+import imagesToLoad from '../constants/imagesToLoad.js';
 
 const levels = {
   "Easy": 3,
@@ -27,7 +27,7 @@ function App() {
   const [openProject, setOpenProject] = useState(null);
   const [openPlayer, setOpenPlayer] = useState(null);
   const [racesData, setRacesData] = useState({});
-  const [initialLoad, setInitialLoad] = useState(regions.map(region => region.holdsProjects && region.divisions.filter(division => division?.image)).flat().filter(item => item).length);
+  const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
   const [initialLoadPeriod, setInitialLoadPeriod] = useState(true);
   const client = useQueryClient();
   const navigate = useNavigate();
@@ -154,7 +154,7 @@ function App() {
       </div>}
       {(initialLoad > 0 || initialLoadPeriod) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} />
-        {regions.map(region => region.holdsProjects && region.divisions.map(division => <img src={division?.image} className="imageLoader" onLoad={onElementLoad}/>))}
+        {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
       </>}
       {((!groupProjects || groupProjects.length == 0) && !gettingProjects) && <Island setOpenProject={setOpenProject} isAdmin={isAdmin} />}
       {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
