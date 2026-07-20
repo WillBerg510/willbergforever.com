@@ -16,6 +16,7 @@ const defaultProjectInput = {
   gallery: [],
   links: {},
   groups: [],
+  visible: true,
   specialReaction: "",
   region: "",
   icon: "",
@@ -53,7 +54,7 @@ const AdminPanel = () => {
   const { mutate: getProjectToEdit } = useMutation({
     mutationFn: () => projectsAPI.getProjectInfo(editProject),
     onSuccess: async (res) => {
-      const { name, date, description, thumbnail, gallery, links, groups, specialReaction, region, icon, position, contentType, content, contentNames } = res.data.project;
+      const { name, date, description, thumbnail, gallery, links, groups, visible, specialReaction, region, icon, position, contentType, content, contentNames } = res.data.project;
       setProjectInput({
         name,
         date: new Date(date).toISOString().slice(0, 10),
@@ -62,6 +63,7 @@ const AdminPanel = () => {
         gallery,
         links,
         groups,
+        visible: visible ?? true,
         specialReaction,
         region,
         icon,
@@ -135,7 +137,7 @@ const AdminPanel = () => {
   }
 
   const onProjectChange = (e) => {
-    setProjectInput({...projectInput, [e.target.name]: e.target.value});
+    setProjectInput({...projectInput, [e.target.name]: e.target.type === "checkbox" ? e.target.checked : e.target.value});
   }
 
   const onThumbnailUpload = (e) => {
@@ -418,6 +420,11 @@ const AdminPanel = () => {
               <button onClick={addContentItem} style={{width: "50px", height: "50px", fontSize: "16px"}} name="content">Add</button>
             </div>
             }
+            <p />
+            <label htmlFor="visible" style={{display: "inline-flex", gap: "8px", alignItems: "center"}}>
+              <input name="visible" id="visible" type="checkbox" checked={projectInput.visible} onChange={onProjectChange} />
+              Visible
+            </label>
             <p />
             {(projectPostLoading || projectEditLoading) && <p>Uploading project...</p>}
             {(projectPosted || projectEdited) && <p>Project successfully uploaded</p>}

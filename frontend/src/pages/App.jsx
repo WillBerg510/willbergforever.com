@@ -153,7 +153,7 @@ function App() {
         {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} />}
       </div>}
       {(initialLoad > 0 || initialLoadPeriod) && <>
-        <Player project_id="69bb0642e7e1a811d30693ba" loader={true} />
+        <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} />
         {regions.map(region => region.holdsProjects && region.divisions.map(division => <img src={division?.image} className="imageLoader" onLoad={onElementLoad}/>))}
       </>}
       {((!groupProjects || groupProjects.length == 0) && !gettingProjects) && <Island setOpenProject={setOpenProject} isAdmin={isAdmin} />}

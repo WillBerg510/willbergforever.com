@@ -46,6 +46,10 @@ const project = new mongoose.Schema({
     type: Array,
     of: String,
   },
+  visible: {
+    type: Boolean,
+    required: true,
+  },
   specialReaction: {
     type: String,
   },

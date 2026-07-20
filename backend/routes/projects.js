@@ -12,7 +12,7 @@ const lodash = require('lodash');
 router.post("/", auth, formidable({
   maxFileSize: 20 * 1024 * 1024 * 1024,
 }), async (req, res) => {
-  const { name, date, description, youtube, spotify, link, groups, specialReaction, region, icon, position, contentType, contentNames } = req.fields;
+  const { name, date, description, youtube, spotify, link, groups, specialReaction, region, icon, position, contentType, contentNames, visible } = req.fields;
   try {
     const newProject = new Project({
       name,
@@ -25,6 +25,7 @@ router.post("/", auth, formidable({
         link,
       },
       groups: (groups != "undefined" ? JSON.parse(groups) : null),
+      visible,
       specialReaction,
       region,
       icon,
@@ -73,7 +74,7 @@ router.patch("/:id", auth, formidable({
   if (!project) res.status(404).json({error: "Requested project does not exist"});
   else {
     try {
-      const { deleteGallery, deleteContent, youtube, spotify, link, groups, position, contentNames } = req.fields;
+      const { deleteGallery, deleteContent, youtube, spotify, link, groups, position, contentNames, visible } = req.fields;
       project.links = {
         youtube,
         spotify,
@@ -82,6 +83,7 @@ router.patch("/:id", auth, formidable({
       if (groups != "undefined") project.groups = JSON.parse(groups);
       project.position = JSON.parse(position);
       if (contentNames != "undefined") project.contentNames = JSON.parse(contentNames);
+      project.visible = visible;
       ["name", "date", "description", "specialReaction", "region", "icon", "contentType"].forEach(field => {
         project[field] = req.fields[field];
       });
@@ -163,7 +165,8 @@ router.delete("/one/:id", auth, async (req, res) => {
 // Get all projects in a certain region
 router.get("/region/:region", async (req, res) => {
   try {
-    const projects = await Project.find({region: req.params.region}).select(["_id", "name", "icon", "position"]);
+    const projects = await Project.find({region: req.params.region})
+    .select(["_id", "name", "icon", "position", "visible"]);
     res.status(200).json({projects});
   } catch (err) {
     res.status(500).json({error: err.message});
@@ -173,7 +176,7 @@ router.get("/region/:region", async (req, res) => {
 // Get all projects in a certain group
 router.get("/group/:group", async (req, res) => {
   try {
-    const projects = await Project.find({groups: {$elemMatch: {$eq: req.params.group}}})
+    const projects = await Project.find({groups: {$elemMatch: {$eq: req.params.group}}, visible: {$ne: false}})
     .select(["_id", "name", "thumbnail", "date", "icon"])
     .sort({date: -1});
     res.status(200).json({projects});
@@ -262,7 +265,7 @@ router.get("/race/:level", async (req, res) => {
       const today = new Date((new Date()).getTime() - (7 * 60 * 60 * 1000));
       const todayDate = today.toISOString().split('T')[0];
       if (race.date.toISOString().split('T')[0] != todayDate) {
-        const projects = await Project.find().select(["_id", "name"]);
+        const projects = await Project.find({visible: {$ne: false}}).select(["_id", "name"]);
         const usedProjectIds = (await Race.find()).filter(otherRace => otherRace.date.toISOString().split('T')[0] == todayDate)
           .flatMap(otherRace => otherRace.projects);
         const selection = lodash.sampleSize(projects.filter(project => !usedProjectIds.includes(project._id.toString())), race.level);

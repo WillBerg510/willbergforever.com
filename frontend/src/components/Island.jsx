@@ -23,9 +23,9 @@ const Island = (props) => {
   }
 
   const { data: regionProjects, mutate: getRegionProjects } = useMutation({
-    mutationFn: () => focusDivision ? projectsAPI.getFromRegion(`${focusRegion.code}-${focusDivision.code}`).then(res => res?.data?.projects) : null,
+    mutationFn: () => focusDivision ? projectsAPI.getFromRegion(`${focusRegion.code}-${focusDivision.code}`)
+    .then(res => res?.data?.projects.filter(project => project.visible != false || isAdmin)) : null,
   });
-
   useEffect(() => {
     if (!focusDivision?.projects) getRegionProjects();
     if (!focusDivision?.image) setLoadedDivision(focusDivision);
