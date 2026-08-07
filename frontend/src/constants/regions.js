@@ -45,7 +45,7 @@ const regions = [
         position: [40, 75],
         arrow: [50, "down"],
         image: CityDowntown,
-        direction: [-15, 30],
+        direction: [-20, 30],
         exit: [42, 14],
       },
       {
@@ -54,8 +54,8 @@ const regions = [
         position: [60, 25],
         arrow: [50, "down"],
         image: CityUptown,
-        direction: [15, -30],
-        exit: [50, 80],
+        direction: [20, -30],
+        exit: [19, 78],
       }
     ],
     holdsProjects: true,
