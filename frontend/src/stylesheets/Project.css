@@ -3,6 +3,7 @@
   width: 90%;
   height: auto;
   display: flex;
+  flex-direction: column;
   position: relative;
   border-radius: 1em;
   justify-content: center;
@@ -33,6 +34,41 @@
   text-align: left;
   display: flex;
   flex-direction: column;
+}
+
+.projectHeader {
+  width: 100%;
+  position: absolute;
+  top: -1.6em;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  font-size: 2.7cqw;
+  height: 1em;
+}
+
+.projectCloseButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 100%;
+  font-size: 0.7em;
+  padding: 0.8em;
+  border-radius: 999px;
+  background-color: var(--project-color);
+  font-family: wbf3;
+  box-shadow: 2px 2px 16px 0px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.projectCloseButton p {
+  margin: 0.1em 0.2em;
+}
+
+.projectCloseButton:hover {
+  background-color: hsl(from var(--project-color) h s calc(l - 50));
+  color: white;
 }
 
 .projectThumbnail {

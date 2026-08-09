@@ -1,7 +1,7 @@
-import BeachWest from "../assets/Palm Tree Paradise West.png";
-import BeachEast from "../assets/Palm Tree Paradise East.png";
-import CityDowntown from "../assets/Commute City Downtown.png";
-import CityUptown from "../assets/Commute City Uptown.png";
+import BeachWest from "../assets/Palm Tree Paradise West.jpg";
+import BeachEast from "../assets/Palm Tree Paradise East.jpg";
+import CityDowntown from "../assets/Commute City Downtown.jpg";
+import CityUptown from "../assets/Commute City Uptown.jpg";
 
 const regions = [
   {

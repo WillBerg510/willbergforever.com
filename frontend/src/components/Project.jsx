@@ -137,6 +137,11 @@ const Project = (props) => {
       display: project ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
     }} key={project_id} className="projectWindow" onClick={receiveClick}>
+      <div className="projectHeader">
+        <div className="projectCloseButton" onClick={closeWindows}>
+          <p>CLOSE</p>
+        </div>
+      </div>
       {projectLoading && <p>Loading...</p>}
       {!projectLoading && !project && <p>Unable to load project.</p>}
       {project && <div className="projectInfo">
