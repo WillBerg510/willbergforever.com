@@ -183,13 +183,13 @@ const Project = (props) => {
         </div>
         <div className="rightProjectColumn">
           <p className="projectDescription">{project.description}</p>
-          <div className={`projectGallery ${(thumbnailReady && imagesReady >= project.gallery.length) && "projectGalleryReady"}`}>
+          {project.gallery?.length > 0 && <div className={`projectGallery ${(thumbnailReady && imagesReady >= project.gallery.length) && "projectGalleryReady"}`}>
             {project.gallery.map((image, index) =>
               <div className="projectGalleryImageContainer" key={`gallery${index}`}>
                 <img className="projectGalleryImage" src={image} onLoad={onImageReady} />
               </div>
             )}
-          </div>
+          </div>}
           <div className="projectLinks">
             {["youtube", "spotify", "link"].map(linkType =>
               <div

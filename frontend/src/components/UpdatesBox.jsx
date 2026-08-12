@@ -5,7 +5,7 @@ import updatesAPI from '../api/UpdatesAPI.js';
 import UpdateBubble from './UpdateBubble.jsx';
 
 const UpdatesBox = (props) => {
-  const { allUpdatesOpen, isAdmin, full, toggleSeeMore, userVerifyFailed, userRefresh } = props;
+  const { allUpdatesOpen, isAdmin, full, toggleSeeMore, userVerifyFailed, userRefresh, closeWindows } = props;
   const boxRef = useRef(null);
   const [expanded, setExpanded] = useState(full);
   const [showGradient, setShowGradient] = useState(false);
@@ -22,6 +22,7 @@ const UpdatesBox = (props) => {
       });
     },
   });
+
   useEffect(() => {
     if (getUpdatesError?.response?.status == 500) {
       userRefresh();
@@ -51,29 +52,25 @@ const UpdatesBox = (props) => {
   }, [updates]);
 
   return (
-    <div className={`updatesBoxAndButton${full ? " updatesBoxAndButtonFull" : ""}`} onClick={receiveClick}>
+    <div className={`updatesBoxAndButton`} onClick={receiveClick}>
       <div ref={boxRef}
         onClick={expandPreview}
         className={`updatesBox
-          ${full ? " updatesBoxFull" : ""}
           ${!expanded ? " updatesBoxCollapsed" : ""}
           ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}
         `}
       >
-        <h2 className="updatesHeader">{full ? "WILL'S UPDATES" : "LATEST UPDATES"}</h2>
+        <h2 className="updatesHeader">UPDATES FROM WILL</h2>
         {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
         {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
         {(isLoading && !userVerifyFailed) && <p className="updatesBoxInfo">Loading...</p>}
-        {(full ? updates : updates?.slice(0, 1))?.map((update) => (
-          <UpdateBubble key={update._id} allUpdatesOpen={allUpdatesOpen} full={full} update={update} isAdmin={isAdmin} userRefresh={userRefresh} />
+        {updates?.map((update) => (
+          <UpdateBubble key={update._id} allUpdatesOpen={allUpdatesOpen} update={update} isAdmin={isAdmin} userRefresh={userRefresh} />
         ))}
       </div>
-      {!full && (<div className="updatesButton" onClick={toggleSeeMore}>
-        <p className="updatesButtonText">SEE MORE</p>
-      </div>)}
-      {full && (<div className="updatesButton updatesClose" onClick={toggleSeeMore}>
+      <div className="updatesButton updatesClose" onClick={closeWindows}>
         <p className="updatesButtonText updatesCloseText">CLOSE</p>
-      </div>)}
+      </div>
     </div>
   );
 }

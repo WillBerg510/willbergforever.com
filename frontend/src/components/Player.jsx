@@ -63,6 +63,15 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
         galleryPrev();
       } else if (e.code == "KeyF") {
         toggleFullscreen();
+      } else if (e.code == "KeyR") {
+        rewind();
+        showButtons();
+      } else if (e.code == "KeyL") {
+        loop();
+        showButtons();
+      } else if (e.code == "KeyP") {
+        playPause();
+        showButtons();
       }
     };
 

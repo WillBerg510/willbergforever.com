@@ -26,6 +26,7 @@ function App() {
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
   const [openProject, setOpenProject] = useState(null);
   const [openPlayer, setOpenPlayer] = useState(null);
+  const [openMiscWindow, setOpenMiscWindow] = useState(null);
   const [racesData, setRacesData] = useState({});
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
   const [initialLoadPeriod, setInitialLoadPeriod] = useState(true);
@@ -126,6 +127,7 @@ function App() {
   const closeWindows = () => {
     setOpenProject(null);
     setOpenPlayer(null);
+    setOpenMiscWindow(null);
   };
 
   const onElementLoad = () => {
@@ -152,11 +154,16 @@ function App() {
         {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
         {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} />}
       </div>}
+      {(openMiscWindow == "updates") && <div className="windowOnTop" onClick={closeWindows}>
+        <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
+      </div>}
       {(initialLoad > 0 || initialLoadPeriod) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} />
         {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
       </>}
-      {((!groupProjects || groupProjects.length == 0) && !gettingProjects) && <Island setOpenProject={setOpenProject} isAdmin={isAdmin} />}
+      {((!groupProjects || groupProjects.length == 0) && !gettingProjects) &&
+        <Island setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} />
+      }
       {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
         {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}
       </div>*/}

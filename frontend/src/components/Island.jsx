@@ -8,7 +8,7 @@ import projectsAPI from '../api/ProjectsAPI.js';
 import regions from '../constants/regions.js';
 
 const Island = (props) => {
-  const { setOpenProject, isAdmin } = props;
+  const { setOpenProject, setOpenMiscWindow, isAdmin } = props;
   const [focusRegion, setFocusRegion] = useState(null);
   const [focusDivision, setFocusDivision] = useState(null);
   const [loadedDivision, setLoadedDivision] = useState(null);
@@ -16,7 +16,11 @@ const Island = (props) => {
 
   const enterRegion = (region) => {
     if (!region.direction) {
-      setFocusRegion(region);
+      if (region.holdsProjects) {
+        setFocusRegion(region);
+      } else {
+        setOpenMiscWindow(region.code);
+      }
     } else {
       setFocusDivision(region);
     }

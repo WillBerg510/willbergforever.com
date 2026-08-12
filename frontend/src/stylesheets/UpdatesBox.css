@@ -2,12 +2,9 @@
   max-width: 900px;
   width: 90%;
   display: flex;
-  position: relative;
-  margin-bottom: 30px;
-}
-
-.updatesBoxAndButtonFull {
   position: absolute;
+  margin-bottom: 30px;
+  filter: drop-shadow(2px 2px 16px rgba(0, 0, 0, 0.7));
 }
 
 .updatesBox {
@@ -19,10 +16,6 @@
   flex-direction: column;
   z-index: 1;
   width: 100%;
-  height: max-content;
-}
-
-.updatesBoxFull {
   height: calc(70vh);
   overflow-y: scroll;
   scrollbar-width: none;
@@ -74,10 +67,6 @@
   margin: 0px 15px 15px 15px;
   width: calc(100% - 30px);
   animation: glideIn 0.2s ease-in-out;
-}
-
-.updateRowPreview {
-  align-items: flex-start;
 }
 
 .updateIcon {

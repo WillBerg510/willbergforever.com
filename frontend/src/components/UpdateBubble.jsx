@@ -5,7 +5,7 @@ import WillIcon from '../assets/Will.png';
 import { updateReactions } from "../constants/reactions.js";
 
 const UpdateBubble = (props) => {
-  const { allUpdatesOpen, update, full, isAdmin, userRefresh } = props;
+  const { allUpdatesOpen, update, isAdmin, userRefresh } = props;
   const [confirmDelete, setConfirmDelete] = useState();
   const [reactionStates, setReactionStates] = useState({});
   const [reactionNums, setReactionNums] = useState({});
@@ -85,7 +85,7 @@ const UpdateBubble = (props) => {
   }
 
   return (
-    <div style={imageReady ? {display: "flex"} : {display: "none"}} className={`updateRow${ full ? " updateRowFull" : " updateRowPreview"}`}>
+    <div style={imageReady ? {display: "flex"} : {display: "none"}} className={`updateRow`}>
       <div className="updateIcon">
         <img src={WillIcon} className="willIcon" onLoad={onImageReady} />
         <div className="updateTriangle" />
@@ -114,7 +114,7 @@ const UpdateBubble = (props) => {
               </button>
             )}
           </div>}
-          {(isAdmin && full) && <button className="updateLowerButton updateDelete" onClick={deleteClicked}>
+          {isAdmin && <button className="updateLowerButton updateDelete" onClick={deleteClicked}>
             {confirmDelete ? "Confirm" : "Delete"}
           </button>}
         </div>
