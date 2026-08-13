@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'motion/react';
 import projectsAPI from '../api/ProjectsAPI.js';
 import regions from '../constants/regions.js';
+import SmileIsle from '../assets/Smile Isle.jpg';
 
 const Island = (props) => {
   const { setOpenProject, setOpenMiscWindow, isAdmin } = props;
@@ -46,7 +47,10 @@ const Island = (props) => {
 
   return (
     <div className="island" ref={islandRef}>
-      {!focusDivision && !focusRegion && regions.map(region => <RegionName key={region.name} region={region} enterRegion={enterRegion} />)}
+      {!focusDivision && !focusRegion && <div className="mainIsland">
+        {regions.map(region => <RegionName key={region.name} region={region} enterRegion={enterRegion} />)}
+        <img className="islandImage" draggable="false" src={SmileIsle} />
+      </div>}
       {!focusDivision && focusRegion &&
         <div className="region">
           {focusRegion.divisions?.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} />)}

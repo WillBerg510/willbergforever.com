@@ -60,7 +60,7 @@ const UpdatesBox = (props) => {
           ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}
         `}
       >
-        <h2 className="updatesHeader">UPDATES FROM WILL</h2>
+        <h2 className="updatesHeader">LATEST UPDATES</h2>
         {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
         {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
         {(isLoading && !userVerifyFailed) && <p className="updatesBoxInfo">Loading...</p>}

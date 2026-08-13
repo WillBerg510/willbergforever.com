@@ -1,8 +1,37 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import updatesAPI from '../api/UpdatesAPI.js';
-import WillIcon from '../assets/Will.png';
+import Fanciest from "../assets/The Fanciest 2025 Small.png";
 import { updateReactions } from "../constants/reactions.js";
+import profilePics from "../constants/profilePics.js";
+
+const parseMonthDay = (monthDay) => {
+  const [month, day] = monthDay.split("/").map(Number);
+  return new Date(2000, month - 1, day);
+};
+
+const getProfilePicForDate = (date) => {
+  const currentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  return profilePics.find((profilePic) => {
+    if (profilePic.startDate.includes("Thanksgiving")) {
+      const novemberFirst = new Date(date.getFullYear(), 10, 1);
+      const daysUntilThursday = (4 - novemberFirst.getDay() + 7) % 7;
+      const thanksgiving = new Date(date.getFullYear(), 10, 1 + daysUntilThursday + 21);
+      const startDate = new Date(thanksgiving);
+      startDate.setDate(startDate.getDate() - 6);
+      const endDate = new Date(thanksgiving);
+      endDate.setDate(endDate.getDate() + 1);
+      return currentDate >= startDate && currentDate <= endDate;
+    }
+
+    const startDate = parseMonthDay(profilePic.startDate);
+    const endDate = parseMonthDay(profilePic.endDate);
+    const currentMonthDay = new Date(2000, currentDate.getMonth(), currentDate.getDate());
+
+    return currentMonthDay >= startDate && currentMonthDay <= endDate;
+  });
+};
 
 const UpdateBubble = (props) => {
   const { allUpdatesOpen, update, isAdmin, userRefresh } = props;
@@ -87,7 +116,7 @@ const UpdateBubble = (props) => {
   return (
     <div style={imageReady ? {display: "flex"} : {display: "none"}} className={`updateRow`}>
       <div className="updateIcon">
-        <img src={WillIcon} className="willIcon" onLoad={onImageReady} />
+        <img src={getProfilePicForDate(update.date)?.image || Fanciest} className="willIcon" onLoad={onImageReady} />
         <div className="updateTriangle" />
       </div>
       <div className="updateBubble">

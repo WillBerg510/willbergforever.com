@@ -1,5 +1,5 @@
 .island {
-  width: min(96vw, calc(94vh * 1.45));
+  width: min(96vw, calc(130vh));
   aspect-ratio: 1.45;
   position: relative;
   overflow: hidden;
@@ -19,6 +19,7 @@
   animation: iconSlideIn 0.3s ease-out var(--glide-delay) forwards;
   position: absolute;
   transform: translate(-50%, -50%);
+  z-index: 2;
 }
 
 .regionTriangle {
@@ -140,7 +141,7 @@
 
 .projectTooltip {
   position: absolute;
-  bottom: -3.7cqw;
+  bottom: -3.8cqw;
   pointer-events: none;
   animation: glideIn 0.2s ease-in-out;
   filter: drop-shadow(0.2cqw 0.2cqw 0.3cqw rgba(0, 0, 0, 0.5));
@@ -150,7 +151,7 @@
   position: relative;
   font-family: wbf3;
   font-weight: 600;
-  font-size: 1.6cqw;
+  font-size: 1.65cqw;
   letter-spacing: 0.05em;
   background-color: white;
   padding: 0 1.1em;

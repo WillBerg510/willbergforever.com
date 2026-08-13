@@ -8,8 +8,8 @@ const regions = [
   {
     name: "Palm Tree Paradise",
     code: "beach",
-    position: [30, 30],
-    arrow: [70, "down"],
+    position: [23, 21],
+    arrow: [80, "down"],
     color: "#b3e89f",
     divisions: [
       {
@@ -28,7 +28,7 @@ const regions = [
         arrow: [50, "down"],
         image: BeachEast,
         direction: [25, 0],
-        exit: [19, 41],
+        exit: [17, 41],
       }
     ],
     holdsProjects: true,
@@ -36,7 +36,7 @@ const regions = [
   {
     name: "Commute City",
     code: "city",
-    position: [50, 60],
+    position: [50, 61],
     arrow: [50, "up"],
     color: "#adcaf5",
     divisions: [
@@ -64,8 +64,8 @@ const regions = [
   {
     name: "The Rage Room",
     code: "club",
-    position: [70, 30],
-    arrow: [30, "down"],
+    position: [76, 19],
+    arrow: [20, "down"],
     color: "#ede096",
     divisions: [
       {
@@ -89,19 +89,26 @@ const regions = [
     holdsProjects: true,
   },
   {
-    name: "The Factory",
+    name: "Ryan's Factory",
     code: "factory",
-    position: [35, 85],
+    position: [28, 85],
     arrow: [70, "up"],
     holdsProjects: false,
   },
   {
     name: "Updates from Will",
     code: "updates",
-    position: [50, 25],
+    position: [50.5, 5],
     arrow: [50, "down"],
     holdsProjects: false,
   },
+  {
+    name: "Bob's Daily Races",
+    code: "races",
+    position: [69, 83],
+    arrow: [30, "up"],
+    holdsProjects: false,
+  }
 ]
 
 export default regions;
