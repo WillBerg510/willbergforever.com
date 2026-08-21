@@ -13,6 +13,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 :root, button, textarea {

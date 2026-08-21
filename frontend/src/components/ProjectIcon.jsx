@@ -24,7 +24,7 @@ const ProjectIcon = (props) => {
       position: "absolute",
       left: project ? `${project.position[0]}%` : division ? `${division.exit[0]}%` : "calc(100% + 2em)",
       top: project ? `${project.position[1]}%` : division ? `${division.exit[1]}%` : "50%",
-      '--glide-delay': `${(division || project) ? Math.random() * 0.2 : 0 + 0.1}s`,
+      '--glide-delay': `${(division || project) ? Math.random() * 0.25 + 0.1 : 0.1}s`,
       zIndex: hovered ? 3 : 2,
     }}>
       {project && <img
@@ -43,8 +43,8 @@ const ProjectIcon = (props) => {
         <img className={`exitIcon ${hovered ? "exitIconHover" : ""}`} src={ExitArrow} style={{
           rotate: division ? `${Math.atan2(-1 * division.direction[1], -1 * division.direction[0])}rad` : null,
         }}/>
-        <p className={`exitText ${hovered ? "exitTextHover" : ""}`}>TO {otherDivision.name.toUpperCase()}</p>
-        <p className={`exitText exitTextOriginal`}>TO {otherDivision.name.toUpperCase()}</p>
+        <p className={`exitText ${hovered ? "exitTextHover" : ""}`}>TO {otherDivision?.name.toUpperCase()}</p>
+        <p className={`exitText exitTextOriginal`}>TO {otherDivision?.name.toUpperCase()}</p>
       </div>}
       {(!project && !division) && <div
         className="returnIconFull"
@@ -58,7 +58,9 @@ const ProjectIcon = (props) => {
       {hovered && project &&
         <div className="projectTooltip">
           <div className="projectTooltipBox">
-            {project.name.toUpperCase()}
+            <p>
+              {project.name.toUpperCase()}
+            </p>
           </div>
           <div className="projectTriangle"/>
         </div>

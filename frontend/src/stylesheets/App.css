@@ -19,6 +19,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   height: 100%;
   overflow: hidden;
@@ -29,11 +30,14 @@ h1, h2, h3, p {
 }
 
 .mainHeading {
-  margin: 0 0 -50px 0;
+  position: fixed;
+  left: 2.5vh;
+  top: 1.25vh;
   pointer-events: none;
   user-select: none;
-  height: 150px;
-  object-fit: contain;
+  width: 24vh;
+  height: 12vh;
+  object-fit: cover;
   z-index: 4;
 }
 
