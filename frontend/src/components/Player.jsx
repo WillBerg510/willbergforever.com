@@ -49,6 +49,7 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
   useEffect(() => {
     const handleFullscreenChange = () => {
       setFullscreen(document.fullscreenElement);
+      isFullscreenRef.current = document.fullscreenElement;
     }
 
     const handleKeyDown = (e) => {
@@ -104,10 +105,6 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
   useEffect(() => {
     loopingRef.current = looping;
   }, [looping]);
-
-  useEffect(() => {
-    isFullscreenRef.current = fullscreen;
-  }, [fullscreen]);
 
   const processMedia = (media) => {
     const handleTimeUpdate = () => {

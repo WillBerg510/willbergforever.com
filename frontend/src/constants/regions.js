@@ -3,6 +3,7 @@ import BeachEast from "../assets/Palm Tree Paradise East.jpg";
 import CityDowntown from "../assets/Commute City Downtown.jpg";
 import CityUptown from "../assets/Commute City Uptown.jpg";
 import ClubLower from "../assets/The Rage Room Lower Level.jpg";
+import ClubUpper from "../assets/The Rage Room Upper Level.jpg";
 
 const regions = [
   {
@@ -77,7 +78,7 @@ const regions = [
         position: [140, -48],
         arrow: [50, "down"],
         image: ClubLower,
-        direction: [-25, 10],
+        direction: [-40, 15],
         exit: [81, 69],
       },
       {
@@ -85,8 +86,9 @@ const regions = [
         code: "upper",
         position: [160, -72],
         arrow: [50, "down"],
-        direction: [25, -10],
-        exit: [30, 70],
+        image: ClubUpper,
+        direction: [40, -15],
+        exit: [41.5, 72.5],
       }
     ],
     holdsProjects: true,

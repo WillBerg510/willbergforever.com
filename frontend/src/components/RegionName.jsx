@@ -7,10 +7,11 @@ const RegionName = (props) => {
     <motion.div
       className="regionName"
       onClick={() => enterRegion(region)}
-      initial={{opacity: 0, y: 10}}
+      initial={{opacity: 0, x: "-50%", y: region.exit ? "0%" : "-25%"}}
       animate={{
         opacity: 1,
-        y: 0,
+        x: "-50%",
+        y: "-50%",
         transition: {
           duration: region.exit ? 0.2 : 0.4,
           ease: [0.3, 0, 0.3, 1],

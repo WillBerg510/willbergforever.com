@@ -219,7 +219,6 @@
   filter: drop-shadow(0.2cqw 0.2cqw 0.3cqw rgba(0, 0, 0, 0.5));
   top: 2%;
   color: white;
-  animation: glideIn 0.3s ease-out;
 }
 
 .refreshButton {

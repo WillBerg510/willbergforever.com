@@ -137,7 +137,7 @@ function App() {
   return (
     <div id="app">
       {isAdmin &&
-        <div style={{position: "absolute", right: 0, top: 0, zIndex: 7, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
+        <div style={{position: "absolute", right: 0, top: 0, zIndex: 1, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
           <button style={{margin: "0"}} onClick={toAdminPanel}>Admin Panel</button>
           <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>

@@ -62,7 +62,10 @@ const Island = (props) => {
             scale: focusRegion ? focusRegion.zoom[0] : 1,
             x: focusRegion ? focusRegion.zoom[1] * focusRegion.zoom[0] : 0,
             y: focusRegion ? focusRegion.zoom[2] * focusRegion.zoom[0] : 0,
-            transition: {ease: [.67, 0, .33, 1], duration: 0.5},
+            transition: {
+              ease: focusRegion ? [.67, 0, .33, 1] : [.5, 0, .15, 1],
+              duration: focusRegion ? 0.5 : 0.6,
+            },
           }}
           exit={{
             opacity: 0,
@@ -82,16 +85,23 @@ const Island = (props) => {
           <img key={`${focusRegion?.name}-image` || "isle-image"} className="islandImage" draggable="false" src={SmileIsle} />
         </motion.div>}
       </AnimatePresence>
+      <AnimatePresence>
       {focusRegion &&
-        <div className="regionHeader">
+        <motion.div className="regionHeader"
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          exit={{opacity: 0}}
+          transition={{ease: "easeInOut", duration: 0.2}}
+        >
           {isAdmin && <button className="returnFromRegion refreshButton" onClick={() => getRegionProjects()}>
             REFRESH
           </button>}
           <h2 className="regionHeaderName">{focusRegion.name.toUpperCase()}</h2>
           <h3 className={`divisionHeaderName ${!focusDivision && "divisionHeaderHidden"}`}>{focusDivision ? focusDivision.name.toUpperCase() : "A"}</h3>
           {focusRegion && <ProjectIcon key="returnIcon" leaveRegion={leaveRegion} />}
-        </div>
+        </motion.div>
       }
+      </AnimatePresence>
       {focusDivision && focusDivision.projects && (focusDivision != loadedDivision) && focusDivision.image &&
         <img src={focusDivision.image} style={{display: "none"}} onLoad={() => {
           setLoadedDivision(focusDivision);
