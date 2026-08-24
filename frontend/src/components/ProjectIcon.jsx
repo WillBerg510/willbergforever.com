@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MusicIcon from '../assets/Music Map Icon.png';
 import InteractiveIcon from '../assets/Interactive Map Icon.png';
 import VideoIcon from '../assets/Video Map Icon.png';
@@ -18,6 +18,11 @@ const icons = {
 const ProjectIcon = (props) => {
   const { project, setOpenProject, division, setFocusDivision, otherDivision, leaveRegion } = props;
   const [hovered, setHovered] = useState(false);
+  const [exitText, setExitText] = useState("");
+
+  useEffect(() => {
+    setExitText(otherDivision?.name.toUpperCase());
+  }, []);
 
   return (
     <div className="projectIconFull" style={{
@@ -43,8 +48,8 @@ const ProjectIcon = (props) => {
         <img className={`exitIcon ${hovered ? "exitIconHover" : ""}`} src={ExitArrow} style={{
           rotate: division ? `${Math.atan2(-1 * division.direction[1], -1 * division.direction[0])}rad` : null,
         }}/>
-        <p className={`exitText ${hovered ? "exitTextHover" : ""}`}>TO {otherDivision?.name.toUpperCase()}</p>
-        <p className={`exitText exitTextOriginal`}>TO {otherDivision?.name.toUpperCase()}</p>
+        <p className={`exitText ${hovered ? "exitTextHover" : ""}`}>TO {exitText}</p>
+        <p className={`exitText exitTextOriginal`}>TO {exitText}</p>
       </div>}
       {(!project && !division) && <div
         className="returnIconFull"

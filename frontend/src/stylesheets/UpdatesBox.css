@@ -1,25 +1,18 @@
-.updatesBoxAndButton {
+.updatesBox {
   max-width: 900px;
   width: 90%;
-  display: flex;
-  position: absolute;
-  margin-bottom: 30px;
   filter: drop-shadow(0.25em 0.25em 1em rgba(0, 0, 0, 0.7));
-}
-
-.updatesBox {
-  background-color: lightgreen;
-  border-radius: 70px;
+  position: absolute;
+  --background-color: #e1c6ea;
+  background-color: var(--background-color);
+  border-radius: 1em;
   position: relative;
   display: flex;
   align-items: center;
   flex-direction: column;
   z-index: 1;
-  width: 100%;
   height: calc(70vh);
-  overflow-y: scroll;
-  scrollbar-width: none;
-  overscroll-behavior: contain;
+  container-type: inline-size;
 }
 
 .updatesBoxCollapsed {
@@ -48,6 +41,66 @@
   pointer-events: none;
 }
 
+.updatesCloseButton {
+  position: absolute;
+  font-size: max(16px, 2cqw);
+  height: 0.4em;
+  top: -2.4em;
+  right: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 100%;
+  padding: 0.7em;
+  border-radius: 999px;
+  background-color: var(--background-color);
+  font-family: wbf3;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.updatesCloseButton p {
+  margin: 0.1em 0.3em;
+}
+
+.updatesCloseButton:hover {
+  background-color: hsl(from var(--background-color) h s calc(l - 50));
+  color: white;
+}
+
+.updatesList {
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  border-radius: 1em;
+  margin: 0 0.8em 0 0;
+  padding-top: 0.3em;
+}
+
+.updatesList::-webkit-scrollbar {
+  width: 0.8em;
+  border-radius: 999px;
+}
+
+.updatesList::-webkit-scrollbar-track {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+  box-shadow: inset 0.05em 0.05em 0.25em 0.05em rgba(0, 0, 0, 0.5);
+  border-radius: 999px;
+  background-color: hsl(from var(--background-color) h s calc(l - 10));
+}
+
+.updatesList::-webkit-scrollbar-thumb {
+  background-color: hsl(from var(--background-color) h calc(s - 10) calc(l - 25));
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: inset 0.1em 0.1em 0.25em 0.05em rgba(255, 255, 255, 0.35),
+  inset -0.1em -0.1em 0.25em 0.05em rgba(0, 0, 0, 0.35);
+}
+
+.updatesList::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(from var(--background-color) h calc(s - 10) calc(l - 35));
+}
+
 .updatesHeader {
   margin-top: 5px;
   font-family: wbf2;
@@ -64,9 +117,10 @@
 .updateRow {
   display: flex;
   align-items: center;
-  margin: 0px 15px 15px 15px;
-  width: calc(100% - 30px);
+  margin: 0 0.4em 0.8em 1em;
+  width: calc(100% - 1.4em);
   animation: glideIn 0.2s ease-in-out;
+  filter: drop-shadow(0 0 0.15em rgba(0, 0, 0, 0.35))
 }
 
 .updateIcon {
@@ -94,12 +148,12 @@
 .updateBubble {
   background-color: white;
   margin: 0px 6px 0px 16px;
-  border-radius: 20px 35px 35px 20px;
+  border-radius: 1em;
   position: relative;
   text-align: left;
   display: flex;
   align-items: center;
-  min-height: 109.6px;
+  min-height: 100px;
   flex: 1;
 }
 
@@ -135,11 +189,11 @@
   border-radius: 100px;
   display: flex;
   align-items: center;
-  transition: background-color 0.2s ease-out;
+  transition: background-color 0.15s ease-out;
 }
 
 .updateLowerButton:hover {
-  background-color: #E1E1E1;
+  background-color: #B7B7B7;
 }
 
 .updateDelete {

@@ -52,24 +52,26 @@ const UpdatesBox = (props) => {
   }, [updates]);
 
   return (
-    <div className={`updatesBoxAndButton`} onClick={receiveClick}>
-      <div ref={boxRef}
-        onClick={expandPreview}
-        className={`updatesBox
-          ${!expanded ? " updatesBoxCollapsed" : ""}
-          ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}
-        `}
-      >
-        <h2 className="updatesHeader">LATEST UPDATES</h2>
-        {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
-        {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
-        {(isLoading && !userVerifyFailed) && <p className="updatesBoxInfo">Loading...</p>}
+    <div
+      ref={boxRef}
+      onClick={expandPreview}
+      className={`updatesBox
+        ${!expanded ? " updatesBoxCollapsed" : ""}
+        ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}
+      `}
+      onClick={receiveClick}
+    >
+      <div className="updatesCloseButton" onClick={closeWindows}>
+        <p>CLOSE</p>
+      </div>
+      <h2 className="updatesHeader">LATEST UPDATES</h2>
+      {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
+      {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
+      {(isLoading && !userVerifyFailed) && <p className="updatesBoxInfo">Loading...</p>}
+      <div className="updatesList">
         {updates?.map((update) => (
           <UpdateBubble key={update._id} allUpdatesOpen={allUpdatesOpen} update={update} isAdmin={isAdmin} userRefresh={userRefresh} />
         ))}
-      </div>
-      <div className="updatesButton updatesClose" onClick={closeWindows}>
-        <p className="updatesButtonText updatesCloseText">CLOSE</p>
       </div>
     </div>
   );
