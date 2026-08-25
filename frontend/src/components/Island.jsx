@@ -60,8 +60,8 @@ const Island = (props) => {
           animate={{
             opacity: 1,
             scale: focusRegion ? focusRegion.zoom[0] : 1,
-            x: focusRegion ? focusRegion.zoom[1] * focusRegion.zoom[0] : 0,
-            y: focusRegion ? focusRegion.zoom[2] * focusRegion.zoom[0] : 0,
+            x: `${focusRegion ? focusRegion.zoom[1] * focusRegion.zoom[0] : 0}%`,
+            y: `${focusRegion ? focusRegion.zoom[2] * focusRegion.zoom[0] : 0}%`,
             transition: {
               ease: focusRegion ? [.67, 0, .33, 1] : [.5, 0, .15, 1],
               duration: focusRegion ? 0.5 : 0.6,

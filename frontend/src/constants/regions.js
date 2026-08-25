@@ -10,7 +10,7 @@ const regions = [
     name: "Palm Tree Paradise",
     code: "beach",
     position: [23, 21],
-    zoom: [6, 280, 175],
+    zoom: [6, 23.5, 22.5],
     arrow: [80, "down"],
     color: "#b3e89f",
     divisions: [
@@ -39,7 +39,7 @@ const regions = [
     name: "Commute City",
     code: "city",
     position: [50, 61],
-    zoom: [4, 0, 33],
+    zoom: [4, 0, 3.5],
     arrow: [50, "up"],
     color: "#adcaf5",
     divisions: [
@@ -68,7 +68,7 @@ const regions = [
     name: "The Rage Room",
     code: "club",
     position: [76, 19],
-    zoom: [5, -225, 170],
+    zoom: [5, -20, 21],
     arrow: [20, "down"],
     color: "#ede096",
     divisions: [
@@ -79,7 +79,7 @@ const regions = [
         arrow: [50, "down"],
         image: ClubLower,
         direction: [-40, 15],
-        exit: [81, 69],
+        exit: [80, 69],
       },
       {
         name: "Upper Level",
@@ -88,7 +88,7 @@ const regions = [
         arrow: [50, "down"],
         image: ClubUpper,
         direction: [40, -15],
-        exit: [41.5, 72.5],
+        exit: [42, 72],
       }
     ],
     holdsProjects: true,
