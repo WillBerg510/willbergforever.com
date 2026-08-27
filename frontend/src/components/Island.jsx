@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import projectsAPI from '../api/ProjectsAPI.js';
 import regions from '../constants/regions.js';
 import SmileIsle from '../assets/Smile Isle.jpg';
+import MainBlur from '../assets/Main Blur.png';
 
 const Island = (props) => {
   const { setOpenProject, setOpenMiscWindow, isAdmin } = props;
@@ -51,8 +52,36 @@ const Island = (props) => {
 
   return (
     <div className="island" ref={islandRef}>
-      <AnimatePresence mode="wait">
+      <AnimatePresence custom={focusRegion}>
+        {(!focusDivision && focusRegion) && <motion.div
+          className="islandBlurDiv"
+          custom={focusRegion}
+          initial={{opacity: 0}}
+          animate={{
+            opacity: 1,
+            transition: {
+              ease: "easeInOut",
+              duration: 0.1,
+            },
+          }}
+          exit="exit"
+          variants={{
+            exit: (focusRegion) => {
+              return {
+                opacity: 0,
+                transition: focusRegion
+                  ? {ease: "easeInOut", duration: 0.2, delay: 0.2}
+                  : {ease: "easeInOut", duration: 0.2, delay: 0.4},
+              };
+            }}
+          }
+        >
+          <img src={MainBlur} className="islandBlur" />
+        </motion.div>}
+      </AnimatePresence>
+      <AnimatePresence>
         {!focusDivision && <motion.div
+          key="smileIsle"
           className="smileIsle"
           initial={{
             opacity: 0,
@@ -134,7 +163,7 @@ const Island = (props) => {
               transition: {ease: [.1, .5, .67, 1], duration: 0.3},
             }}
             exit={{
-              opacity: 0,
+              opacity: 0.2,
               x: loadedDivision.direction ? loadedDivision.direction[0] : 0,
               y: loadedDivision.direction ? loadedDivision.direction[1] : 0,
               transition: {ease: [.5, 0, 1, .67], duration: 0.2},

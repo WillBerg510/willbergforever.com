@@ -17,7 +17,7 @@
   line-height: 24px;
   cursor: pointer;
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   pointer-events: auto;
 }
 
@@ -139,11 +139,6 @@
   transform: translateX(0.35em);
 }
 
-.smileIsle {
-  width: 100%;
-  aspect-ratio: 1.45;
-}
-
 .regionDivisions {
   width: 100%;
   height: 100%;
@@ -258,6 +253,11 @@
   opacity: 0;
 }
 
+.smileIsle {
+  width: 100%;
+  aspect-ratio: 1.45;
+}
+
 .islandImage {
   position: absolute;
   top: 0;
@@ -267,6 +267,23 @@
   object-fit: cover;
   pointer-events: none;
   user-select: none;
+}
+
+.islandBlurDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+}
+
+.islandBlur {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .regionPresence {
