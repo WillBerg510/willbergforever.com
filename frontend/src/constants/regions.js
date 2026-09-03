@@ -10,7 +10,7 @@ const regions = [
     name: "Palm Tree Paradise",
     code: "beach",
     position: [23, 21],
-    zoom: [3, 23, 19],
+    zoom: [3, 22.5, 19],
     arrow: [80, "down"],
     color: "#b3e89f",
     divisions: [
@@ -39,15 +39,15 @@ const regions = [
     name: "Commute City",
     code: "city",
     position: [50, 61],
-    zoom: [3, 0, 4],
+    zoom: [2.5, 0, 2],
     arrow: [50, "up"],
     color: "#adcaf5",
     divisions: [
       {
         name: "Downtown",
         code: "downtown",
-        position: [41, 48],
-        arrow: [80, "down"],
+        position: [43, 69],
+        arrow: [70, "up"],
         image: CityDowntown,
         direction: [-30, 45],
         exit: [42, 14],
@@ -55,8 +55,8 @@ const regions = [
       {
         name: "Uptown",
         code: "uptown",
-        position: [58, 16],
-        arrow: [20, "down"],
+        position: [56, 18],
+        arrow: [30, "down"],
         image: CityUptown,
         direction: [30, -45],
         exit: [19, 78],
@@ -67,15 +67,15 @@ const regions = [
   {
     name: "The Rage Room",
     code: "club",
-    position: [76, 19],
-    zoom: [3, -18, 15],
+    position: [74.5, 20.5],
+    zoom: [3, -20, 16.5],
     arrow: [20, "down"],
     color: "#ede096",
     divisions: [
       {
         name: "Lower Level",
         code: "lower",
-        position: [97, 7],
+        position: [102.5, 5],
         arrow: [80, "up"],
         image: ClubLower,
         direction: [-40, 15],
@@ -84,7 +84,7 @@ const regions = [
       {
         name: "Upper Level",
         code: "upper",
-        position: [123, -15],
+        position: [123, -20],
         arrow: [20, "down"],
         image: ClubUpper,
         direction: [40, -15],
@@ -96,21 +96,21 @@ const regions = [
   {
     name: "Ryan's Factory",
     code: "factory",
-    position: [28, 85],
+    position: [28, 84],
     arrow: [70, "up"],
     holdsProjects: false,
   },
   {
     name: "Updates from Will",
     code: "updates",
-    position: [50.5, 5],
+    position: [50.2, 7],
     arrow: [50, "down"],
     holdsProjects: false,
   },
   {
     name: "Bob's Daily Races",
     code: "races",
-    position: [69, 83],
+    position: [68.5, 81.5],
     arrow: [30, "up"],
     holdsProjects: false,
   }

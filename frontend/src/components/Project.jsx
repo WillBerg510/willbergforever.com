@@ -145,8 +145,10 @@ const Project = (props) => {
       {project && <div className="projectInfo">
         <div className="leftProjectColumn">
           <div className="projectThumbnail">
-            <div className={`projectThumbnailCover ${thumbnailReady && "projectThumbnailCoverHidden"}`} />
-            <div className={`projectThumbnailCover projectThumbnailCoverTwo ${thumbnailReady && "projectThumbnailCoverHidden"}`} />
+            <div className={`projectThumbnailCover ${thumbnailReady && "projectThumbnailCoverHidden"}`}>
+              <div className="projectThumbnailCoverThree" />
+            </div>
+            {/*<div className={`projectThumbnailCover projectThumbnailCoverTwo ${thumbnailReady && "projectThumbnailCoverHidden"}`} />*/}
             <img src={project.thumbnail} className="projectThumbnailImage" onLoad={onThumbnailReady} />
           </div>
           <h1 className="projectName">{project.name}</h1>

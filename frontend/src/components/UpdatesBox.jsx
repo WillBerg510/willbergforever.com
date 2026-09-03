@@ -54,7 +54,6 @@ const UpdatesBox = (props) => {
   return (
     <div
       ref={boxRef}
-      onClick={expandPreview}
       className={`updatesBox
         ${!expanded ? " updatesBoxCollapsed" : ""}
         ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}

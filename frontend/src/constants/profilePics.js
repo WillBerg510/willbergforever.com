@@ -1,5 +1,5 @@
 
-import Flirtiest from "../assets/The Flirtiest 2025 Small.jpg";
+import Flirtiest from "../assets/The Flirtiest 2025 Small.png";
 import Luckiest from "../assets/The Luckiest 2025 Small.png";
 import Creepiest from "../assets/The Creepiest 2025 Small.png";
 import Funniest from "../assets/The Funniest 2025 Small.png";

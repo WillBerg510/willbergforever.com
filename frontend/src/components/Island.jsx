@@ -98,7 +98,7 @@ const Island = (props) => {
           }}
           exit={{
             opacity: 0,
-            transition: {ease: "easeInOut", duration: 0.2},
+            transition: {ease: "easeInOut", duration: 0.3},
           }}
         >
           <AnimatePresence>
@@ -163,7 +163,7 @@ const Island = (props) => {
               transition: {ease: [.1, .5, .67, 1], duration: 0.3},
             }}
             exit={{
-              opacity: 0.2,
+              opacity: 0,
               x: loadedDivision.direction ? loadedDivision.direction[0] : 0,
               y: loadedDivision.direction ? loadedDivision.direction[1] : 0,
               transition: {ease: [.5, 0, 1, .67], duration: 0.2},
