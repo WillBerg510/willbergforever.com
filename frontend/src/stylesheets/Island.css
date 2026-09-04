@@ -8,36 +8,91 @@
 }
 
 .regionName {
-  width: 160px;
-  height: 60px;
+  position: absolute;
+  z-index: 4;
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: 1cqw;
+  will-change: transform;
+  height: 6.5cqw;
+  padding-top: 1.5cqw;
+  user-select: none;
+}
+
+.regionNameContainer {
+  width: 16cqw;
+  height: 5cqw;
   background-color: white;
+  filter: drop-shadow(0.25em 0.25em 0.25em rgba(0, 0, 0, 0.5));
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 24px;
-  cursor: pointer;
-  position: absolute;
-  z-index: 4;
-  pointer-events: auto;
-  will-change: opacity, transform;
+  border-radius: 999px;
+  transition: background-color 0.1s ease-out,
+  color 0.1s ease-out,
+  transform 0.1s ease-out;
+}
+
+.regionName:hover .regionNameContainer {
+  background-color: black;
+  color: white;
+  transform: scale(118%);
+}
+
+.regionName:hover .regionTriangleTop {
+  border-bottom: 1.5em solid black;
+}
+
+.regionName:hover .regionTriangleBottom {
+  border-top: 1.5em solid black;
 }
 
 .regionTriangle {
   width: 0;
   height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
+  border-left: 1em solid transparent;
+  border-right: 1em solid transparent;
   position: absolute;
+  transition: border 0.1s ease-out
 }
 
 .regionTriangleTop {
-  top: -14px;
-  border-bottom: 15px solid white;
+  top: -1.4em;
+  border-bottom: 1.5em solid white;
 }
 
 .regionTriangleBottom {
-  bottom: -14px;
-  border-top: 15px solid white;
+  bottom: -1.4em;
+  border-top: 1.5em solid white;
+}
+
+.regionIcon {
+  width: 4.6em;
+  flex-shrink: 0;
+  height: 4.6em;
+  margin: 0 -0.8em 0 0.2em;
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.regionIconImage {
+  position: absolute;
+  height: 6.6em;
+}
+
+.regionNameText {
+  font-family: wbf3;
+  font-size: 1.6em;
+  line-height: 1.2em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin: 0 0.5em;
+}
+
+.regionNameTextAlone {
+  font-size: 1.8em;
 }
 
 .projectIconFull {
@@ -51,7 +106,7 @@
   opacity: 0;
   animation: iconSlideIn 0.3s ease-out var(--glide-delay) forwards;
   user-select: none;
-  will-change: opacity, transform;
+  will-change: transform;
 }
 
 @keyframes iconSlideIn {
@@ -257,7 +312,7 @@
 .smileIsle {
   width: 100%;
   aspect-ratio: 1.45;
-  will-change: opacity, transform;
+  will-change: transform;
 }
 
 .islandImage {
@@ -280,7 +335,6 @@
   z-index: 2;
   pointer-events: none;
   user-select: none;
-  will-change: opacity;
 }
 
 .islandBlur {

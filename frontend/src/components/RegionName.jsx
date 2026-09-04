@@ -25,13 +25,19 @@ const RegionName = (props) => {
         top: `${region.position[1]}%`,
       }}
     >
-      <h2>{region.name}</h2>
-      <div className={
-        `regionTriangle${
-        region.arrow[1] == "up" ? " regionTriangleTop" :
-        region.arrow[1] == "down" ? " regionTriangleBottom" : ""}`} style={{
-          left: `calc(${(region.arrow[0] / 100) * 100}% - 5px)`
-        }}/>
+      <div className="regionNameContainer">
+        {region.icon && <div className="regionIcon">
+          <img src={region.icon} className="regionIconImage" />
+        </div>}
+        <h2 className={`regionNameText ${!region.icon && "regionNameTextAlone"}`}>{region.name.toUpperCase()}</h2>
+        <div className={
+          `regionTriangle${
+          region.arrow[1] == "up" ? " regionTriangleTop" :
+          region.arrow[1] == "down" ? " regionTriangleBottom" : ""}`} style={{
+            left: `calc(${(region.arrow[0] / 100) * 100}% - 0.5em)`
+          }}
+        />
+      </div>
     </motion.div>
   );
 }

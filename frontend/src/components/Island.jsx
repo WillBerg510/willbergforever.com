@@ -71,7 +71,7 @@ const Island = (props) => {
                 opacity: 0,
                 transition: focusRegion
                   ? {ease: "easeInOut", duration: 0.2, delay: 0.2}
-                  : {ease: "easeInOut", duration: 0.2, delay: 0.4},
+                  : {ease: "easeInOut", duration: 0.1, delay: 0.4},
               };
             }}
           }
