@@ -73,7 +73,7 @@ const regions = [
     name: "The Rage Room",
     code: "club",
     position: [73.3, 20],
-    zoom: [3, -20, 16.5],
+    zoom: [3, -19.5, 17],
     arrow: [30, "down"],
     color: "#ede096",
     icon: ClubIcon,
@@ -90,7 +90,7 @@ const regions = [
       {
         name: "Upper Level",
         code: "upper",
-        position: [123, -20.5],
+        position: [123, -21],
         arrow: [27, "down"],
         image: ClubUpper,
         direction: [40, -15],

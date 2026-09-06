@@ -29,18 +29,6 @@ h1, h2, h3, p {
   margin: 10px;
 }
 
-.mainHeading {
-  position: fixed;
-  left: 2.5vh;
-  top: 1.25vh;
-  pointer-events: none;
-  user-select: none;
-  width: 24vh;
-  height: 12vh;
-  object-fit: cover;
-  z-index: 4;
-}
-
 .mainSubtitle {
   font-weight: 500;
   font-size: 30px;

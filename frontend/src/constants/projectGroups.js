@@ -17,22 +17,27 @@ const projectGroups = {
   music: {
     name: "Music",
     icon: MusicIcon,
+    color: "#068206",
   },
   programs: {
     name: "Programs",
     icon: ProgramsIcon,
+    color: "#0d3dcc",
   },
   art: {
     name: "Art",
     icon: ArtIcon,
+    color: "#be2020",
   },
   photos: {
     name: "Photos",
     icon: PhotosIcon,
+    color: "#ae5b02",
   },
   videos: {
     name: "Videos",
     icon: VideosIcon,
+    color: "#881fb9",
   },
   cartoons: {
     name: "Cartoons",

@@ -1,10 +1,11 @@
 .island {
-  width: min(96vw, calc(140vh));
+  width: min(96vw, calc(137.5vh));
+  margin-left: 1.5em;
   aspect-ratio: 1.45;
   position: relative;
   overflow: hidden;
   container-type: inline-size;
-  margin-top: 3%;
+  margin-top: 2%;
 }
 
 .regionName {
@@ -80,6 +81,7 @@
 .regionIconImage {
   position: absolute;
   height: 6.6em;
+  pointer-events: none;
 }
 
 .regionNameText {
@@ -248,7 +250,6 @@
   position: relative;
   width: 100%;
   height: 100%;
-  will-change: transform, opacity;
 }
 
 .divisionButtons {
@@ -312,7 +313,6 @@
 .smileIsle {
   width: 100%;
   aspect-ratio: 1.45;
-  will-change: transform;
 }
 
 .islandImage {
@@ -341,6 +341,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: 0.1em solid #5cabe8;
 }
 
 .regionPresence {

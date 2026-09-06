@@ -6,7 +6,7 @@
   animation: zoomIn 0.3s ease-out;
   background-color: var(--project-color);
   box-shadow: 0.25em 0.25em 1em 0 rgba(0, 0, 0, 0.7);
-  will-change: opacity, transform;
+  will-change: transform;
 }
 
 .playerLoader {
@@ -117,7 +117,6 @@ video {
   align-items: center;
   margin-top: 0.4em;
   z-index: 1;
-  will-change: opactiy;
   min-height: 2em;
 }
 
@@ -158,7 +157,6 @@ video {
   margin: -0.1em 0.4em;
   padding: 0.2em;
   transition: opacity 0.1s ease-out;
-  will-change: opacity;
 }
 
 @property --icon-shadow-color {
@@ -414,7 +412,7 @@ video {
   opacity 0.4s cubic-bezier(.43,0,.29,1);
   box-shadow: 0 0 0.4em 0.1em rgba(0, 0, 0, 0.4);
   border-radius: 999px;
-  will-change: bottom, opacity;
+  will-change: bottom;
 }
 
 .fullscreenButtonsHidden {

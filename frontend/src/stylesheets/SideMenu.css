@@ -1,0 +1,83 @@
+.sideMenu {
+  position: fixed;
+  opacity: 0;
+  height: 100%;
+  left: 0;
+  width: 15em;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  margin: 0 0 0 1.2em;
+  animation: fadeIn 0.5s ease-in-out 2.75s forwards;
+}
+
+.mainHeading {
+  position: absolute;
+  top: 1.2em;
+  pointer-events: none;
+  user-select: none;
+  width: 100%;
+  margin-bottom: 2em;
+  aspect-ratio: 2.2;
+  object-fit: cover;
+  z-index: 4;
+}
+
+.sideMenuButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: wbf2;
+  font-size: 1em;
+  width: 12em;
+  height: 3.5em;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.8);
+  filter: drop-shadow(0.1em 0.1em 0.15em rgba(0, 0, 0, 0.5));
+  transition: transform 0.15s ease-out,
+  background-color 0.15s ease-out,
+  color 0.15s ease-out;
+  margin-left: -0.5em;
+}
+
+.sideMenuButtonColumn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  position: absolute;
+  margin: 0 0.7em;
+  width: 100%;
+}
+
+.sideMenuButton img {
+  width: 3.5em;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.sideMenuButtonText {
+  text-align: left;
+  font-size: 1.35em;
+  width: 5.2em;
+  font-weight: 550;
+  margin: 0 0 -0.2em 0.2em;
+  transition: font-weight 0.15s ease-in-out;
+  line-height: 1em;
+}
+
+.sideMenuButton:hover {
+  background-color: var(--side-menu-hover-color);
+  color: white;
+  transform: scale(115%);
+}
+
+.sideMenuButton:hover .sideMenuButtonText {
+  font-weight: 700;
+}

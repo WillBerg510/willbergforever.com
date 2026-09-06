@@ -2,6 +2,7 @@ import '../stylesheets/App.css'
 import '../stylesheets/fonts.css'
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import adminAPI from "../api/AdminAPI.js";
 import userAPI from "../api/UserAPI.js";
@@ -12,7 +13,7 @@ import Project from '../components/Project.jsx';
 import Player from '../components/Player.jsx';
 import GroupMenu from '../components/GroupMenu.jsx';
 import GroupList from '../components/GroupList.jsx';
-import WillBergLogo from '../assets/WillBergLogo.png';
+import SideMenu from '../components/SideMenu.jsx';
 import imagesToLoad from '../constants/imagesToLoad.js';
 
 const levels = {
@@ -29,7 +30,8 @@ function App() {
   const [openMiscWindow, setOpenMiscWindow] = useState(null);
   const [racesData, setRacesData] = useState({});
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
-  const [initialLoadPeriod, setInitialLoadPeriod] = useState(true);
+  const [menu, setMenu] = useState("Map");
+  const [firstOpen, setFirstOpen] = useState(true);
   const client = useQueryClient();
   const navigate = useNavigate();
 
@@ -37,7 +39,6 @@ function App() {
   useEffect(() => {
     userVerify();
     adminVerify();
-    setTimeout(() => {setInitialLoadPeriod(false)}, 2000);
   }, []);
 
   // Determine whether the user's admin access token is valid, and then attempt a refresh with the refresh token
@@ -131,11 +132,12 @@ function App() {
   };
 
   const onElementLoad = () => {
-    setInitialLoad(prev => prev - 1);
+    setInitialLoad(prev => Math.max(prev - 1, 0));
   }
 
   return (
     <div id="app">
+      {initialLoad <= 0 && <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} />}
       {isAdmin &&
         <div style={{position: "absolute", right: 0, top: 0, zIndex: 1, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
@@ -143,12 +145,10 @@ function App() {
           <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>
         </div>
       }
-      <img className="mainHeading" src={WillBergLogo} />
       {/*<UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />*/}
       {/*allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
         <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
       </div>*/}
-      {/*<GroupMenu getGroupProjects={getGroupProjects} />*/}
       {groupProjects && <GroupList groupProjects={groupProjects} setOpenProject={setOpenProject} />}
       {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
         {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
@@ -157,13 +157,15 @@ function App() {
       {(openMiscWindow == "updates") && <div className="windowOnTop" onClick={closeWindows}>
         <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
       </div>}
-      {(initialLoad > 0 || initialLoadPeriod) && <>
+      {(initialLoad > 0) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} />
         {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
       </>}
-      {((!groupProjects || groupProjects.length == 0) && !gettingProjects) &&
-        <Island setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} />
-      }
+      <AnimatePresence>
+        {(initialLoad <= 0 && menu == "Map") &&
+          <Island setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} />
+        }
+      </AnimatePresence>
       {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
         {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}
       </div>*/}

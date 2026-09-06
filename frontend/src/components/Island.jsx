@@ -10,7 +10,7 @@ import SmileIsle from '../assets/Smile Isle.jpg';
 import MainBlur from '../assets/Main Blur.png';
 
 const Island = (props) => {
-  const { setOpenProject, setOpenMiscWindow, isAdmin } = props;
+  const { setOpenProject, setOpenMiscWindow, isAdmin, firstOpen, setFirstOpen } = props;
   const [focusRegion, setFocusRegion] = useState(null);
   const [focusDivision, setFocusDivision] = useState(null);
   const [loadedDivision, setLoadedDivision] = useState(null);
@@ -51,7 +51,19 @@ const Island = (props) => {
   };
 
   return (
-    <div className="island" ref={islandRef}>
+    <motion.div
+      className="island"
+      ref={islandRef}
+      initial={{opacity: 0}}
+      animate={{
+        opacity: 1,
+        transition: {ease: "easeInOut", duration: firstOpen ? 0.5 : 0.3, delay: firstOpen ? 2.5 : 0.2},
+      }}
+      exit={{
+        opacity: 0,
+        transition: {ease: "easeInOut", duration: 0.3},
+      }}
+    >
       <AnimatePresence custom={focusRegion}>
         {(!focusDivision && focusRegion) && <motion.div
           className="islandBlurDiv"
@@ -92,10 +104,13 @@ const Island = (props) => {
             x: `${focusRegion ? focusRegion.zoom[1] * focusRegion.zoom[0] : 0}%`,
             y: `${focusRegion ? focusRegion.zoom[2] * focusRegion.zoom[0] : 0}%`,
             transition: {
-              ease: focusRegion ? [.67, 0, .33, 1] : [.5, 0, .15, 1],
-              duration: focusRegion ? 0.5 : 0.6,
+              default: {
+                ease: focusRegion ? [.67, 0, .33, 1] : [.5, 0, .15, 1],
+                duration: focusRegion ? 0.5 : 0.6,
+              },
             },
           }}
+          onAnimationComplete={() => setFirstOpen(false)}
           exit={{
             opacity: 0,
             transition: {ease: "easeInOut", duration: 0.3},
@@ -181,7 +196,7 @@ const Island = (props) => {
           </motion.div>
         </AnimatePresence>
       </motion.div>}
-    </div>
+    </motion.div>
   );
 }
 
