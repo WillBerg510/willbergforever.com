@@ -16,9 +16,7 @@ const SideMenu = (props) => {
   const onButtonClick = (name) => {
     if (menu == name) return;
     setMenu(name);
-    if (name == "Map") {
-      getGroupProjects(null);
-    } else if (name != "More Groups") {
+    if (name != "Map" && name != "More Groups") {
       getGroupProjects(name.toLowerCase());
     }
   }
