@@ -23,6 +23,7 @@ const Project = (props) => {
   const [reactionNums, setReactionNums] = useState({});
   const [allReactions, setAllReactions] = useState(projectReactions);
   const [imagesReady, setImagesReady] = useState(0);
+  const [necessaryImagesReady, setNecessaryImagesReady] = useState(0);
   const [thumbnailReady, setThumbnailReady] = useState(false);
   const navigate = useNavigate();
 
@@ -121,6 +122,10 @@ const Project = (props) => {
     setImagesReady(prev => prev + 1);
   };
 
+  const onNecessaryReady = () => {
+    setNecessaryImagesReady(prev => prev + 1);
+  };
+
   const onThumbnailReady = () => {
     window.requestAnimationFrame(() => {
       setThumbnailReady(true);
@@ -134,7 +139,7 @@ const Project = (props) => {
 
   return (
     <div style={{
-      display: project ? "flex" : "none",
+      display: (project && necessaryImagesReady >= 4 + project.groups.length) ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
     }} key={project_id} className="projectWindow" onClick={receiveClick}>
       <div className="projectCloseButton" onClick={closeWindows}>
@@ -161,7 +166,7 @@ const Project = (props) => {
           <div className="projectGroups">
             {project.groups?.map(group => 
               <div key={group} className="projectGroup">
-                <img key={`${group}-icon`} className="projectGroupIcon" src={projectGroups[group]?.icon} />
+                <img key={`${group}-icon`} className="projectGroupIcon" src={projectGroups[group]?.icon} onLoad={onNecessaryReady} />
                 <p key={`${group}-text`} className="projectGroupText">{projectGroups[group]?.name.toUpperCase()}</p>
               </div>
             )}
@@ -198,7 +203,7 @@ const Project = (props) => {
                 className={`projectLink projectLink${project.links?.[linkType] && project.links[linkType] != "" ? "Active" : "Inactive"}`}
                 onClick={() => projectLinkClicked(linkType)}
               >
-                <img src={linkIcons[linkType]} className="projectLinkIcon" />
+                <img src={linkIcons[linkType]} className="projectLinkIcon" onLoad={onNecessaryReady} />
                 <p className="projectLinkText">{linkType.toUpperCase()}</p>
               </div>
             )}
@@ -207,7 +212,7 @@ const Project = (props) => {
               className={`projectLink projectLink${project.content && project.content.length > 0 ? "Active" : "Inactive"}`}
               onClick={onPlayerOpen}
             >
-              <img src={ViewIcon} className="projectLinkIcon" />
+              <img src={ViewIcon} className="projectLinkIcon" onLoad={onNecessaryReady} />
               <p className="projectLinkText">{project.icon == "photos" || project.icon == "art" ? "VIEW" : "PLAY"}</p>
             </div>
           </div>

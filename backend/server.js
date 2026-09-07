@@ -13,7 +13,8 @@ require("dotenv").config();
 const PORT = process.env.PORT || 5050;
 const app = express();
 
-mongoose.connect(process.env.DEV_MODE ? process.env.DEV_MONGO_URI : process.env.MONGO_URI)
+//mongoose.connect(process.env.DEV_MODE ? process.env.DEV_MONGO_URI : process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
 .then(() => {
     console.log('MongoDB connected successfully');
 })

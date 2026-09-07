@@ -11,7 +11,7 @@ import FullscreenIcon from "../assets/Fullscreen.svg";
 import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 import BackIcon from "../assets/Back.svg";
 
-const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
+const Player = ({ project_id, closeWindows, setOpenProject, loader, userRefresh }) => {
   const [contentReady, setContentReady] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [position, setPosition] = useState(0);

@@ -87,9 +87,9 @@ const GroupList = (props) => {
           <img src={PrevIcon} />
           <span>{groups[(currentGroupIndex - 1 + groups.length) % groups.length][1].name.toUpperCase()}</span>
         </button>
-        <div className="groupHeadingName">
+        <div className="groupHeadingName" key={`${group}HeadingName`}>
           <img src={currentGroup?.icon} alt="" />
-          <h1>{group.toUpperCase()}</h1>
+          <h1>{currentGroup?.name.toUpperCase()}</h1>
         </div>
         <button className="groupNavButton groupNavRight" type="button" onClick={() => changeGroup(1)}>
           <span>{groups[(currentGroupIndex + 1) % groups.length][1].name.toUpperCase()}</span>
