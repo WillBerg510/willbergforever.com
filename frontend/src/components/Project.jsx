@@ -1,7 +1,7 @@
 import projectsAPI from "../api/ProjectsAPI.js";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectReactions } from "../constants/reactions.js";
 import projectGroups from "../constants/projectGroups.js";
 import regions from "../constants/regions.js";
