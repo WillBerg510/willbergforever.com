@@ -1,6 +1,6 @@
 .updatesBox {
-  max-width: 900px;
-  width: 90%;
+  max-width: 950px;
+  width: 95%;
   filter: drop-shadow(0.25em 0.25em 1em rgba(0, 0, 0, 0.7));
   position: absolute;
   --background-color: #e1c6ea;
@@ -13,6 +13,7 @@
   z-index: 1;
   height: calc(70vh);
   container-type: inline-size;
+  animation: zoomIn 0.3s ease-out;
 }
 
 .updatesBoxCollapsed {
@@ -30,7 +31,7 @@
   bottom: 0;
   width: 100%;
   height: 40px;
-  background-image: linear-gradient(to bottom, transparent, lightgreen);
+  background-image: linear-gradient(to bottom, transparent, var(--background-color));
   z-index: 1;
   transition: opacity 0.2s ease-in-out;
   opacity: 1;
@@ -68,40 +69,72 @@
   color: white;
 }
 
+.updatesListContainer {
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 1em;
+}
+
 .updatesList {
+  height: 100%;
   overflow-y: scroll;
   scrollbar-gutter: stable;
   overscroll-behavior: contain;
-  border-radius: 1em;
-  margin: 0 0.8em 0 0;
-  padding-top: 0.3em;
+  margin: 0 0.7em 0.3em 0;
+}
+
+.updatesListContainer::before,
+.updatesListContainer::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 1.6em;
+  height: 2em;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.updatesListContainer::before {
+  top: 0;
+  background: linear-gradient(to bottom, hsl(from var(--background-color) h s l / 0.95), hsl(from var(--background-color) h s l / 0));
+}
+
+.updatesListContainer::after {
+  bottom: 0;
+  background: linear-gradient(to top, hsl(from var(--background-color) h s l / 0.95), hsl(from var(--background-color) h s l / 0));
+}
+
+.updatesListContainer.hasTopFade::before,
+.updatesListContainer.hasBottomFade::after {
+  opacity: 1;
 }
 
 .updatesList::-webkit-scrollbar {
   -webkit-appearance: none;
-  width: 0.8em;
+  width: 0.6em;
   border-radius: 999px;
+  
 }
 
 .updatesList::-webkit-scrollbar-track {
-  margin-top: 0.3em;
-  margin-bottom: 0.8em;
-  box-shadow: inset 0.05em 0.05em 0.25em 0.05em rgba(0, 0, 0, 0.5);
-  border-radius: 999px;
-  cursor: pointer;
-  background-color: hsl(from var(--background-color) h s calc(l - 10));
+  background: transparent;
+  margin-top: 0.4em;
+  margin-bottom: 0.7em;
 }
 
 .updatesList::-webkit-scrollbar-thumb {
-  background-color: hsl(from var(--background-color) h calc(s - 10) calc(l - 25));
-  border-radius: 999px;
+  background-color: hsl(from var(--background-color) h calc(s - 20) calc(l - 45) / 0.5);
   cursor: pointer;
-  box-shadow: inset 0.1em 0.1em 0.25em 0.05em rgba(255, 255, 255, 0.35),
-  inset -0.1em -0.1em 0.25em 0.05em rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
 }
 
 .updatesList::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(from var(--background-color) h calc(s - 10) calc(l - 35));
+  background-color: hsl(from var(--background-color) h calc(s - 20) calc(l - 45) / 0.8);
 }
 
 .updatesHeader {
@@ -114,7 +147,6 @@
 .updatesBoxInfo {
   font-size: 24px;
   font-family: wbf2;
-  animation: glideIn 1s ease-in-out;
 }
 
 .updateRow {
@@ -122,7 +154,6 @@
   align-items: center;
   margin: 0 0.4em 0.8em 1em;
   width: calc(100% - 1.4em);
-  animation: glideIn 0.2s ease-in-out;
   filter: drop-shadow(0 0 0.15em rgba(0, 0, 0, 0.35))
 }
 
@@ -164,13 +195,13 @@
   margin: 7px 0px -3px 12px;
   color: rgba(0, 0, 0, 0.6);
   font-family: wbf3;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
 }
 
 .updateText {
-  margin: 2px 12px 4px 12px;
-  font-size: 16px;
+  margin: 2px 12px 6px 12px;
+  font-size: 17px;
   line-height: 18px;
   letter-spacing: 0.4px;
   overflow-wrap: anywhere;
@@ -216,7 +247,7 @@
 .reactionEmoji {
   margin: 0px 3px 1px 0px;
   font-family: wbf3;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .reactionNumber {
@@ -224,7 +255,7 @@
   min-width: 10px;
   font-family: wbf3;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .reactionSelected, .reactionSelected:hover {

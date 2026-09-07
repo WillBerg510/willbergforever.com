@@ -2,10 +2,14 @@
   width: min(96vw, calc(137.5vh));
   margin-left: 1.5em;
   aspect-ratio: 1.45;
-  position: relative;
+  position: fixed;
   overflow: hidden;
   container-type: inline-size;
   margin-top: 2%;
+}
+
+.island:not(.islandVisible) * {
+  pointer-events: none !important;
 }
 
 .regionName {
@@ -207,7 +211,7 @@
 
 .projectTooltip {
   position: absolute;
-  bottom: -3.8cqw;
+  bottom: -4cqw;
   pointer-events: none;
   animation: glideIn 0.2s ease-in-out;
   filter: drop-shadow(0.2cqw 0.2cqw 0.3cqw rgba(0, 0, 0, 0.5));

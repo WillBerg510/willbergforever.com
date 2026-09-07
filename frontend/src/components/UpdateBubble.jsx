@@ -34,11 +34,10 @@ const getProfilePicForDate = (date) => {
 };
 
 const UpdateBubble = (props) => {
-  const { allUpdatesOpen, update, isAdmin, userRefresh } = props;
+  const { allUpdatesOpen, update, isAdmin, userRefresh, onImageLoaded } = props;
   const [confirmDelete, setConfirmDelete] = useState();
   const [reactionStates, setReactionStates] = useState({});
   const [reactionNums, setReactionNums] = useState({});
-  const [imageReady, setImageReady] = useState(false);
   const client = useQueryClient();
 
   const getReactionStates = () => {
@@ -109,14 +108,10 @@ const UpdateBubble = (props) => {
     else deleteUpdate();
   }
 
-  const onImageReady = () => {
-    setImageReady(true);
-  }
-
   return (
-    <div style={imageReady ? {display: "flex"} : {display: "none"}} className={`updateRow`}>
+    <div className="updateRow">
       <div className="updateIcon">
-        <img src={getProfilePicForDate(update.date)?.image || Fanciest} className="willIcon" onLoad={onImageReady} />
+        <img src={getProfilePicForDate(update.date)?.image || Fanciest} className="willIcon" onLoad={onImageLoaded} />
         <div className="updateTriangle" />
       </div>
       <div className="updateBubble">

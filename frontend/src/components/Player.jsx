@@ -22,6 +22,7 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
   const [fullscreen, setFullscreen] = useState(false);
   const [buttonsShown, setButtonsShown] = useState(false);
   const [contentType, setContentType] = useState(null);
+  const [projectLoaded, setProjectLoaded] = useState(false);
   const queryClient = useQueryClient();
 
   const mediaRef = useRef(null);
@@ -43,10 +44,19 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
         res.data.project.date = new Date(res.data.project.date);
         return res.data.project;
       });
-    }
+    },
+    retry: (count, error) => {
+      if (error.response.status == 500 && count < 1) {
+        userRefresh();
+        return true;
+      }
+      return false;
+    },
   });
 
   useEffect(() => {
+    if (!projectLoaded) return;
+
     const handleFullscreenChange = () => {
       setFullscreen(document.fullscreenElement);
       isFullscreenRef.current = document.fullscreenElement;
@@ -88,7 +98,11 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader }) => {
         setPlaying(false);
       }
     }
-  }, []);
+  }, [projectLoaded]);
+
+  useEffect(() => {
+    if (project) setProjectLoaded(true);
+  }, [project]);
 
   useEffect(() => {
     slidingRef.current = sliding;

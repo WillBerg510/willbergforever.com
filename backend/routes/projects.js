@@ -177,7 +177,7 @@ router.get("/region/:region", async (req, res) => {
 router.get("/group/:group", async (req, res) => {
   try {
     const projects = await Project.find({groups: {$elemMatch: {$eq: req.params.group}}, visible: {$ne: false}})
-    .select(["_id", "name", "thumbnail", "date", "icon"])
+    .select(["_id", "name", "thumbnail", "date", "icon", "contentType", "links"])
     .sort({date: -1});
     res.status(200).json({projects});
   } catch (err) {

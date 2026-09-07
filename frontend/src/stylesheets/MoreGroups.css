@@ -1,0 +1,110 @@
+.moreGroups {
+  position: fixed;
+  width: min(90vw, 105vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2em;
+  flex-direction: column;
+}
+
+.moreGroups h1 {
+  margin: -1.2em 0 0.35em 0;
+  font-family: wbf2;
+  font-size: 3.6em;
+}
+
+.moreGroupsList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5em 1.75em;
+}
+
+.moreGroupsSquare {
+  cursor: pointer;
+  position: relative;
+  --hover-color: #20e9ba;
+}
+
+.moreGroupsButton {
+  width: 8.5em;
+  height: 8.5em;
+  padding: 1em;
+  border-radius: 999px;
+  background-color: white;
+  border: none;
+  font: inherit;
+  transition: transform 0.15s ease-in-out,
+  background-color 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.4);
+}
+
+.moreGroupsSquare:hover .moreGroupsButton {
+  transform: scale(120%);
+  background-color: var(--hover-color);
+}
+
+.moreGroupsButton img {
+  width: 6.5em;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.moreGroupsTooltip {
+  position: absolute;
+  top: calc(100% + 2.5em);
+  left: 50%;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: groupGlideIn 0.2s ease-in-out;
+  filter: drop-shadow(0.2em 0.2em 0.2em rgba(0, 0, 0, 0.4));
+  z-index: 3;
+}
+
+@keyframes groupGlideIn {
+  0% {
+    transform: translateX(-50%) translateY(0.5em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.moreGroupsTooltipBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: wbf2;
+  font-weight: 650;
+  font-size: 1.7em;
+  background-color: var(--hover-color);
+  padding: 0 1.1em;
+  border-radius: 999px;
+  white-space: nowrap;
+  z-index: 3;
+}
+
+.moreGroupsTooltipBox p {
+  margin: 0.1em 0 -0.1em 0;
+  color: black;
+}
+
+.moreGroupsTriangle {
+  width: 0;
+  height: 0;
+  border-left: 0.7em solid transparent;
+  border-right: 0.7em solid transparent;
+  position: absolute;
+  top: -0.9em;
+  border-bottom: 1em solid var(--hover-color);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}

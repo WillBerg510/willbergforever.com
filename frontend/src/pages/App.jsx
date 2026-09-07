@@ -11,9 +11,9 @@ import UpdatesBox from '../components/UpdatesBox.jsx';
 import Island from '../components/Island.jsx';
 import Project from '../components/Project.jsx';
 import Player from '../components/Player.jsx';
-import GroupMenu from '../components/GroupMenu.jsx';
 import GroupList from '../components/GroupList.jsx';
 import SideMenu from '../components/SideMenu.jsx';
+import MoreGroups from '../components/MoreGroups.jsx';
 import imagesToLoad from '../constants/imagesToLoad.js';
 
 const levels = {
@@ -137,9 +137,9 @@ function App() {
 
   return (
     <div id="app">
-      {initialLoad <= 0 && <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} />}
+      {initialLoad <= 0 && <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} />}
       {isAdmin &&
-        <div style={{position: "absolute", right: 0, top: 0, zIndex: 1, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
+        <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
           <button style={{margin: "0"}} onClick={toAdminPanel}>Admin Panel</button>
           <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>
@@ -149,7 +149,16 @@ function App() {
       {/*allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
         <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
       </div>*/}
-      {groupProjects && <GroupList groupProjects={groupProjects} setOpenProject={setOpenProject} />}
+      <AnimatePresence>
+        {(menu != "Map" && menu != "More Groups") &&
+          <GroupList group={menu} groupProjects={groupProjects} setOpenProject={setOpenProject} setOpenPlayer={setOpenPlayer} getGroupProjects={getGroupProjects} setMenu={setMenu} />
+        }
+      </AnimatePresence>
+      <AnimatePresence>
+        {initialLoad <= 0 && menu == "More Groups" &&
+          <MoreGroups getGroupProjects={getGroupProjects} setMenu={setMenu} />
+        }
+      </AnimatePresence>
       {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
         {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
         {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} />}

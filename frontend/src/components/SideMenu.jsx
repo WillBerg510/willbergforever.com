@@ -7,17 +7,20 @@ import WillBergLogo from '../assets/WillBergLogo.png';
 const menuItems = [
   { name: 'Map', icon: MapIcon, color: '#a9167a' },
   ...Object.values(projectGroups).slice(0, 5),
-  { name: 'More Groups', icon: MoreIcon, color: '#008380' },
+  { name: 'More Groups', icon: MoreIcon, color: '#00a894' },
 ];
 
 const SideMenu = (props) => {
-  const {getGroupProjects, setMenu} = props;
+  const {getGroupProjects, setMenu, menu} = props;
 
   const onButtonClick = (name) => {
+    if (menu == name) return;
     setMenu(name);
-    if (name == "Map") getGroupProjects(null);
-    if (name == "More Groups") return;
-    else getGroupProjects(name.toLowerCase());
+    if (name == "Map") {
+      getGroupProjects(null);
+    } else if (name != "More Groups") {
+      getGroupProjects(name.toLowerCase());
+    }
   }
 
   return (

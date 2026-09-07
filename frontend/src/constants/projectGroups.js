@@ -32,7 +32,7 @@ const projectGroups = {
   photos: {
     name: "Photos",
     icon: PhotosIcon,
-    color: "#ae5b02",
+    color: "#c26400",
   },
   videos: {
     name: "Videos",

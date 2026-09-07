@@ -15,6 +15,7 @@ const Island = (props) => {
   const [focusDivision, setFocusDivision] = useState(null);
   const [loadedDivision, setLoadedDivision] = useState(null);
   const [isDivisionExiting, setIsDivisionExiting] = useState(false);
+  const [islandVisible, setIslandVisible] = useState(false);
   const islandRef = useRef(null);
 
   const enterRegion = (region) => {
@@ -52,17 +53,18 @@ const Island = (props) => {
 
   return (
     <motion.div
-      className="island"
       ref={islandRef}
+      className={`island ${islandVisible ? 'islandVisible' : ''}`}
       initial={{opacity: 0}}
       animate={{
         opacity: 1,
-        transition: {ease: "easeInOut", duration: firstOpen ? 0.5 : 0.3, delay: firstOpen ? 2.5 : 0.2},
+        transition: {ease: "easeInOut", duration: firstOpen ? 0.5 : 0.3, delay: firstOpen ? 2 : 0.2},
       }}
       exit={{
         opacity: 0,
-        transition: {ease: "easeInOut", duration: 0.3},
+        transition: {ease: "easeInOut", duration: 0.2},
       }}
+      onAnimationComplete={() => setIslandVisible(true)}
     >
       <AnimatePresence custom={focusRegion}>
         {(!focusDivision && focusRegion) && <motion.div
