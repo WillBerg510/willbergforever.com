@@ -5,10 +5,14 @@ import updatesAPI from '../api/UpdatesAPI.js';
 import UpdateBubble from './UpdateBubble.jsx';
 
 const UpdatesBox = (props) => {
-  const { allUpdatesOpen, isAdmin, full, toggleSeeMore, userVerifyFailed, userRefresh } = props;
+  const { allUpdatesOpen, isAdmin, full, toggleSeeMore, userVerifyFailed, userRefresh, closeWindows } = props;
   const boxRef = useRef(null);
+  const updatesListRef = useRef(null);
   const [expanded, setExpanded] = useState(full);
   const [showGradient, setShowGradient] = useState(false);
+  const [hasTopFade, setHasTopFade] = useState(false);
+  const [hasBottomFade, setHasBottomFade] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(0);
 
   // Get all updates
   const { data: updates, error: getUpdatesError, isLoading: isLoading } = useQuery({
@@ -22,8 +26,9 @@ const UpdatesBox = (props) => {
       });
     },
   });
+
   useEffect(() => {
-    if (getUpdatesError?.response.status == 500) {
+    if (getUpdatesError?.response?.status == 500) {
       userRefresh();
     }
   }, [getUpdatesError]);
@@ -34,6 +39,10 @@ const UpdatesBox = (props) => {
 
   const receiveClick = (e) => {
     e.stopPropagation();
+  }
+
+  const onImageLoaded = () => {
+    setImagesLoaded(prev => prev + 1);
   }
 
   useEffect(() => {
@@ -50,30 +59,46 @@ const UpdatesBox = (props) => {
     }, 200);
   }, [updates]);
 
+  useEffect(() => {
+    const updatesList = updatesListRef.current;
+    if (!updatesList) return;
+
+    const updateFades = () => {
+      setHasTopFade(updatesList.scrollTop > 0);
+      setHasBottomFade(updatesList.scrollTop + updatesList.clientHeight < updatesList.scrollHeight - 1);
+    };
+
+    updateFades();
+    updatesList.addEventListener('scroll', updateFades);
+    return () => updatesList.removeEventListener('scroll', updateFades);
+  }, [updates?.length, imagesLoaded]);
+
   return (
-    <div className={`updatesBoxAndButton${full ? " updatesBoxAndButtonFull" : ""}`} onClick={receiveClick}>
-      <div ref={boxRef}
-        onClick={expandPreview}
-        className={`updatesBox
-          ${full ? " updatesBoxFull" : ""}
-          ${!expanded ? " updatesBoxCollapsed" : ""}
-          ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}
-        `}
-      >
-        <h2 className="updatesHeader">{full ? "WILL'S UPDATES" : "LATEST UPDATES"}</h2>
-        {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
-        {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
-        {isLoading && <p className="updatesBoxInfo">Loading...</p>}
-        {(full ? updates : updates?.slice(0, 1))?.map((update) => (
-          <UpdateBubble key={update._id} allUpdatesOpen={allUpdatesOpen} full={full} update={update} isAdmin={isAdmin} userRefresh={userRefresh} />
-        ))}
+    <div
+      ref={boxRef}
+      className={`updatesBox
+        ${!expanded ? " updatesBoxCollapsed" : ""}
+        ${(!expanded && showGradient) ? " updatesBoxClickable" : ""}
+      `}
+      onClick={receiveClick}
+      style={{
+        display: imagesLoaded >= updates?.length ? "flex" : "none",
+      }}
+    >
+      <div className="updatesCloseButton" onClick={closeWindows}>
+        <p>CLOSE</p>
       </div>
-      {!full && (<div className="updatesButton" onClick={toggleSeeMore}>
-        <p className="updatesButtonText">SEE MORE</p>
-      </div>)}
-      {full && (<div className="updatesButton updatesClose" onClick={toggleSeeMore}>
-        <p className="updatesButtonText updatesCloseText">CLOSE</p>
-      </div>)}
+      <h2 className="updatesHeader">LATEST UPDATES</h2>
+      {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
+      {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
+      {(isLoading && !userVerifyFailed) && <p className="updatesBoxInfo">Loading...</p>}
+      <div className={`updatesListContainer${hasTopFade ? ' hasTopFade' : ''}${hasBottomFade ? ' hasBottomFade' : ''}`}>
+        <div ref={updatesListRef} className="updatesList">
+          {updates?.map((update) => (
+            <UpdateBubble key={update._id} allUpdatesOpen={allUpdatesOpen} update={update} isAdmin={isAdmin} userRefresh={userRefresh} onImageLoaded={onImageLoaded} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

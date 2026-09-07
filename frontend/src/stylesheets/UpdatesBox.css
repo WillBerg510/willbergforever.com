@@ -1,31 +1,19 @@
-.updatesBoxAndButton {
-  max-width: 900px;
-  width: 90%;
-  display: flex;
-  position: relative;
-}
-
-.updatesBoxAndButtonFull {
-  position: absolute;
-}
-
 .updatesBox {
-  background-color: lightgreen;
-  border-radius: 70px;
+  max-width: 950px;
+  width: 95%;
+  filter: drop-shadow(0.25em 0.25em 1em rgba(0, 0, 0, 0.7));
+  position: absolute;
+  --background-color: #e1c6ea;
+  background-color: var(--background-color);
+  border-radius: 1em;
   position: relative;
   display: flex;
   align-items: center;
   flex-direction: column;
   z-index: 1;
-  width: 100%;
-  height: max-content;
-}
-
-.updatesBoxFull {
   height: calc(70vh);
-  overflow-y: scroll;
-  scrollbar-width: none;
-  overscroll-behavior: contain;
+  container-type: inline-size;
+  animation: zoomIn 0.3s ease-out;
 }
 
 .updatesBoxCollapsed {
@@ -43,7 +31,7 @@
   bottom: 0;
   width: 100%;
   height: 40px;
-  background-image: linear-gradient(to bottom, transparent, lightgreen);
+  background-image: linear-gradient(to bottom, transparent, var(--background-color));
   z-index: 1;
   transition: opacity 0.2s ease-in-out;
   opacity: 1;
@@ -52,6 +40,101 @@
 .transparent {
   opacity: 0;
   pointer-events: none;
+}
+
+.updatesCloseButton {
+  position: absolute;
+  font-size: max(16px, 2cqw);
+  height: 0.4em;
+  top: -2.4em;
+  right: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 100%;
+  padding: 0.7em;
+  border-radius: 999px;
+  background-color: var(--background-color);
+  font-family: wbf3;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.updatesCloseButton p {
+  margin: 0.1em 0.3em;
+}
+
+.updatesCloseButton:hover {
+  background-color: hsl(from var(--background-color) h s calc(l - 50));
+  color: white;
+}
+
+.updatesListContainer {
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 1em;
+}
+
+.updatesList {
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  margin: 0 0.7em 0.3em 0;
+}
+
+.updatesListContainer::before,
+.updatesListContainer::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 1.6em;
+  height: 2em;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.updatesListContainer::before {
+  top: 0;
+  background: linear-gradient(to bottom, hsl(from var(--background-color) h s l / 0.95), hsl(from var(--background-color) h s l / 0));
+}
+
+.updatesListContainer::after {
+  bottom: 0;
+  background: linear-gradient(to top, hsl(from var(--background-color) h s l / 0.95), hsl(from var(--background-color) h s l / 0));
+}
+
+.updatesListContainer.hasTopFade::before,
+.updatesListContainer.hasBottomFade::after {
+  opacity: 1;
+}
+
+.updatesList::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 0.6em;
+  border-radius: 999px;
+  
+}
+
+.updatesList::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 0.4em;
+  margin-bottom: 0.7em;
+}
+
+.updatesList::-webkit-scrollbar-thumb {
+  background-color: hsl(from var(--background-color) h calc(s - 20) calc(l - 45) / 0.5);
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.updatesList::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(from var(--background-color) h calc(s - 20) calc(l - 45) / 0.8);
 }
 
 .updatesHeader {
@@ -64,30 +147,14 @@
 .updatesBoxInfo {
   font-size: 24px;
   font-family: wbf2;
-  animation: glideIn 1s ease-in-out;
-}
-
-@keyframes glideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  100% {
-    opacity: 1;
-    transform: 0;
-  }
 }
 
 .updateRow {
   display: flex;
   align-items: center;
-  margin: 0px 15px 15px 15px;
-  width: calc(100% - 30px);
-  animation: glideIn 0.2s ease-in-out;
-}
-
-.updateRowPreview {
-  align-items: flex-start;
+  margin: 0 0.4em 0.8em 1em;
+  width: calc(100% - 1.4em);
+  filter: drop-shadow(0 0 0.15em rgba(0, 0, 0, 0.35))
 }
 
 .updateIcon {
@@ -115,29 +182,32 @@
 .updateBubble {
   background-color: white;
   margin: 0px 6px 0px 16px;
-  border-radius: 20px 35px 35px 20px;
+  border-radius: 1em;
   position: relative;
   text-align: left;
   display: flex;
   align-items: center;
-  min-height: 109.6px;
+  min-height: 100px;
   flex: 1;
 }
 
 .updateDate {
   margin: 7px 0px -3px 12px;
   color: rgba(0, 0, 0, 0.6);
-  font-family: wbf2;
+  font-family: wbf3;
   font-size: 13px;
   font-weight: 500;
 }
 
 .updateText {
-  margin: 0px 12px 3px 12px;
+  margin: 2px 12px 6px 12px;
   font-size: 17px;
-  line-height: 18.5px;
+  line-height: 18px;
   letter-spacing: 0.4px;
   overflow-wrap: anywhere;
+  font-family: wbf3;
+  font-weight: 500;
+  white-space: pre-wrap;
 }
 
 .updateReactionsBar {
@@ -149,15 +219,15 @@
 .updateLowerButton {
   min-width: 45px;
   border: 1px solid black;
-  background-color: transparent;
+  background-color: white;
   border-radius: 100px;
   display: flex;
   align-items: center;
-  transition: background-color 0.2s ease-out;
+  transition: background-color 0.15s ease-out;
 }
 
 .updateLowerButton:hover {
-  background-color: #E1E1E1;
+  background-color: #B7B7B7;
 }
 
 .updateDelete {
@@ -174,20 +244,21 @@
   background-color: #FFAAAA;
 }
 
-.updateReactionEmoji {
-  margin: 0px 5px 1px 0px;
-  font-family: wbf2;
-  font-size: 12px;
-}
-
-.updateReactionNumber {
-  margin: 3px 0px 0px 0px;
-  font-family: wbf2;
-  font-weight: 500;
+.reactionEmoji {
+  margin: 0px 3px 1px 0px;
+  font-family: wbf3;
   font-size: 14px;
 }
 
-.updateReactionSelected, .updateReactionSelected:hover {
+.reactionNumber {
+  margin: 0px 3px 1px 1px;
+  min-width: 10px;
+  font-family: wbf3;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.reactionSelected, .reactionSelected:hover {
   background-color: black;
   color: white;
 }

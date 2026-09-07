@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const cors = require('cors');
 const Update = require("../models/Update.js");
 const auth = require("../utils/auth.js");
 const jwt = require('jsonwebtoken');
@@ -23,7 +22,7 @@ router.post("/", auth, async (req, res) => {
 // Get all updates and provide specific information if a valid user made the call
 router.get("/", async (req, res) => {
   const user_token = req.cookies?.user_auth_token;
-  const requireUserToken = req.query?.requireUserToken;
+  const requireUserToken = req.query?.requireUserToken == "true";
   if (!user_token && requireUserToken) res.status(500).json({error: "Missing cookie"});
   else {
     try {
@@ -36,7 +35,8 @@ router.get("/", async (req, res) => {
           Object.entries(update.reactions).forEach(([reaction, users]) => {
             update.reacted[reaction] = users.includes(decoded.user);
             update.reactionNums[reaction] = users.length - users.includes(decoded.user);
-          })
+          });
+          delete update.reactions;
         });
       }
       res.status(200).json({updates});

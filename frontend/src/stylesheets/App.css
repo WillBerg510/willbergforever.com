@@ -1,51 +1,44 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
+html::-webkit-scrollbar {
+  display: none;
 }
 
-#app {
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  margin: 0 auto;
+  text-align: center;
+  interpolate-size: allow-keywords;
+}
+
+#app, .adminPanel {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
-  margin-top: 35px;
+  height: 100%;
+  overflow: hidden;
 }
 
 h1, h2, h3, p {
   margin: 10px;
 }
 
-.mainHeading {
-  font-size: 75px;
-  letter-spacing: 3px;
-  margin: 0;
-}
-
 .mainSubtitle {
   font-weight: 500;
   font-size: 30px;
-  margin: 0;
+  margin: 5px 0 15px 0;
   font-family: wbf2;
-  margin-top: 10px;
-  margin-bottom: 25px;
 }
 
 textarea {
   resize: none;
   font-size: 17px;
-}
-
-#enterUpdate {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  align-items: center;
-}
-
-#postUpdate {
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .windowOnTop {
@@ -60,4 +53,51 @@ textarea {
   align-items: center;
   justify-content: center;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.imageLoader {
+  opacity: 0;
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes glideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes glideDownIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(97%);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
 }

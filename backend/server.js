@@ -6,6 +6,7 @@ const cookieparser = require('cookie-parser');
 const updatesRouter = require("./routes/updates.js");
 const adminRouter = require("./routes/admin.js");
 const userRouter = require("./routes/user.js");
+const projectsRouter = require("./routes/projects.js");
 
 require("dotenv").config();
 
@@ -45,9 +46,11 @@ if (process.env.DEV_MODE) {
 app.use(express.json());
 app.use(cookieparser());
 app.use(express.urlencoded({ extended: false }));
+
 app.use('/updates', updatesRouter);
 app.use('/admin', adminRouter);
 app.use('/user', userRouter);
+app.use('/projects', projectsRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

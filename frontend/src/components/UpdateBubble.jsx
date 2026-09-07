@@ -1,23 +1,51 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import updatesAPI from '../api/UpdatesAPI.js';
-import WillIcon from '../assets/Will.png';
-import reactions from "../constants/reactions.js";
+import Fanciest from "../assets/The Fanciest 2025 Small.png";
+import { updateReactions } from "../constants/reactions.js";
+import profilePics from "../constants/profilePics.js";
+
+const parseMonthDay = (monthDay) => {
+  const [month, day] = monthDay.split("/").map(Number);
+  return new Date(2000, month - 1, day);
+};
+
+const getProfilePicForDate = (date) => {
+  const currentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  return profilePics.find((profilePic) => {
+    if (profilePic.startDate.includes("Thanksgiving")) {
+      const novemberFirst = new Date(date.getFullYear(), 10, 1);
+      const daysUntilThursday = (4 - novemberFirst.getDay() + 7) % 7;
+      const thanksgiving = new Date(date.getFullYear(), 10, 1 + daysUntilThursday + 21);
+      const startDate = new Date(thanksgiving);
+      startDate.setDate(startDate.getDate() - 6);
+      const endDate = new Date(thanksgiving);
+      endDate.setDate(endDate.getDate() + 1);
+      return currentDate >= startDate && currentDate <= endDate;
+    }
+
+    const startDate = parseMonthDay(profilePic.startDate);
+    const endDate = parseMonthDay(profilePic.endDate);
+    const currentMonthDay = new Date(2000, currentDate.getMonth(), currentDate.getDate());
+
+    return currentMonthDay >= startDate && currentMonthDay <= endDate;
+  });
+};
 
 const UpdateBubble = (props) => {
-  const { allUpdatesOpen, update, full, isAdmin, userRefresh } = props;
+  const { allUpdatesOpen, update, isAdmin, userRefresh, onImageLoaded } = props;
   const [confirmDelete, setConfirmDelete] = useState();
   const [reactionStates, setReactionStates] = useState({});
   const [reactionNums, setReactionNums] = useState({});
-  const [imageReady, setImageReady] = useState(false);
   const client = useQueryClient();
 
   const getReactionStates = () => {
     setReactionStates(Object.fromEntries(
-      Object.keys(reactions).map(reaction => [reaction, update.reacted?.[reaction] || 0])
+      Object.keys(updateReactions).map(reaction => [reaction, update.reacted?.[reaction] || 0])
     ));
     setReactionNums(Object.fromEntries(
-      Object.keys(reactions).map(reaction => [reaction, update.reactionNums?.[reaction] || 0])
+      Object.keys(updateReactions).map(reaction => [reaction, update.reactionNums?.[reaction] || 0])
     ));
   }
   
@@ -80,14 +108,10 @@ const UpdateBubble = (props) => {
     else deleteUpdate();
   }
 
-  const onImageReady = () => {
-    setImageReady(true);
-  }
-
   return (
-    <div style={imageReady ? {display: "flex"} : {display: "none"}} className={`updateRow${ full ? " updateRowFull" : " updateRowPreview"}`}>
+    <div className="updateRow">
       <div className="updateIcon">
-        <img src={WillIcon} className="willIcon" onLoad={onImageReady} />
+        <img src={getProfilePicForDate(update.date)?.image || Fanciest} className="willIcon" onLoad={onImageLoaded} />
         <div className="updateTriangle" />
       </div>
       <div className="updateBubble">
@@ -102,19 +126,19 @@ const UpdateBubble = (props) => {
           })}</p>
           <p className="updateText">{update.text}</p>
           {Object.keys(reactionStates).length > 0 && <div className="updateReactionsBar">
-            {Object.entries(reactions).map(([reactionName, reactionEmoji]) => 
+            {Object.entries(updateReactions).map(([reactionName, reactionEmoji]) => 
               <button
                 className={`updateLowerButton${reactionStates[reactionName]
-                  ? " updateReactionSelected"
+                  ? " reactionSelected"
                   : ""
                 }`}
                 onClick={() => toggleReaction(reactionName)} key={update._id + reactionName}>
-                <p className="updateReactionEmoji">{reactionEmoji}</p>
-                <p className="updateReactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
+                <p className="reactionEmoji">{reactionEmoji}</p>
+                <p className="reactionNumber">{reactionNums[reactionName] + reactionStates[reactionName]}</p>
               </button>
             )}
           </div>}
-          {(isAdmin && full) && <button className="updateLowerButton updateDelete" onClick={deleteClicked}>
+          {isAdmin && <button className="updateLowerButton updateDelete" onClick={deleteClicked}>
             {confirmDelete ? "Confirm" : "Delete"}
           </button>}
         </div>

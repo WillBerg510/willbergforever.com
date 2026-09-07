@@ -1,0 +1,357 @@
+.island {
+  width: min(96vw, calc(137.5vh));
+  margin-left: 1.5em;
+  aspect-ratio: 1.45;
+  position: fixed;
+  overflow: hidden;
+  container-type: inline-size;
+  margin-top: 2%;
+}
+
+.island:not(.islandVisible) * {
+  pointer-events: none !important;
+}
+
+.regionName {
+  position: absolute;
+  z-index: 4;
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: 1cqw;
+  will-change: transform;
+  height: 6.5cqw;
+  padding-top: 1.5cqw;
+  user-select: none;
+}
+
+.regionNameContainer {
+  width: 16cqw;
+  height: 5cqw;
+  background-color: white;
+  filter: drop-shadow(0.25em 0.25em 0.25em rgba(0, 0, 0, 0.5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition: background-color 0.1s ease-out,
+  color 0.1s ease-out,
+  transform 0.1s ease-out;
+}
+
+.regionName:hover .regionNameContainer {
+  background-color: black;
+  color: white;
+  transform: scale(118%);
+}
+
+.regionName:hover .regionTriangleTop {
+  border-bottom: 1.5em solid black;
+}
+
+.regionName:hover .regionTriangleBottom {
+  border-top: 1.5em solid black;
+}
+
+.regionTriangle {
+  width: 0;
+  height: 0;
+  border-left: 1em solid transparent;
+  border-right: 1em solid transparent;
+  position: absolute;
+  transition: border 0.1s ease-out
+}
+
+.regionTriangleTop {
+  top: -1.4em;
+  border-bottom: 1.5em solid white;
+}
+
+.regionTriangleBottom {
+  bottom: -1.4em;
+  border-top: 1.5em solid white;
+}
+
+.regionIcon {
+  width: 4.6em;
+  flex-shrink: 0;
+  height: 4.6em;
+  margin: 0 -0.8em 0 0.2em;
+  border-radius: 999px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.regionIconImage {
+  position: absolute;
+  height: 6.6em;
+  pointer-events: none;
+}
+
+.regionNameText {
+  font-family: wbf3;
+  font-size: 1.6em;
+  line-height: 1.2em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin: 0 0.5em;
+}
+
+.regionNameTextAlone {
+  font-size: 1.8em;
+}
+
+.projectIconFull {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 5.5cqw;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: iconSlideIn 0.3s ease-out var(--glide-delay) forwards;
+  user-select: none;
+  will-change: transform;
+}
+
+@keyframes iconSlideIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 0.4cqw));
+    filter: brightness(0.4);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.projectIcon, .exitIcon, .returnIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.1s ease-out;
+  transform: scale(1);
+}
+
+.exitIconFull {
+  filter: drop-shadow(0.2cqw 0.2cqw 0.4cqw rgba(0, 0, 0, 0.8));
+}
+
+.returnIconFull {
+  filter: drop-shadow(0.2cqw 0.2cqw 0.4cqw rgba(0, 0, 0, 0.4));
+  margin-top: -0.25em;
+}
+
+.exitIconFull, .returnIconFull {
+  cursor: pointer;
+  transition: transform 0.1s ease-out;
+  transform: scale(1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.projectIcon:hover {
+  transform: scale(135%) translateY(-5.5%);
+}
+
+.exitIconHover, .returnIconHover {
+  transform: scale(135%);
+}
+
+.exitText, .returnText {
+  font-family: wbf3;
+  font-weight: 600;
+  font-size: 2cqw;
+  letter-spacing: 0.075em;
+  margin: 0;
+  line-height: 1.15em;
+  position: absolute;
+  color: white;
+  text-align: center;
+  transition: color 0.1s ease-out, font-weight 0.1s ease-out, transform 0.1s ease-out;
+}
+
+.exitText {
+  top: 2.75em;
+}
+
+.exitTextOriginal {
+  opacity: 0;
+}
+
+.returnText {
+  width: 8em;
+  left: 1.9em;
+}
+
+.exitTextHover, .returnTextHover {
+  color: #EDCF00;
+  font-weight: 1000;
+}
+
+.exitTextHover {
+  transform: translateY(0.35em);
+}
+
+.returnTextHover {
+  transform: translateX(0.35em);
+}
+
+.regionDivisions {
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  position: relative;
+}
+
+.projectTooltip {
+  position: absolute;
+  bottom: -4cqw;
+  pointer-events: none;
+  animation: glideIn 0.2s ease-in-out;
+  filter: drop-shadow(0.2cqw 0.2cqw 0.3cqw rgba(0, 0, 0, 0.5));
+}
+
+.projectTooltipBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: wbf3;
+  font-weight: 600;
+  font-size: 1.65cqw;
+  letter-spacing: 0.05em;
+  background-color: white;
+  padding: 0 1.1em;
+  border-radius: 999px;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.projectTooltipBox p {
+  margin: 0;
+}
+
+.projectTriangle {
+  width: 0;
+  height: 0;
+  border-left: 0.7cqw solid transparent;
+  border-right: 0.7cqw solid transparent;
+  position: absolute;
+  top: -0.9cqw;
+  border-bottom: 1cqw solid white;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.regionDivision {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.divisionButtons {
+  position: relative;
+  z-index: 3;
+}
+
+.regionHeader {
+  font-family: wbf3;
+  font-size: 2.2cqw;
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  translate: -50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  filter: drop-shadow(0.2cqw 0.2cqw 0.3cqw rgba(0, 0, 0, 0.5));
+  top: 2%;
+  color: white;
+}
+
+.refreshButton {
+  position: absolute;
+  right: -22vw;
+  top: 0;
+}
+
+.refreshButton:hover {
+  background-color: rgba(151, 0, 0, 0.6);
+  color: white;
+}
+
+.regionHeaderName {
+  font-size: 1em;
+  font-weight: 800;
+  line-height: 1.5em;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 999px;
+  padding: 0 1.5em;
+  margin: 0;
+}
+
+.divisionHeaderName {
+  font-size: 0.7em;
+  font-weight: 500;
+  line-height: 0.8em;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 0 1.4em 0.4em 1.4em;
+  border-radius: 0 0 999px 999px;
+  opacity: 1;
+  transition: opacity 0.1s ease-out;
+}
+
+.divisionHeaderHidden {
+  opacity: 0;
+}
+
+.smileIsle {
+  width: 100%;
+  aspect-ratio: 1.45;
+}
+
+.islandImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+.islandBlurDiv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+}
+
+.islandBlur {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0.1em solid #5cabe8;
+}
+
+.regionPresence {
+  z-index: 2;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

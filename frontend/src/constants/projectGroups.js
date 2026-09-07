@@ -1,0 +1,80 @@
+import MusicIcon from "../assets/Music Group.png";
+import ProgramsIcon from "../assets/Programs Group.png";
+import ArtIcon from "../assets/Art Group.png";
+import PhotosIcon from "../assets/Photos Group.png";
+import VideosIcon from "../assets/Videos Group.png";
+import CartoonsIcon from "../assets/Cartoons Group.png";
+import CoversIcon from "../assets/Covers Group.png";
+import TeamProjectsIcon from "../assets/Team Projects Group.png";
+import OriginalSongsIcon from "../assets/Original Songs Group.png";
+import LunacyTodayIcon from "../assets/Lunacy Today Group.png";
+import Covers2025Icon from "../assets/2025 Covers Group.png";
+import DecemberIcon from "../assets/December Group.png";
+import ProfilePicsIcon from "../assets/Profile Pics Group.png";
+import FavoritesIcon from "../assets/Favorites Group.png";
+
+const projectGroups = {
+  music: {
+    name: "Music",
+    icon: MusicIcon,
+    color: "#068206",
+  },
+  programs: {
+    name: "Programs",
+    icon: ProgramsIcon,
+    color: "#0d3dcc",
+  },
+  art: {
+    name: "Art",
+    icon: ArtIcon,
+    color: "#be2020",
+  },
+  photos: {
+    name: "Photos",
+    icon: PhotosIcon,
+    color: "#c26400",
+  },
+  videos: {
+    name: "Videos",
+    icon: VideosIcon,
+    color: "#881fb9",
+  },
+  cartoons: {
+    name: "Cartoons",
+    icon: CartoonsIcon,
+  },
+  covers: {
+    name: "Covers & Parodies",
+    icon: CoversIcon,
+  },
+  teamProjects: {
+    name: "Team Projects",
+    icon: TeamProjectsIcon,
+  },
+  originals: {
+    name: "Original Songs",
+    icon: OriginalSongsIcon,
+  },
+  lunacyToday: {
+    name: "Lunacy Today",
+    icon: LunacyTodayIcon,
+  },
+  covers2025: {
+    name: "2025 Covers",
+    icon: Covers2025Icon,
+  },
+  december: {
+    name: "December",
+    icon: DecemberIcon,
+  },
+  profilePics: {
+    name: "Profile Pics",
+    icon: ProfilePicsIcon,
+  },
+  favorites: {
+    name: "Will's Favorites",
+    icon: FavoritesIcon,
+  },
+}
+
+export default projectGroups;

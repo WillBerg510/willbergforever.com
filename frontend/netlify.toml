@@ -1,0 +1,2 @@
+[build]
+  command = "VITE_BRANCH=$BRANCH npm run build"

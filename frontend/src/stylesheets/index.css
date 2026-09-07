@@ -7,16 +7,21 @@
 
   color-scheme: light;
   color: #121212;
-  background-color: #ededed;
+  background-color: #5cabe8;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 :root, button, textarea {
-  font-family: wbf1, wbf2, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: wbf1, wbf2, wbf3, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 button {

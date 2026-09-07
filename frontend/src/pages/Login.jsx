@@ -20,7 +20,7 @@ const Login = () => {
 
   const login = useMutation({
     mutationFn: () => adminAPI.login(password),
-    onSuccess: () => navigate('/'),
+    onSuccess: () => navigate('/admin'),
   });
 
   return (

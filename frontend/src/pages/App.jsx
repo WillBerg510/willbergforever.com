@@ -2,31 +2,44 @@ import '../stylesheets/App.css'
 import '../stylesheets/fonts.css'
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import updatesAPI from "../api/UpdatesAPI.js";
+import { AnimatePresence, motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import adminAPI from "../api/AdminAPI.js";
 import userAPI from "../api/UserAPI.js";
+import projectsAPI from '../api/ProjectsAPI.js';
 import UpdatesBox from '../components/UpdatesBox.jsx';
+import Island from '../components/Island.jsx';
+import Project from '../components/Project.jsx';
+import Player from '../components/Player.jsx';
+import GroupList from '../components/GroupList.jsx';
+import SideMenu from '../components/SideMenu.jsx';
+import MoreGroups from '../components/MoreGroups.jsx';
+import imagesToLoad from '../constants/imagesToLoad.js';
+
+const levels = {
+  "Easy": 3,
+  "Medium": 4,
+  "Hard": 5,
+};
 
 function App() {
-  const [update, setUpdate] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
+  const [openProject, setOpenProject] = useState(null);
+  const [openPlayer, setOpenPlayer] = useState(null);
+  const [openMiscWindow, setOpenMiscWindow] = useState(null);
+  const [racesData, setRacesData] = useState({});
+  const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
+  const [menu, setMenu] = useState("Map");
+  const [firstOpen, setFirstOpen] = useState(true);
   const client = useQueryClient();
+  const navigate = useNavigate();
 
   // Verify whether the user's access tokens are valid upon page load, from which further setup actions are performed
   useEffect(() => {
     userVerify();
     adminVerify();
   }, []);
-
-  // Add new update and clear update input
-  const postUpdate = useMutation({
-    mutationFn: () => (update != "") ? updatesAPI.postUpdate(update) : null,
-    onSuccess: () => {
-      client.invalidateQueries(["updates"]);
-      setUpdate("");
-    }
-  });
 
   // Determine whether the user's admin access token is valid, and then attempt a refresh with the refresh token
   const { mutate: adminVerify } = useMutation({
@@ -79,6 +92,22 @@ function App() {
     onSuccess: () => setIsAdmin(false),
   });
 
+  const { data: groupProjects, isPending: gettingProjects, mutate: getGroupProjects } = useMutation({
+    mutationFn: (group) => projectsAPI.getFromGroup(group)
+      .then(res => res?.data?.projects?.map(project => ({
+        ...project,
+        date: new Date(project.date),
+      }))),
+  });
+
+  const { mutate: getRace } = useMutation({
+    mutationFn: (level) => projectsAPI.getRace(levels[level]),
+    onSuccess: (res, level) => {
+      const projects = res?.data?.projects;
+      setRacesData(prev => ({...prev, [level]: projects}));
+    },
+  });
+
   const toggleSeeMore = async () => {
     client.invalidateQueries(["updates"]);
     if (allUpdatesOpen) {
@@ -92,31 +121,76 @@ function App() {
     }
   }
 
-  // On change of update textarea
-  const changeUpdate = (e) => {
-    setUpdate(e.target.value);
+  const toAdminPanel = () => {
+    navigate("/admin");
+  };
+
+  const closeWindows = () => {
+    setOpenProject(null);
+    setOpenPlayer(null);
+    setOpenMiscWindow(null);
+  };
+
+  const onElementLoad = () => {
+    setInitialLoad(prev => Math.max(prev - 1, 0));
   }
 
   return (
     <div id="app">
+      {initialLoad <= 0 && <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} />}
       {isAdmin &&
-        <div style={{display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
-          <h2 style={{margin: "0"}}>Logged in as admin</h2>
+        <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
+          <p style={{margin: "0"}}>Logged in as admin</p>
+          <button style={{margin: "0"}} onClick={toAdminPanel}>Admin Panel</button>
           <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>
         </div>
       }
-      <h1 className="mainHeading">WILL BERG</h1>
-      <h2 className="mainSubtitle">AND THE WEBSITE ON THE INTERNET</h2>
-      {isAdmin &&
-        <div id="enterUpdate">
-          <textarea onChange={changeUpdate} cols="50" rows="5" value={update} />
-          <button id="postUpdate" onClick={postUpdate.mutate} style={{marginBottom: "30px"}}>Post an update</button>
-        </div>
-      }
-      <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
-      {allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
+      {/*<UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />*/}
+      {/*allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
         <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
+      </div>*/}
+      <AnimatePresence>
+        {(menu != "Map" && menu != "More Groups") &&
+          <GroupList group={menu} groupProjects={groupProjects} setOpenProject={setOpenProject} setOpenPlayer={setOpenPlayer} getGroupProjects={getGroupProjects} setMenu={setMenu} />
+        }
+      </AnimatePresence>
+      <AnimatePresence>
+        {initialLoad <= 0 && menu == "More Groups" &&
+          <MoreGroups getGroupProjects={getGroupProjects} setMenu={setMenu} />
+        }
+      </AnimatePresence>
+      {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
+        {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
+        {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} userRefresh={userRefresh} />}
       </div>}
+      {(openMiscWindow == "updates") && <div className="windowOnTop" onClick={closeWindows}>
+        <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
+      </div>}
+      {(initialLoad > 0) && <>
+        <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />
+        {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
+      </>}
+      <AnimatePresence>
+        {(initialLoad <= 0 && menu == "Map") &&
+          <Island setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} />
+        }
+      </AnimatePresence>
+      {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
+        {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}
+      </div>*/}
+      {/*<div style={{display: "flex", gap: "30px", zIndex: "4", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
+        {Object.keys(levels).map(level => 
+          racesData[level] && (
+          <div style={{border: "1px solid #ccc", padding: "10px", borderRadius: "5px"}}>
+            <h3>{level} Race Projects</h3>
+            <ul>
+              {racesData[level].map((project) => (
+                <li style={{textAlign: "left"}} key={project._id}>{project.name}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>*/}
     </div>
   )
 }
