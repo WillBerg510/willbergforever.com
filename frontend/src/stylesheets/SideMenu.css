@@ -1,6 +1,5 @@
 .sideMenu {
   position: fixed;
-  opacity: 0;
   height: 100%;
   left: 0;
   width: 15em;
@@ -12,19 +11,33 @@
   gap: 0.75em;
   margin: 0 0 0 1.2em;
   pointer-events: none;
-  animation: fadeInAndEnable 0.5s ease-in-out 2.25s forwards;
 }
 
 .mainHeading {
-  position: absolute;
-  top: 1.2em;
+  position: fixed;
   pointer-events: none;
   user-select: none;
-  width: 100%;
-  margin-bottom: 2em;
+  width: 15em;
   aspect-ratio: 2.2;
   object-fit: cover;
-  z-index: 4;
+  opacity: 0;
+  z-index: 6;
+  transition: transform 1s cubic-bezier(0.5, 0, 0.25, 1) 2s,
+  top 1s cubic-bezier(0.5, 0, 0.25, 1) 2s,
+  left 1s cubic-bezier(0.5, 0, 0.25, 1) 2s;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.mainHeadingLoading {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(250%);
+}
+
+.mainHeadingLoaded {
+  top: 1.2em;
+  left: 1.2em;
+  transform: none;
 }
 
 .sideMenuButton {
@@ -33,6 +46,7 @@
   justify-content: center;
   padding: 0;
   border: 0;
+  opacity: 0;
   background: transparent;
   font-family: wbf2;
   font-size: 1em;
@@ -45,6 +59,7 @@
   background-color 0.15s ease-out,
   color 0.15s ease-out;
   margin-left: -0.5em;
+  animation: fadeInAndEnable 0.5s ease-in-out 3s forwards;
 }
 
 .sideMenuButtonColumn {

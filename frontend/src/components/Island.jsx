@@ -58,7 +58,7 @@ const Island = (props) => {
       initial={{opacity: 0}}
       animate={{
         opacity: 1,
-        transition: {ease: "easeInOut", duration: firstOpen ? 0.5 : 0.3, delay: firstOpen ? 2 : 0.2},
+        transition: {ease: "easeInOut", duration: firstOpen ? 0.5 : 0.3, delay: firstOpen ? 2.75 : 0.2},
       }}
       exit={{
         opacity: 0,

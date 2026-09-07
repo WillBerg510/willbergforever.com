@@ -2,7 +2,6 @@ import '../stylesheets/SideMenu.css';
 import projectGroups from '../constants/projectGroups.js';
 import MapIcon from '../assets/Map Icon.png';
 import MoreIcon from '../assets/More Groups Icon.png';
-import WillBergLogo from '../assets/WillBergLogo.png';
 
 const menuItems = [
   { name: 'Map', icon: MapIcon, color: '#a9167a' },
@@ -11,7 +10,7 @@ const menuItems = [
 ];
 
 const SideMenu = (props) => {
-  const {getGroupProjects, setMenu, menu} = props;
+  const {getGroupProjects, setMenu, menu, loaded} = props;
 
   const onButtonClick = (name) => {
     if (menu == name) return;
@@ -23,8 +22,7 @@ const SideMenu = (props) => {
 
   return (
     <nav className="sideMenu">
-      <img className="mainHeading" src={WillBergLogo}/>
-      {menuItems.map(({name, icon, color}) => (
+      {loaded && menuItems.map(({name, icon, color}) => (
         <button
           className="sideMenuButton"
           type="button"

@@ -15,6 +15,7 @@ import GroupList from '../components/GroupList.jsx';
 import SideMenu from '../components/SideMenu.jsx';
 import MoreGroups from '../components/MoreGroups.jsx';
 import imagesToLoad from '../constants/imagesToLoad.js';
+import WillBergLogo from '../assets/WillBergLogo.png';
 
 const levels = {
   "Easy": 3,
@@ -32,6 +33,7 @@ function App() {
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
   const [menu, setMenu] = useState("Map");
   const [firstOpen, setFirstOpen] = useState(true);
+  const [mainHeadingReady, setMainHeadingReady] = useState(false);
   const client = useQueryClient();
   const navigate = useNavigate();
 
@@ -137,7 +139,13 @@ function App() {
 
   return (
     <div id="app">
-      {initialLoad <= 0 && <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} />}
+      <img
+        className={`mainHeading ${initialLoad <= 0 ? "mainHeadingLoaded" : "mainHeadingLoading"}`}
+        src={WillBergLogo}
+        onLoad={() => setMainHeadingReady(true)}
+        style={{display: mainHeadingReady ? "block" : "none"}}
+      />
+      <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} />
       {isAdmin &&
         <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
@@ -145,10 +153,6 @@ function App() {
           <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>
         </div>
       }
-      {/*<UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={false} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />*/}
-      {/*allUpdatesOpen && <div className="windowOnTop" onClick={toggleSeeMore}>
-        <UpdatesBox allUpdatesOpen={allUpdatesOpen} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} />
-      </div>*/}
       <AnimatePresence>
         {(menu != "Map" && menu != "More Groups") &&
           <GroupList group={menu} groupProjects={groupProjects} setOpenProject={setOpenProject} setOpenPlayer={setOpenPlayer} getGroupProjects={getGroupProjects} setMenu={setMenu} />
