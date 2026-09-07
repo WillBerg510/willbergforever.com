@@ -161,13 +161,13 @@ function App() {
       </AnimatePresence>
       {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
         {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
-        {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} />}
+        {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} userRefresh={userRefresh} />}
       </div>}
       {(openMiscWindow == "updates") && <div className="windowOnTop" onClick={closeWindows}>
         <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
       </div>}
       {(initialLoad > 0) && <>
-        <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} />
+        <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />
         {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
       </>}
       <AnimatePresence>
