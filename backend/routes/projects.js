@@ -144,6 +144,10 @@ router.patch("/:id", auth, formidable({
 router.delete("/one/:id", auth, async (req, res) => {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
+    if (!project) {
+      return res.status(404).json({error: "Project with that ID does not exist"});
+    }
+
     await deleteFromS3(project.thumbnail.split(process.env.S3_BUCKET + "/")[1]);
     for (const file of project.gallery) {
       await deleteFromS3(file.split(process.env.S3_BUCKET + "/")[1]);
@@ -151,12 +155,8 @@ router.delete("/one/:id", auth, async (req, res) => {
     for (const file of project.content) {
       await deleteFromS3(file.split(process.env.S3_BUCKET + "/")[1]);
     }
-    if (!project) {
-      res.status(404).json({error: "Project with that ID does not exist"});
-    }
-    else {
-      res.status(204).json({message: "Project deleted"});
-    }
+
+    res.status(204).json({message: "Project deleted"});
   } catch (err) {
     res.status(500).json({error: "Error deleting project"});
   }
