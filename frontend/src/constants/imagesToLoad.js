@@ -20,10 +20,12 @@ import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 import BackIcon from "../assets/Back.svg";
 import SmileIsle from '../assets/Smile Isle.jpg';
 import WillBergLogo from '../assets/WillBergLogo.png';
+import MainBlur from '../assets/Main Blur.png';
 
 const imagesToLoad = [
   SmileIsle,
   WillBergLogo,
+  MainBlur,
   ...regions.map(region => region.icon).filter(Boolean),
   ...regions.flatMap(region => region.holdsProjects ? region.divisions?.map(division => division?.image).filter(Boolean) ?? [] : []),
   ...Object.values(projectGroups).map(group => group.icon),
