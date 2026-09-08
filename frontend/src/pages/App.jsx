@@ -14,6 +14,7 @@ import Player from '../components/Player.jsx';
 import GroupList from '../components/GroupList.jsx';
 import SideMenu from '../components/SideMenu.jsx';
 import MoreGroups from '../components/MoreGroups.jsx';
+import RightSideMenu from '../components/RightSideMenu.jsx';
 import imagesToLoad from '../constants/imagesToLoad.js';
 import WillBergLogo from '../assets/WillBergLogo.png';
 
@@ -146,6 +147,7 @@ function App() {
         style={{display: mainHeadingReady ? "block" : "none"}}
       />
       <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} />
+      <RightSideMenu />
       {isAdmin &&
         <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
