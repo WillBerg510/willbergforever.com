@@ -1,5 +1,9 @@
 import YouTubeIcon from "../assets/YouTube.svg";
 import SpotifyIcon from "../assets/Spotify.svg";
+import LinkedInIcon from "../assets/LinkedIn.svg";
+import GitHubIcon from "../assets/GitHub.svg";
+import AppleMusicIcon from "../assets/Apple Music.svg";
+import InstagramIcon from "../assets/Instagram.svg";
 import GlobeIcon from "../assets/Globe.svg";
 import ViewIcon from "../assets/View.svg";
 import MusicIcon from '../assets/Music Map Icon.png';
@@ -36,6 +40,10 @@ const imagesToLoad = [
   HomeIcon,
   YouTubeIcon,
   SpotifyIcon,
+  LinkedInIcon,
+  GitHubIcon,
+  InstagramIcon,
+  AppleMusicIcon,
   GlobeIcon,
   ViewIcon,
   PlayIcon,

@@ -71,6 +71,8 @@ textarea {
   flex-wrap: wrap;
   margin: 1.8em;
   height: 17em;
+  opacity: 0;
+  animation: fadeInAndEnable 0.5s ease-in-out 3.5s forwards;
 }
 
 .rightSideLink {
