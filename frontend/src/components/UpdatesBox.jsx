@@ -15,7 +15,7 @@ const UpdatesBox = (props) => {
   const [imagesLoaded, setImagesLoaded] = useState(0);
 
   // Get all updates
-  const { data: updates, error: getUpdatesError, isLoading: isLoading } = useQuery({
+  const { data: updates, isLoading: isLoading } = useQuery({
     queryKey: ["updates"],
     queryFn: () => {
       return updatesAPI.getUpdates().then(res => {
@@ -25,13 +25,15 @@ const UpdatesBox = (props) => {
         return res.data.updates.toReversed();
       });
     },
+    retry: (count, error) => {
+      if (error.response?.status == 500) {
+        userRefresh();
+        return true;
+      }
+      return false;
+    },
+    retryDelay: (count) => count * 250,
   });
-
-  useEffect(() => {
-    if (getUpdatesError?.response?.status == 500) {
-      userRefresh();
-    }
-  }, [getUpdatesError]);
 
   const expandPreview = () => {
     if (showGradient) setExpanded(true);

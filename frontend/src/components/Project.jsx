@@ -39,9 +39,11 @@ const Project = (props) => {
   const { mutate: addReaction } = useMutation({
     mutationFn: (reaction) => projectsAPI.addReaction(project._id, reaction),
     retry: (count, error) => {
-      if (error.response.status == 500 && count < 1) {
-        userRefresh();
-        return true;
+      if (error.response.status == 500) {
+        setTimeout(() => {
+          userRefresh();
+          return true;
+        }, count * 250);
       }
       return false;
     },
@@ -51,12 +53,13 @@ const Project = (props) => {
   const { mutate: removeReaction } = useMutation({
     mutationFn: (reaction) => projectsAPI.removeReaction(project._id, reaction),
     retry: (count, error) => {
-      if (error.response.status == 500 && count < 1) {
+      if (error.response?.status == 500) {
         userRefresh();
         return true;
       }
       return false;
     },
+    retryDelay: (count) => count * 250,
     onSuccess: () => client.invalidateQueries([`project-${project_id}`]),
   });
 
@@ -81,12 +84,13 @@ const Project = (props) => {
       });
     },
     retry: (count, error) => {
-      if (error.response.status == 500 && count < 1) {
+      if (error.response?.status == 500) {
         userRefresh();
         return true;
       }
       return false;
     },
+    retryDelay: (count) => count * 250,
   });
 
   useEffect(() => {

@@ -63,9 +63,6 @@ function App() {
   const { mutate: userVerify, isError: userVerifyFailed } = useMutation({
     mutationFn: () => userAPI.verify(),
     onSuccess: (res) => {
-      if (res.data) {
-        client.invalidateQueries(["updates"]);
-      }
       userRefresh();
     },
   });
@@ -74,19 +71,13 @@ function App() {
   const { mutate: userRefresh } = useMutation({
     mutationFn: () => userAPI.refresh(),
     onSuccess: (res) => {
-      if (res.data) {
-        client.invalidateQueries(["updates"]);
-      }
-      else getUser();
+      getUser();
     }
   });
 
   // Acquire new user access token, and get all updates
   const { mutate: getUser } = useMutation({
     mutationFn: () => userAPI.getUser(),
-    onSuccess: () => {
-      client.invalidateQueries(["updates"]);
-    },
   });
 
   // Remove admin access token, remove admin refresh token, and revoke admin privileges
