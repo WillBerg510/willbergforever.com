@@ -147,7 +147,7 @@ function App() {
         style={{display: mainHeadingReady ? "block" : "none"}}
       />
       <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} />
-      <RightSideMenu />
+      {initialLoad <= 0 && <RightSideMenu />}
       {isAdmin &&
         <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
