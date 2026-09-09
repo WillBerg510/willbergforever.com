@@ -4,6 +4,7 @@ import YouTubeIcon from "../assets/YouTube.svg";
 import GitHubIcon from "../assets/GitHub.svg";
 import AppleMusicIcon from "../assets/Apple Music.svg";
 import InstagramIcon from "../assets/Instagram.svg";
+import '../stylesheets/RightSideMenu.css';
 
 const externals = [
   {icon: YouTubeIcon, link: "https://www.youtube.com/WillBergYT"},
@@ -15,15 +16,24 @@ const externals = [
 ];
 
 const RightSideMenu = (props) => {
+  const {setMenu} = props;
+
   const onButtonClick = (link) => {
     window.open(link, "_blank");
   }
 
+  const openAbout = () => {
+    setMenu("About");
+  }
+
   return (
     <div className="rightSideMenu">
-      {externals.map(external =>
-        <img className="rightSideLink" src={external.icon} onClick={() => onButtonClick(external.link)} />
-      )}
+      <button className="aboutButton" onClick={openAbout}>ABOUT ME</button>
+      <div className="externals">
+        {externals.map(external =>
+          <img className="rightSideLink" src={external.icon} onClick={() => onButtonClick(external.link)} />
+        )}
+      </div>
     </div>
   );
 };

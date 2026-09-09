@@ -15,6 +15,7 @@ import GroupList from '../components/GroupList.jsx';
 import SideMenu from '../components/SideMenu.jsx';
 import MoreGroups from '../components/MoreGroups.jsx';
 import RightSideMenu from '../components/RightSideMenu.jsx';
+import About from '../components/About.jsx';
 import imagesToLoad from '../constants/imagesToLoad.js';
 import WillBergLogo from '../assets/WillBergLogo.png';
 
@@ -138,7 +139,7 @@ function App() {
         style={{display: mainHeadingReady ? "block" : "none"}}
       />
       <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} />
-      {initialLoad <= 0 && <RightSideMenu />}
+      {initialLoad <= 0 && <RightSideMenu setMenu={setMenu} />}
       {isAdmin &&
         <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
@@ -147,13 +148,18 @@ function App() {
         </div>
       }
       <AnimatePresence>
-        {(menu != "Map" && menu != "More Groups") &&
+        {(menu != "Map" && menu != "More Groups" && menu != "About") &&
           <GroupList group={menu} groupProjects={groupProjects} setOpenProject={setOpenProject} setOpenPlayer={setOpenPlayer} getGroupProjects={getGroupProjects} setMenu={setMenu} />
         }
       </AnimatePresence>
       <AnimatePresence>
         {initialLoad <= 0 && menu == "More Groups" &&
           <MoreGroups getGroupProjects={getGroupProjects} setMenu={setMenu} />
+        }
+      </AnimatePresence>
+      <AnimatePresence>
+        {(menu == "About") &&
+          <About />
         }
       </AnimatePresence>
       {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
