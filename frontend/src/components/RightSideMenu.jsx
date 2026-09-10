@@ -16,18 +16,19 @@ const externals = [
 ];
 
 const RightSideMenu = (props) => {
-  const {setMenu} = props;
+  const {setMenu, listMode, setListMode, firstOpen} = props;
 
   const onButtonClick = (link) => {
     window.open(link, "_blank");
   }
 
   const openAbout = () => {
+    setListMode(false);
     setMenu("About");
   }
 
   return (
-    <div className="rightSideMenu">
+    <div className={`rightSideMenu listMode-${listMode} firstOpen-${firstOpen}`}>
       <button className="aboutButton" onClick={openAbout}>ABOUT ME</button>
       <div className="externals">
         {externals.map(external =>

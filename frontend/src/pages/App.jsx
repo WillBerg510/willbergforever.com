@@ -34,8 +34,14 @@ function App() {
   const [racesData, setRacesData] = useState({});
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
   const [menu, setMenu] = useState("Map");
+  const [listMode, setListMode] = useState(true);
+  const [returnButtonClicked, setReturnButtonClicked] = useState(false);
+  const [mapSelected, setMapSelected] = useState(true);
   const [firstOpen, setFirstOpen] = useState(true);
   const [mainHeadingReady, setMainHeadingReady] = useState(false);
+  const [focusRegion, setFocusRegion] = useState(null);
+  const [focusDivision, setFocusDivision] = useState(null);
+  const [isDivisionExiting, setIsDivisionExiting] = useState(false);
   const client = useQueryClient();
   const navigate = useNavigate();
 
@@ -130,6 +136,27 @@ function App() {
     setInitialLoad(prev => Math.max(prev - 1, 0));
   }
 
+  const returnToList = () => {
+    setReturnButtonClicked(true);
+    setListMode(true);
+    setMenu("Map");
+    setTimeout(() => {
+      setReturnButtonClicked(false);
+      setIsDivisionExiting(true);
+      setFocusRegion(null);
+      setFocusDivision(null);
+    }, 200);
+  }
+
+  const onMapClick = () => {
+    setIsDivisionExiting(true);
+    setFocusRegion(null);
+    setFocusDivision(null);
+    if (!listMode) {
+      returnToList();
+    }
+  }
+
   return (
     <div id="app">
       <img
@@ -138,8 +165,8 @@ function App() {
         onLoad={() => setMainHeadingReady(true)}
         style={{display: mainHeadingReady ? "block" : "none"}}
       />
-      <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} />
-      {initialLoad <= 0 && <RightSideMenu setMenu={setMenu} />}
+      <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} listMode={listMode} setListMode={setListMode} setMapSelected={setMapSelected} firstOpen={firstOpen} onMapClick={onMapClick} />
+      {initialLoad <= 0 && <RightSideMenu setMenu={setMenu} listMode={listMode} setListMode={setListMode} firstOpen={firstOpen} />}
       {isAdmin &&
         <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
@@ -175,8 +202,20 @@ function App() {
       </>}
       <AnimatePresence>
         {(initialLoad <= 0 && menu == "Map") &&
-          <Island setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} />
+          <Island focusRegion={focusRegion} setFocusRegion={setFocusRegion} focusDivision={focusDivision} setFocusDivision={setFocusDivision} isDivisionExiting={isDivisionExiting} setIsDivisionExiting={setIsDivisionExiting} setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} listMode={listMode} returnButtonClicked={returnButtonClicked} mapSelected={mapSelected} />
         }
+      </AnimatePresence>
+      <AnimatePresence>
+        {!listMode && <motion.div
+          className="returnButton"
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          exit={{opacity: 0}}
+          transition={{duration: 0.15, ease: "easeInOut"}}
+          onClick={returnToList}
+        >
+          RETURN
+        </motion.div>}
       </AnimatePresence>
       {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
         {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}

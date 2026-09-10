@@ -10,18 +10,23 @@ const menuItems = [
 ];
 
 const SideMenu = (props) => {
-  const {getGroupProjects, setMenu, menu, loaded} = props;
+  const {getGroupProjects, setMenu, menu, loaded, listMode, setListMode, firstOpen, onMapClick} = props;
 
   const onButtonClick = (name) => {
-    if (menu == name) return;
-    setMenu(name);
-    if (name != "Map" && name != "More Groups") {
-      getGroupProjects(name.toLowerCase());
+    if (name == "Map") {
+      onMapClick();
+      setListMode(false);
+    } else {
+      setMenu(name);
+      setListMode(false);
+      if (name != menu && name != "More Groups") {
+        getGroupProjects(name.toLowerCase());
+      }
     }
   }
 
   return (
-    <nav className="sideMenu">
+    <nav className={`sideMenu listMode-${listMode} firstOpen-${firstOpen}`}>
       {loaded && menuItems.map(({name, icon, color}) => (
         <button
           className="sideMenuButton"

@@ -21,7 +21,8 @@ html {
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -62,6 +63,36 @@ textarea {
   z-index: -1;
 }
 
+.returnButton {
+  position: fixed;
+  display: none;
+  cursor: pointer;
+  font-family: wbf3;
+  background-color: white;
+  border-radius: 999px;
+  font-size: 1.4em;
+  padding: 0.3em 4em;
+  font-weight: 500;
+  bottom: 1.75em;
+  opacity: 0;
+  box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s ease-in-out,
+  background-color 0.15s ease-in-out,
+  color 0.15s ease-in-out;
+}
+
+.returnButton:hover {
+  transform: scale(110%);
+  background-color: black;
+  color: white;
+}
+
+@media (max-width: 576px) {
+  .returnButton {
+    display: block;
+  }
+}
+
 @keyframes glideIn {
   0% {
     opacity: 0;
@@ -78,6 +109,15 @@ textarea {
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 

@@ -1,14 +1,25 @@
+.aboutFrame {
+  position: relative;
+  width: min(95vw, 110vh);
+  height: 85vh;
+}
+
 .about {
   font-family: wbf3;
-  width: min(90vw, 95vh);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   padding: 0 3em;
-  overflow-y: scroll;
-  height: 85vh;
+  overflow-y: hidden;
   scrollbar-gutter: stable;
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.about.readMore-true {
+  overflow-y: scroll;
 }
 
 .about::-webkit-scrollbar {
@@ -31,8 +42,8 @@
   background-color: rgba(0, 0, 0, 0.6);
 }
 
-.about::before,
-.about::after {
+.aboutFrame::before,
+.aboutFrame::after {
   content: "";
   position: absolute;
   left: 0;
@@ -44,18 +55,18 @@
   transition: opacity 0.2s ease-out;
 }
 
-.about::before {
+.aboutFrame::before {
   top: 0;
   background: linear-gradient(to bottom, rgba(92, 171, 232, 0.95), rgba(92, 171, 232, 0));
 }
 
-.about::after {
+.aboutFrame::after {
   bottom: -0.2em;
   background: linear-gradient(to top, rgba(92, 171, 232, 0.95), rgba(92, 171, 232, 0));
 }
 
-.about.hasTopFade::before,
-.about.hasBottomFade::after {
+.aboutFrame.hasTopFade::before,
+.aboutFrame.hasBottomFade::after {
   opacity: 1;
 }
 
@@ -84,7 +95,7 @@
   transition: transform 0.15s ease-in-out,
   background-color 0.15s ease-in-out,
   color 0.15s ease-in-out;
-  box-shadow: 0.15em 0.15em 0.3em rgba(0, 0, 0, 0.5);
+  box-shadow: 0.1em 0.1em 0.2em rgba(0, 0, 0, 0.5);
 }
 
 .aboutReadMoreButton:hover {
@@ -99,4 +110,22 @@
 
 .aboutText:first-child {
   margin: 0;
+}
+
+@media (max-width: 576px) {
+  .aboutFrame {
+    height: 72.5vh;
+  }
+
+  .about {
+    font-size: 0.9em;
+  }
+
+  .about::-webkit-scrollbar {
+    width: 0em;
+  }
+
+  .aboutHeading {
+    margin-top: 1em;
+  }
 }

@@ -10,6 +10,12 @@
   align-items: center;
 }
 
+@media (max-width: 576px) {
+  .groupFull {
+    height: 70vh;
+  }
+}
+
 .groupHeading {
   width: 100%;
   margin-bottom: 1.5em;
