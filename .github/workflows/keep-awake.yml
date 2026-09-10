@@ -1,0 +1,22 @@
+name: Keep Render Awake
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit Render Endpoint Multiple Times
+        run: |
+          echo "Starting keep-alive pings..."
+          for i in 1 2 3; do
+            echo "Ping #$i at $(date)"
+            curl -sL --connect-timeout 70 --max-time 70 https://server.willbergforever.com/user/verify
+            
+            if [ $i -lt 3 ]; then
+              sleep 240
+            fi
+          done
