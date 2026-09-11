@@ -35,7 +35,7 @@ const SideMenu = (props) => {
           style={{'--side-menu-hover-color': color}}
           onClick={() => onButtonClick(name)}
         >
-          <div className="sideMenuButtonColumn">
+          <div className="sideMenuButtonRow">
             <img src={icon} />
             <p className="sideMenuButtonText">{name.toUpperCase()}</p>
           </div>

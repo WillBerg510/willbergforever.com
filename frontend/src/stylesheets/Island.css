@@ -14,7 +14,7 @@
   pointer-events: none !important;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 800px) {
   .island.listMode-false {
     pointer-events: auto;
     animation: fadeIn 0.3s ease-in-out forwards;

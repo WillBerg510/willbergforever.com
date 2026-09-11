@@ -140,12 +140,16 @@ function App() {
     setReturnButtonClicked(true);
     setListMode(true);
     setMenu("Map");
-    setTimeout(() => {
+    if (menu == "Map") {
+      setTimeout(() => {
+        setReturnButtonClicked(false);
+        setIsDivisionExiting(true);
+        setFocusRegion(null);
+        setFocusDivision(null);
+      }, 300);
+    } else {
       setReturnButtonClicked(false);
-      setIsDivisionExiting(true);
-      setFocusRegion(null);
-      setFocusDivision(null);
-    }, 200);
+    }
   }
 
   const onMapClick = () => {
@@ -160,7 +164,7 @@ function App() {
   return (
     <div id="app">
       <img
-        className={`mainHeading ${initialLoad <= 0 ? "mainHeadingLoaded" : "mainHeadingLoading"}`}
+        className={`mainHeading ${initialLoad <= 0 ? "mainHeadingLoaded" : "mainHeadingLoading"} firstOpen-${firstOpen} listMode-${listMode}`}
         src={WillBergLogo}
         onLoad={() => setMainHeadingReady(true)}
         style={{display: mainHeadingReady ? "block" : "none"}}
@@ -209,9 +213,14 @@ function App() {
         {!listMode && <motion.div
           className="returnButton"
           initial={{opacity: 0}}
-          animate={{opacity: 1}}
-          exit={{opacity: 0}}
-          transition={{duration: 0.15, ease: "easeInOut"}}
+          animate={{
+            opacity: 1,
+            transition: {duration: 0.3, ease: "easeInOut", delay: 0.3}
+          }}
+          exit={{
+            opacity: 0,
+            transition: {duration: 0.3, ease: "easeInOut"}
+          }}
           onClick={returnToList}
         >
           RETURN

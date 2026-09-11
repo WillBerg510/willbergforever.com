@@ -10,12 +10,6 @@
   align-items: center;
 }
 
-@media (max-width: 576px) {
-  .groupFull {
-    height: 70vh;
-  }
-}
-
 .groupHeading {
   width: 100%;
   margin-bottom: 1.5em;
@@ -106,12 +100,12 @@
 }
 
 .groupList::before {
-  top: 0;
+  top: -0.2em;
   background: linear-gradient(to bottom, rgba(92, 171, 232, 0.95), rgba(92, 171, 232, 0));
 }
 
 .groupList::after {
-  bottom: -0.2em;
+  bottom: -0.3em;
   background: linear-gradient(to top, rgba(92, 171, 232, 0.95), rgba(92, 171, 232, 0));
 }
 
@@ -178,7 +172,7 @@
 }
 
 .listProjectThumbnailContainer {
-  height: 6.5em;
+  height: 100%;
   border-radius: 0.2em;
   overflow: hidden;
   aspect-ratio: 16 / 9;
@@ -221,7 +215,6 @@
 }
 
 .listProjectHeader {
-  min-height: 40%;
   display: flex;
   align-items: center;
   margin: 0.2em 1em 0.2em 0;
@@ -275,4 +268,66 @@
   width: 60%;
   filter: brightness(0);
   transition: filter 0.15s ease-out;
+}
+
+@media (max-width: 800px) {
+  .groupFull {
+    height: 86vh;
+    margin-top: 0;
+    margin-bottom: 14vh;
+    width: 95vw;
+    position: fixed;
+    bottom: 0;
+  }
+
+  .groupListScroller {
+    gap: 0.5em;
+  }
+
+  .groupHeading {
+    margin-bottom: 0;
+    margin-top: 3.5em;
+  }
+
+  .groupHeadingName {
+    width: 100%;
+    font-size: 3.25vw;
+    margin-top: 0;
+    margin-bottom: 2.5em;
+    height: 4em;
+  }
+
+  .groupNavButton {
+    font-size: 2.7vw;
+    width: 47.5%;
+    height: 2.5em;
+    position: absolute;
+    margin-top: 4.5em;
+  }
+
+  .groupNavRight {
+    right: 0;
+  }
+
+  .listProject {
+    width: 88%;
+    height: 7vh;
+    font-size: 0.65em;
+  }
+
+  .listProjectName {
+    font-size: 1.5em;
+    line-height: 1.1em;
+    margin: 0.1em 0;
+  }
+
+  .listProjectDate {
+    margin-top: -0.15em;
+    font-size: 1em;
+  }
+  
+  .groupList::before,
+  .groupList::after {
+    right: 2.5%;
+  }
 }

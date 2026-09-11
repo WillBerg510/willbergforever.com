@@ -1,11 +1,12 @@
 .moreGroups {
   position: fixed;
-  width: min(90vw, 105vh);
+  width: min(90vw, 100vh);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2em;
   flex-direction: column;
+  container-type: inline-size;
 }
 
 .moreGroups h1 {
@@ -18,19 +19,20 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.5em 1.75em;
+  gap: 0cqw 2.5cqw;
 }
 
 .moreGroupsSquare {
   cursor: pointer;
   position: relative;
   --hover-color: #20e9ba;
+  width: 18cqw;
+  height: 18cqw;
 }
 
 .moreGroupsButton {
-  width: 8.5em;
-  height: 8.5em;
-  padding: 1em;
+  width: 100%;
+  height: 100%;
   border-radius: 999px;
   background-color: white;
   border: none;
@@ -49,7 +51,7 @@
 }
 
 .moreGroupsButton img {
-  width: 6.5em;
+  width: 80%;
   aspect-ratio: 1;
   object-fit: contain;
 }
@@ -107,4 +109,25 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
+}
+
+@media (max-width: 800px) {
+  .moreGroups h1 {
+    font-size: 10cqw;
+    margin-bottom: 0.5em;
+  }
+
+  .moreGroupsSquare {
+    width: 25cqw;
+    height: 25cqw;
+  }
+
+  .moreGroupsList {
+    height: min-content;
+    gap: 4cqw 4cqw;
+  }
+
+  .moreGroupsTooltipBox {
+    font-size: 1.35em;
+  }
 }

@@ -19,13 +19,6 @@
   animation-delay: 0s;
 }
 
-@media (max-width: 576px) {
-  .sideMenu.listMode-false {
-    pointer-events: none !important;
-    animation: fadeOut 0.3s ease-in-out forwards;
-  }
-}
-
 .mainHeading {
   position: fixed;
   top: 1.2em;
@@ -38,12 +31,16 @@
   z-index: 4;
   transition: transform 1s cubic-bezier(0.5, 0, 0.25, 1) 2s,
   width 1s cubic-bezier(0.5, 0, 0.25, 1) 2s;
-  animation: fadeIn 0.3s ease-in-out forwards;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.mainHeading.firstOpen-false {
+  transition: none;
 }
 
 .mainHeadingLoading {
   transform: translate(calc(50vw - 1.2em - 50%), calc(50vh - 1.2em - 50%));
-  width: 30em;
+  width: min(30em, 90vw);
 }
 
 .mainHeadingLoaded {
@@ -59,7 +56,7 @@
   background: transparent;
   font-family: wbf2;
   font-size: 1em;
-  width: 12em;
+  width: 80%;
   height: 3.5em;
   border-radius: 999px;
   background-color: rgba(255, 255, 255, 0.8);
@@ -70,7 +67,7 @@
   margin-left: -0.5em;
 }
 
-.sideMenuButtonColumn {
+.sideMenuButtonRow {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -104,6 +101,52 @@
 
 .sideMenuButton:hover .sideMenuButtonText {
   font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .sideMenu {
+    width: 70vw;
+    left: 15vw;
+    top: 21vh;
+    height: 58vh;
+    margin: 0;
+    gap: 1.5vh;
+  }
+
+  .sideMenuButtonRow {
+    justify-content: center;
+    margin: 0 0 0 -0.25em;
+  }
+
+  .sideMenuButton img {
+    margin-right: 0.25em;
+  }
+
+  .sideMenuButtonText {
+    width: fit-content;
+  }
+
+  .sideMenu.listMode-false {
+    pointer-events: none !important;
+    animation: fadeOut 0.3s ease-in-out forwards;
+  }
+
+  .mainHeading {
+    height: 18vh;
+    left: 50%;
+    translate: -50%;
+    width: auto;
+    top: 3vh;
+  }
+
+  .mainHeadingLoading {
+    transform: translate(calc(50vw - 15vw - 50%), calc(50vh - 2em - 50%));
+  }
+
+  .mainHeading.listMode-false {
+    pointer-events: none !important;
+    animation: fadeOut 0.3s ease-in-out forwards;
+  }
 }
 
 @keyframes fadeInAndEnable {
