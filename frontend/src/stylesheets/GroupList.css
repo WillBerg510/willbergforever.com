@@ -310,9 +310,9 @@
   }
 
   .listProject {
-    width: 88%;
-    height: 7vh;
-    font-size: 0.65em;
+    width: 95%;
+    height: 8vh;
+    font-size: 0.75em;
   }
 
   .listProject:hover {
@@ -336,7 +336,7 @@
   
   .groupList::before,
   .groupList::after {
-    right: 2.5%;
+    right: 0;
   }
 
   .listProjectButton {
