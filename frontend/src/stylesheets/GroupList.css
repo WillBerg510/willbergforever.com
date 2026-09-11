@@ -315,6 +315,14 @@
     font-size: 0.65em;
   }
 
+  .listProject:hover {
+    background-color: white;
+  }
+
+  .listProject:hover .listProjectThumbnailContainer {
+    background-color: #dddddd;
+  }
+
   .listProjectName {
     font-size: 1.5em;
     line-height: 1.1em;

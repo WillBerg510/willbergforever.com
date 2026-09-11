@@ -1,6 +1,6 @@
 .moreGroups {
   position: fixed;
-  width: min(90vw, 100vh);
+  width: min(95vw, 100vh);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,5 +129,9 @@
 
   .moreGroupsTooltipBox {
     font-size: 1.35em;
+  }
+
+  .moreGroupsTooltip {
+    display: none;
   }
 }
