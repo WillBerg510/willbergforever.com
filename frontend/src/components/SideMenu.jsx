@@ -29,7 +29,7 @@ const SideMenu = (props) => {
     <nav className={`sideMenu listMode-${listMode} firstOpen-${firstOpen}`}>
       {loaded && menuItems.map(({name, icon, color}) => (
         <button
-          className="sideMenuButton"
+          className={`sideMenuButton button-${name}`}
           type="button"
           key={name}
           style={{'--side-menu-hover-color': color}}

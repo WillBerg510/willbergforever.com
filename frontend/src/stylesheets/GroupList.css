@@ -330,4 +330,8 @@
   .groupList::after {
     right: 2.5%;
   }
+
+  .listProjectButton {
+    display: none;
+  }
 }

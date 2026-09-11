@@ -1,5 +1,5 @@
 import projectsAPI from "../api/ProjectsAPI.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectReactions } from "../constants/reactions.js";
@@ -25,6 +25,9 @@ const Project = (props) => {
   const [imagesReady, setImagesReady] = useState(0);
   const [necessaryImagesReady, setNecessaryImagesReady] = useState(0);
   const [thumbnailReady, setThumbnailReady] = useState(false);
+  const [hasTopFade, setHasTopFade] = useState(false);
+  const [hasBottomFade, setHasBottomFade] = useState(false);
+  const projectInfoRef = useRef(null);
   const navigate = useNavigate();
 
   const getReactionStates = (reactions) => {
@@ -110,6 +113,26 @@ const Project = (props) => {
     }
   }, [project]);
 
+  useEffect(() => {
+    const projectInfo = projectInfoRef.current;
+    if (!projectInfo) return;
+
+    const updateFadeState = () => {
+      setHasTopFade(projectInfo.scrollTop > 0);
+      setHasBottomFade(projectInfo.scrollTop + projectInfo.clientHeight < projectInfo.scrollHeight - 1);
+    };
+
+    updateFadeState();
+    projectInfo.addEventListener('scroll', updateFadeState);
+    const resizeObserver = new ResizeObserver(updateFadeState);
+    resizeObserver.observe(projectInfo);
+
+    return () => {
+      projectInfo.removeEventListener('scroll', updateFadeState);
+      resizeObserver.disconnect();
+    };
+  }, [project]);
+
   const projectLinkClicked = (linkType) => {
     window.open(project.links[linkType], "_blank");
   };
@@ -145,13 +168,13 @@ const Project = (props) => {
     <div style={{
       display: (project && necessaryImagesReady >= 4 + project.groups.length) ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
-    }} key={project_id} className="projectWindow" onClick={receiveClick}>
+    }} key={project_id} className={`projectWindow${hasTopFade ? ' hasTopFade' : ''}${hasBottomFade ? ' hasBottomFade' : ''}`} onClick={receiveClick}>
       <div className="projectCloseButton" onClick={closeWindows}>
         <p>CLOSE</p>
       </div>
       {projectLoading && <p>Loading...</p>}
       {!projectLoading && !project && <p>Unable to load project.</p>}
-      {project && <div className="projectInfo">
+      {project && <div className="projectInfo" ref={projectInfoRef}>
         <div className="leftProjectColumn">
           <div className="projectThumbnail">
             <div className={`projectThumbnailCover ${thumbnailReady && "projectThumbnailCoverHidden"}`}>
@@ -213,7 +236,7 @@ const Project = (props) => {
             )}
             <div
               disabled={!project.content || project.content.length == 0}
-              className={`projectLink projectLink${project.content && project.content.length > 0 ? "Active" : "Inactive"}`}
+              className={`projectLink projectPlayButton projectLink${project.content && project.content.length > 0 ? "Active" : "Inactive"}`}
               onClick={onPlayerOpen}
             >
               <img src={ViewIcon} className="projectLinkIcon" onLoad={onNecessaryReady} />

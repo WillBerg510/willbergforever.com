@@ -122,6 +122,10 @@
     margin-right: 0.25em;
   }
 
+  .sideMenuButton.button-Map {
+    display: none;
+  }
+
   .sideMenuButtonText {
     width: fit-content;
   }
