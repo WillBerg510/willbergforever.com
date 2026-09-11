@@ -163,12 +163,12 @@ function App() {
 
   return (
     <div id="app">
-      <img
+      <div
         className={`mainHeading ${initialLoad <= 0 ? "mainHeadingLoaded" : "mainHeadingLoading"} firstOpen-${firstOpen} listMode-${listMode}`}
-        src={WillBergLogo}
-        onLoad={() => setMainHeadingReady(true)}
         style={{display: mainHeadingReady ? "block" : "none"}}
-      />
+      >
+        <img src={WillBergLogo} onLoad={() => setMainHeadingReady(true)} />
+      </div>
       <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} listMode={listMode} setListMode={setListMode} setMapSelected={setMapSelected} firstOpen={firstOpen} onMapClick={onMapClick} />
       {initialLoad <= 0 && <RightSideMenu setMenu={setMenu} listMode={listMode} setListMode={setListMode} firstOpen={firstOpen} />}
       {isAdmin &&

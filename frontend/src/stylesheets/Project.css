@@ -1,5 +1,5 @@
 .projectWindow {
-  max-width: 1050px;
+  max-width: 1150px;
   width: 92%;
   height: auto;
   display: flex;
@@ -49,7 +49,7 @@
   display: flex;
   width: 100%;
   font-family: wbf3;
-  font-size: 2cqw;
+  font-size: 1.8cqw;
   position: relative;
   z-index: 0;
 }
@@ -264,7 +264,7 @@
 
 .projectDescription {
   font-weight: 400;
-  font-size: max(10px, 0.84em);
+  font-size: max(10px, 0.8em);
   margin: 0 0 0 0;
   line-height: 1.25em;
   overflow-wrap: anywhere;
@@ -459,7 +459,7 @@
   }
 
   .projectCloseButton {
-    font-size: 0.9em;
+    font-size: 1em;
     margin-top: -0.2em;
   }
 
