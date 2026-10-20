@@ -68,15 +68,17 @@ function App() {
     },
   });
 
-  // Attempt renewal of user tokens, and get all updates if successful; otherwise, get a new user
+  // Attempt renewal of user tokens; if renewal fails, acquire a new user
   const { mutate: userRefresh } = useMutation({
     mutationFn: () => userAPI.refresh(),
     onSuccess: (res) => {
-      getUser();
+      if (!res.data) {
+        getUser();
+      }
     }
   });
 
-  // Acquire new user access token, and get all updates
+  // Acquire new user access token
   const { mutate: getUser } = useMutation({
     mutationFn: () => userAPI.getUser(),
   });
