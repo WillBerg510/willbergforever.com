@@ -1,0 +1,97 @@
+.dailyRacesBox {
+  max-width: 950px;
+  width: 95%;
+  height: 70vh;
+  filter: drop-shadow(0.25em 0.25em 1em rgba(0, 0, 0, 0.7));
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  --background-color: #f7c48b;
+  background-color: var(--background-color);
+  border-radius: 1em;
+  font-family: wbf3;
+  z-index: 1;
+  container-type: inline-size;
+  animation: zoomIn 0.3s ease-out;
+}
+
+.dailyRacesCloseButton {
+  position: absolute;
+  font-size: max(16px, 2cqw);
+  height: 0.4em;
+  top: -2.4em;
+  right: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 100%;
+  padding: 0.7em;
+  border-radius: 999px;
+  background-color: var(--background-color);
+  font-family: wbf3;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.dailyRacesCloseButton p {
+  margin: 0.1em 0.3em;
+}
+
+.dailyRacesCloseButton:hover {
+  background-color: hsl(from var(--background-color) h s calc(l - 50));
+  color: white;
+}
+
+.dailyRacesHeader {
+  margin-top: 10px;
+  font-family: wbf2;
+  font-size: 30px;
+}
+
+.raceDiv {
+  display: flex;
+  background-color: white;
+  width: 60cqw;
+  margin: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 15px;
+  cursor: pointer;
+}
+
+.raceDivTitle {
+  margin: 0;
+  text-align: left;
+  transform: skewX(-10deg);
+  font-size: 25px;
+}
+
+.raceDivSubtitle {
+  margin: -3px 0 3px 0;
+  text-align: left;
+  font-size: 14px;
+}
+
+.raceDivRight {
+  display: flex;
+  gap: 15px;
+}
+
+.raceTime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.raceTimeTitle {
+  margin: 0;
+  font-size: 13px;
+}
+
+.raceTimeText {
+  margin: 0;
+  font-weight: 600;
+  font-size: 18px;
+}

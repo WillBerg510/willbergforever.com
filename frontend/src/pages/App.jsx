@@ -8,6 +8,7 @@ import adminAPI from "../api/AdminAPI.js";
 import userAPI from "../api/UserAPI.js";
 import projectsAPI from '../api/ProjectsAPI.js';
 import UpdatesBox from '../components/UpdatesBox.jsx';
+import DailyRaces from '../components/DailyRaces.jsx';
 import Island from '../components/Island.jsx';
 import Project from '../components/Project.jsx';
 import Player from '../components/Player.jsx';
@@ -19,19 +20,12 @@ import About from '../components/About.jsx';
 import imagesToLoad from '../constants/imagesToLoad.js';
 import WillBergLogo from '../assets/WillBergLogo.png';
 
-const levels = {
-  "Easy": 3,
-  "Medium": 4,
-  "Hard": 5,
-};
-
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
   const [openProject, setOpenProject] = useState(null);
   const [openPlayer, setOpenPlayer] = useState(null);
   const [openMiscWindow, setOpenMiscWindow] = useState(null);
-  const [racesData, setRacesData] = useState({});
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
   const [menu, setMenu] = useState("Map");
   const [listMode, setListMode] = useState(true);
@@ -99,14 +93,6 @@ function App() {
         ...project,
         date: new Date(project.date),
       }))),
-  });
-
-  const { mutate: getRace } = useMutation({
-    mutationFn: (level) => projectsAPI.getRace(levels[level]),
-    onSuccess: (res, level) => {
-      const projects = res?.data?.projects;
-      setRacesData(prev => ({...prev, [level]: projects}));
-    },
   });
 
   const toggleSeeMore = async () => {
@@ -200,6 +186,9 @@ function App() {
       {(openMiscWindow == "updates") && <div className="windowOnTop" onClick={closeWindows}>
         <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
       </div>}
+      {(openMiscWindow == "races") && <div className="windowOnTop" onClick={closeWindows}>
+        <DailyRaces closeWindows={closeWindows} />
+      </div>}
       {(initialLoad > 0) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />
         {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
@@ -226,22 +215,6 @@ function App() {
           RETURN
         </motion.div>}
       </AnimatePresence>
-      {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
-        {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}
-      </div>*/}
-      {/*<div style={{display: "flex", gap: "30px", zIndex: "4", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
-        {Object.keys(levels).map(level => 
-          racesData[level] && (
-          <div style={{border: "1px solid #ccc", padding: "10px", borderRadius: "5px"}}>
-            <h3>{level} Race Projects</h3>
-            <ul>
-              {racesData[level].map((project) => (
-                <li style={{textAlign: "left"}} key={project._id}>{project.name}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>*/}
     </div>
   )
 }
