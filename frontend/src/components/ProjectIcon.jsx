@@ -16,7 +16,7 @@ const icons = {
 }
 
 const ProjectIcon = (props) => {
-  const { project, setOpenProject, division, setFocusDivision, otherDivision, leaveRegion } = props;
+  const { project, setOpenProject, division, setFocusDivision, otherDivision, leaveRegion, raceMode, raceProjects, checkRaceComplete } = props;
   const [hovered, setHovered] = useState(false);
   const [exitText, setExitText] = useState("");
 
@@ -24,12 +24,30 @@ const ProjectIcon = (props) => {
     setExitText(otherDivision?.name.toUpperCase());
   }, []);
 
+  const onProjectClick = () => {
+    if (raceMode) {
+      const raceProject = raceProjects.find(proj => proj.name == project.name);
+      if (raceProject) {
+        if (raceProject.found) {
+
+        } else {
+          raceProject.found = true;
+          checkRaceComplete();
+        }
+      } else {
+
+      }
+    } else {
+      setOpenProject(project._id)
+    }
+  };
+
   return (
     <div className="projectIconFull" style={{
       position: "absolute",
       left: project ? `${project.position[0]}%` : division ? `${division.exit[0]}%` : "calc(100% + 2em)",
       top: project ? `${project.position[1]}%` : division ? `${division.exit[1]}%` : "50%",
-      '--glide-delay': `${(division || project) ? Math.random() * 0.25 + 0.1 : 0.1}s`,
+      '--glide-delay': `${((division || project) && !raceMode) ? Math.random() * 0.25 + 0.1 : 0.1}s`,
       zIndex: hovered ? 3 : 2,
     }}>
       {project && <img
@@ -37,7 +55,7 @@ const ProjectIcon = (props) => {
         src={icons[project.icon] || MusicIcon}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        onClick={() => setOpenProject(project._id)}
+        onClick={onProjectClick}
       />}
       {division && <div
         className="exitIconFull"

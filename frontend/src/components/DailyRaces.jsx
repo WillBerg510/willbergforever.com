@@ -1,48 +1,28 @@
 import '../stylesheets/DailyRaces.css';
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import projectsAPI from '../api/ProjectsAPI';
+import { useQuery } from '@tanstack/react-query';
 import racesAPI from '../api/RacesAPI';
+import raceLevels from '../constants/raceLevels';
 
-const levels = {
-  "Easy": 3,
-  "Medium": 4,
-  "Hard": 5,
+const formatRaceTime = (time) => {
+  if (time == null) return "--:--";
+
+  const minutes = Math.floor(time / 60);
+  const seconds = String(time % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
 };
 
 const DailyRaces = (props) => {
-  const { closeWindows } = props;
-  const [racesData, setRacesData] = useState({});
-  const [raceCode, setRaceCode] = useState(null);
+  const { closeWindows, getRace } = props;
 
-  const { mutate: getRace } = useMutation({
-    mutationFn: (level) => projectsAPI.getRace(levels[level]),
-    onSuccess: (res, level) => {
-      const projects = res?.data?.projects;
-      setRacesData(prev => ({...prev, [level]: projects}));
-    },
+  const { data: races } = useQuery({
+    queryKey: ["races"],
+    queryFn: () => racesAPI.getRaces().then(res => res?.data?.races)
   });
 
-  const { mutate: initiateRace } = useMutation({
-    mutationFn: () => racesAPI.initiateRace(3),
-    onSuccess: (res) => {
-      const code = res?.data?.code;
-      if (code) setRaceCode(code);
-    }
-  });
-
-  const { mutate: submitRace } = useMutation({
-    mutationFn: () => racesAPI.submitRace(3, 20, raceCode),
-    onSuccess: () => {
-      alert("Submitted");
-    },
-    onError: (error) => {
-      const message = error.response?.data?.error
-        ?? error.response?.data
-        ?? error.message;
-      alert(message);
-    },
-  });
+  const startRace = (level) => {
+    getRace(level);
+    closeWindows();
+  };
 
   return (
     <div className="dailyRacesBox" onClick={(e) => e.stopPropagation()}>
@@ -50,46 +30,31 @@ const DailyRaces = (props) => {
         <p>CLOSE</p>
       </div>
       <h2 className="dailyRacesHeader">BOB'S DAILY RACES</h2>
-      <div>
-        <button type="button" onClick={() => initiateRace()}>
-          INITIATE LEVEL 3
-        </button>
-        <button type="button" onClick={() => submitRace()}>
-          SUBMIT LEVEL 3 SCORE 20
-        </button>
-      </div>
-      {Object.keys(levels).map(level => <div
-        className="raceDiv"
-        onClick={() => getRace(level)}
-      >
-        <div className="raceDivLeft">
-          <h3 className="raceDivTitle">{level.toUpperCase()} RACE</h3>
-          <p className="raceDivSubtitle">PLAYED BY 5 USERS TODAY</p>
-        </div>
-        <div className="raceDivRight">
-          <div className="raceTime">
-            <p className="raceTimeTitle">YOUR TIME</p>
-            <p className="raceTimeText">0:56</p>
+      {races && Object.entries(raceLevels).map(([level, number]) => {
+        const race = races.find(race => race.level == number);
+        return (
+          <div
+            className="raceDiv"
+            key={level}
+            onClick={() => !race.userTime && startRace(number)}
+          >
+            <div className="raceDivLeft">
+              <h3 className="raceDivTitle">{level.toUpperCase()} RACE</h3>
+              <p className="raceDivSubtitle">PLAYED BY {race?.numUsers} USER{race?.numUsers != 1 && 'S'} TODAY</p>
+            </div>
+            <div className="raceDivRight">
+              <div className="raceTime">
+                <p className="raceTimeTitle">YOUR TIME</p>
+                <p className="raceTimeText">{formatRaceTime(race?.userTime)}</p>
+              </div>
+              <div className="raceTime">
+                <p className="raceTimeTitle">TODAY'S BEST</p>
+                <p className="raceTimeText">{formatRaceTime(race?.bestTime)}</p>
+              </div>
+            </div>
           </div>
-          <div className="raceTime">
-            <p className="raceTimeTitle">TODAY'S BEST</p>
-            <p className="raceTimeText">0:42</p>
-          </div>
-        </div>
-      </div>)}
-      <div style={{display: "flex", gap: "30px", zIndex: "4", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
-        {Object.keys(levels).map(level => 
-          racesData[level] && (
-          <div style={{border: "1px solid #ccc", padding: "10px", borderRadius: "5px"}}>
-            <h3>{level} Race Projects</h3>
-            <ul>
-              {racesData[level].map((project) => (
-                <li style={{textAlign: "left"}} key={project._id}>{project.name}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }

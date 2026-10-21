@@ -1,15 +1,20 @@
-.sideMenu {
+.sideMenuContainer {
   position: fixed;
   height: min(100%, 65vh);
   left: 0;
   width: 15em;
   z-index: 3;
+  margin: 0 0 0 1.2em;
+}
+
+.sideMenu {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.75em;
-  margin: 0 0 0 1.2em;
   opacity: 0;
   pointer-events: none;
   animation: fadeInAndEnable 0.5s ease-in-out 2.75s forwards;
@@ -115,12 +120,15 @@
 }
 
 @media (max-width: 800px) {
-  .sideMenu {
+  .sideMenuContainer {
     width: 70vw;
     left: 15vw;
     top: 21vh;
     height: 58vh;
     margin: 0;
+  }
+
+  .sideMenu {
     gap: 1.5vh;
   }
 

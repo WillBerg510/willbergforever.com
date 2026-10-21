@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Race = require("../models/Race.js");
+const Project = require("../models/Project.js");
 const jwt = require('jsonwebtoken');
 const refreshRaces = require("../utils/refreshRaces.js");
 const crypto = require('crypto');
@@ -15,7 +16,9 @@ router.get("/", refreshRaces, async (req, res) => {
       const decoded = jwt.verify(user_token, process.env.USER_ACCESS_TOKEN_SECRET);
       races.forEach(race => {
         race.userTime = race.times?.[decoded.user] || null;
-        race.bestTime = Math.max(...Object.values(race.times));
+        race.bestTime = Math.min(...Object.values(race.times));
+        race.numUsers = Object.keys(race.times).length;
+        race.found = false;
         delete race.times;
       });
       res.status(200).json({races});
@@ -33,16 +36,25 @@ router.patch("/initiate/:level", async (req, res) => {
     try {
       const race = await Race.findOne({level: req.params.level});
       const decoded = jwt.verify(user_token, process.env.USER_ACCESS_TOKEN_SECRET);
+      let code = null;
       if (!race.codes.get(decoded.user)) {
-        const code = crypto.randomUUID();
+        code = crypto.randomUUID();
         await Race.findOneAndUpdate(
           {level: req.params.level},
           {$set: {[`codes.${decoded.user}`]: code}}
         );
-        res.status(200).json({code: code});
       } else {
-        res.status(200).json({code: race.codes.get(decoded.user)});
+        code = race.codes.get(decoded.user);
       }
+      let projects = [];
+      const promises = race.projects.map(async (projectId, index) => {
+        projects[index] = await Project.findOne({_id: projectId}).select(["_id", "name"]);
+      });
+      await Promise.all(promises);
+      res.status(200).json({
+        code: code,
+        projects: projects
+      });
     } catch (err) {
       res.status(500).json({error: err.message});
     }

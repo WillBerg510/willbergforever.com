@@ -7,8 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import adminAPI from "../api/AdminAPI.js";
 import userAPI from "../api/UserAPI.js";
 import projectsAPI from '../api/ProjectsAPI.js';
+import racesAPI from '../api/RacesAPI.js';
 import UpdatesBox from '../components/UpdatesBox.jsx';
 import DailyRaces from '../components/DailyRaces.jsx';
+import RaceBox from '../components/RaceBox.jsx';
 import Island from '../components/Island.jsx';
 import Project from '../components/Project.jsx';
 import Player from '../components/Player.jsx';
@@ -36,6 +38,11 @@ function App() {
   const [focusRegion, setFocusRegion] = useState(null);
   const [focusDivision, setFocusDivision] = useState(null);
   const [isDivisionExiting, setIsDivisionExiting] = useState(false);
+  const [raceProjects, setRaceProjects] = useState(null);
+  const [raceCode, setRaceCode] = useState(null);
+  const [raceLevel, setRaceLevel] = useState(-1);
+  const [raceTime, setRaceTime] = useState(-1);
+  const [doStrikeThrough, setDoStrikeThrough] = useState(false);
   const client = useQueryClient();
   const navigate = useNavigate();
 
@@ -149,6 +156,35 @@ function App() {
     }
   }
 
+  const { mutate: getRace } = useMutation({
+    mutationFn: (level) => racesAPI.initiateRace(level)
+      .then(res => {
+        onMapClick();
+        setRaceProjects(res?.data?.projects);
+        setRaceCode(res?.data?.code);
+        setRaceLevel(level);
+        setRaceTime(performance.now());
+    })
+  });
+
+  const { mutate: submitRace } = useMutation({
+    mutationFn: () => racesAPI.submitRace(raceLevel, Math.floor((performance.now() - raceTime) / 1000), raceCode),
+    onSuccess: () => {
+      client.invalidateQueries(["races"]);
+      setRaceProjects(null);
+      setRaceCode(null);
+      setRaceLevel(-1);
+      setOpenMiscWindow("races");
+    }
+  });
+
+  const checkRaceComplete = () => {
+    setDoStrikeThrough(!doStrikeThrough);
+    if (raceProjects?.every(raceProject => raceProject.found)) {
+      submitRace();
+    }
+  };
+
   return (
     <div id="app">
       <div
@@ -157,8 +193,26 @@ function App() {
       >
         <img src={WillBergLogo} onLoad={() => setMainHeadingReady(true)} />
       </div>
-      <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} listMode={listMode} setListMode={setListMode} setMapSelected={setMapSelected} firstOpen={firstOpen} onMapClick={onMapClick} />
-      {initialLoad <= 0 && <RightSideMenu setMenu={setMenu} listMode={listMode} setListMode={setListMode} firstOpen={firstOpen} />}
+      <AnimatePresence initial={false}>
+        {raceLevel == -1 &&
+          <motion.div
+            exit={{opacity: 0, transition: {duration: 0.2, ease: "easeInOut"}}}
+            className="sideMenuContainer"
+          >
+            <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} listMode={listMode} setListMode={setListMode} setMapSelected={setMapSelected} firstOpen={firstOpen} onMapClick={onMapClick} />
+          </motion.div>
+        }
+      </AnimatePresence>
+      <AnimatePresence initial={false}>
+        {(raceLevel == -1 && initialLoad <= 0) &&
+          <motion.div
+            exit={{opacity: 0, transition: {duration: 0.2, ease: "easeInOut"}}}
+            className="rightSideMenuContainer"
+          >
+            <RightSideMenu setMenu={setMenu} listMode={listMode} setListMode={setListMode} firstOpen={firstOpen} />
+          </motion.div>
+        }
+      </AnimatePresence>
       {isAdmin &&
         <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
@@ -189,7 +243,7 @@ function App() {
         <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
       </div>}
       {(openMiscWindow == "races") && <div className="windowOnTop" onClick={closeWindows}>
-        <DailyRaces closeWindows={closeWindows} />
+        <DailyRaces closeWindows={closeWindows} getRace={getRace} />
       </div>}
       {(initialLoad > 0) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />
@@ -197,9 +251,14 @@ function App() {
       </>}
       <AnimatePresence>
         {(initialLoad <= 0 && menu == "Map") &&
-          <Island focusRegion={focusRegion} setFocusRegion={setFocusRegion} focusDivision={focusDivision} setFocusDivision={setFocusDivision} isDivisionExiting={isDivisionExiting} setIsDivisionExiting={setIsDivisionExiting} setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} listMode={listMode} returnButtonClicked={returnButtonClicked} mapSelected={mapSelected} />
+          <Island focusRegion={focusRegion} setFocusRegion={setFocusRegion} focusDivision={focusDivision} setFocusDivision={setFocusDivision}
+            isDivisionExiting={isDivisionExiting} setIsDivisionExiting={setIsDivisionExiting} setOpenProject={setOpenProject} isAdmin={isAdmin}
+            setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} listMode={listMode} returnButtonClicked={returnButtonClicked}
+            mapSelected={mapSelected} raceMode={raceLevel != -1} raceProjects={raceProjects} checkRaceComplete={checkRaceComplete}
+          />
         }
       </AnimatePresence>
+      {raceProjects && <RaceBox projects={raceProjects} startTime={raceTime} />}
       <AnimatePresence>
         {!listMode && <motion.div
           className="returnButton"

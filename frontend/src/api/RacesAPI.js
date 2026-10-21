@@ -22,6 +22,10 @@ const createRaceHash = async (value) => {
 };
 
 const racesAPI = {
+  getRaces: async () => {
+    return await API.get("/races");
+  },
+
   initiateRace: async (level) => {
     return await API.patch(`/races/initiate/${level}`);
   },
