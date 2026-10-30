@@ -1,19 +1,78 @@
 .raceBox {
   position: fixed;
-  right: 16px;
-  bottom: 16px;
+  font-size: calc(0.85 * max(1.75vh, 1.3vw));
   z-index: 4;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   margin: 0;
-  padding: 10px 16px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0.1em 0.1em 0.4em rgba(0, 0, 0, 0.35);
+  padding: 1em 1.5em;
+  background-color: #f7c48b;
+  border-radius: 0.75em;
+  box-shadow: 0.15em 0.15em 0.75em rgba(0, 0, 0, 0.35);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.raceBoxPrep {
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%, 50%);
+  font-size: calc(1.15 * max(1.75vh, 1.3vw));
+}
+
+.raceBoxCorner {
+  right: 1.5em;
+  bottom: 1.5em;
+  transform: translate(0, 0);
+  transition: font-size 0.75s cubic-bezier(0.6, 0, 0.1, 1),
+  right 0.75s cubic-bezier(0.6, 0, 0.1, 1),
+  bottom 0.75s cubic-bezier(0.6, 0, 0.1, 1),
+  transform 0.75s cubic-bezier(0.6, 0, 0.1, 1);
+}
+
+.raceBoxText {
+  height: 3.2em;
+  width: 14em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.raceBoxPrepText {
+  position: fixed;
   font-family: wbf3;
+  font-weight: 400;
+  font-size: 1.05em;
+  line-height: 1.4em;
+  width: 14em;
+  top: 0.5em;
+  transition: opacity 0.35s ease-in;
+}
+
+.raceBoxTime {
+  position: fixed;
+  margin: 0;
+  font-weight: 650;
+  font-family: wbf2;
+  font-size: 1.35em;
+  line-height: 1.5em;
+}
+
+.raceBoxInstructions {
+  position: fixed;
+  top: 2.6em;
+  font-family: wbf3;
+  font-size: 0.85em;
+  line-height: 1.5em;
+  opacity: 0.75;
+}
+
+.raceBoxItems {
+  font-family: wbf3;
+  font-weight: 500;
+  font-size: 1.1em;
+  line-height: 1.6em;
 }
 
 .raceBoxItem {
@@ -21,7 +80,19 @@
   text-align: center;
 }
 
-.raceBoxTime {
-  margin: 0 0 4px;
-  font-weight: 600;
+.raceBoxItem.found {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.raceBoxCorner .raceBoxPrepText, .raceBoxResults .raceBoxPrepText,
+.raceBoxPrep .raceBoxTime, .raceBoxResults .raceBoxTime,
+.raceBoxPrep .raceBoxInstructions, .raceBoxResults .raceBoxInstructions,
+.raceBoxPrep .raceBoxResults, .raceBoxCorner .raceBoxResults,
+.raceBoxResults .raceBoxItems {
+  opacity: 0;
+}
+
+.raceBoxTime, .raceBoxInstructions, .raceBoxResults {
+  transition: opacity 0.35s ease-out 0.4s;
 }

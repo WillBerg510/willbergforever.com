@@ -119,13 +119,13 @@ const Island = (props) => {
           }}
         >
           <AnimatePresence>
-            {!focusRegion && regions.map(region => (region.holdsProjects || !raceMode) && <RegionName key={region.name} region={region} enterRegion={enterRegion} visible={!focusRegion} />)}
+            {!focusRegion && regions.map(region => (region.holdsProjects || !raceMode) && <RegionName key={region.name} region={region} enterRegion={enterRegion} visible={!focusRegion} raceMode={raceMode} />)}
           </AnimatePresence>
           <div className="regionDivisions" style={{
             scale: 1 / focusRegion?.zoom[0]
           }}>
             <AnimatePresence>
-              {!focusDivision && focusRegion && focusRegion.divisions?.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} />)}
+              {!focusDivision && focusRegion && focusRegion.divisions?.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} raceMode={raceMode} />)}
             </AnimatePresence>
           </div>
           <img key={`${focusRegion?.name}-image` || "isle-image"} className="islandImage" draggable="false" src={SmileIsle} />

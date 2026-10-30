@@ -42,6 +42,7 @@ function App() {
   const [raceCode, setRaceCode] = useState(null);
   const [raceLevel, setRaceLevel] = useState(-1);
   const [raceTime, setRaceTime] = useState(-1);
+  const [raceResults, setRaceResults] = useState(null);
   const [doStrikeThrough, setDoStrikeThrough] = useState(false);
   const client = useQueryClient();
   const navigate = useNavigate();
@@ -162,19 +163,22 @@ function App() {
         onMapClick();
         setRaceProjects(res?.data?.projects);
         setRaceCode(res?.data?.code);
+        setRaceResults(null);
         setRaceLevel(level);
-        setRaceTime(performance.now());
+        setRaceTime(-1);
+        closeWindows();
     })
   });
 
   const { mutate: submitRace } = useMutation({
-    mutationFn: () => racesAPI.submitRace(raceLevel, Math.floor((performance.now() - raceTime) / 1000), raceCode),
+    mutationFn: () => {
+      const score = Math.floor((performance.now() - raceTime) / 1000);
+      setRaceResults(score);
+      racesAPI.submitRace(raceLevel, score, raceCode);
+    },
     onSuccess: () => {
       client.invalidateQueries(["races"]);
-      setRaceProjects(null);
       setRaceCode(null);
-      setRaceLevel(-1);
-      setOpenMiscWindow("races");
     }
   });
 
@@ -182,6 +186,16 @@ function App() {
     setDoStrikeThrough(!doStrikeThrough);
     if (raceProjects?.every(raceProject => raceProject.found)) {
       submitRace();
+    }
+  };
+
+  const exitRaceResults = () => {
+    if (raceResults) {
+      onMapClick();
+      setRaceLevel(-1);
+      setRaceResults(null);
+      setRaceProjects(null);
+      setOpenMiscWindow("races");
     }
   };
 
@@ -258,7 +272,9 @@ function App() {
           />
         }
       </AnimatePresence>
-      {raceProjects && <RaceBox projects={raceProjects} startTime={raceTime} />}
+        {(raceLevel != -1) && <div className={`windowOnTop ${raceTime == -1 ? "racePrepWindow" : !raceResults && "hidden"}`} onClick={exitRaceResults}>
+          <RaceBox projects={raceProjects} startTime={raceTime} setStartTime={setRaceTime} raceResults={raceResults} />
+        </div>}
       <AnimatePresence>
         {!listMode && <motion.div
           className="returnButton"

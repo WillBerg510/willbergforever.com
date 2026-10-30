@@ -6,6 +6,7 @@ import ArtIcon from '../assets/Art Map Icon.png';
 import PhotosIcon from '../assets/Photos Map Icon.png';
 import ExitArrow from '../assets/Exit Icon.png';
 import HomeIcon from '../assets/Home Icon.png';
+import { AnimatePresence, motion } from 'motion/react';
 
 const icons = {
   "music": MusicIcon,
@@ -19,6 +20,7 @@ const ProjectIcon = (props) => {
   const { project, setOpenProject, division, setFocusDivision, otherDivision, leaveRegion, raceMode, raceProjects, checkRaceComplete } = props;
   const [hovered, setHovered] = useState(false);
   const [exitText, setExitText] = useState("");
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
     setExitText(otherDivision?.name.toUpperCase());
@@ -29,16 +31,20 @@ const ProjectIcon = (props) => {
       const raceProject = raceProjects.find(proj => proj.name == project.name);
       if (raceProject) {
         if (raceProject.found) {
-
+          setFeedback("found");
         } else {
           raceProject.found = true;
           checkRaceComplete();
+          setFeedback("good");
         }
       } else {
-
+        setFeedback("bad");
       }
+      setTimeout(() => {
+        setFeedback(null);
+      }, 1000);
     } else {
-      setOpenProject(project._id)
+      setOpenProject(project._id);
     }
   };
 
@@ -78,6 +84,15 @@ const ProjectIcon = (props) => {
         <img className={`returnIcon ${hovered ? "returnIconHover" : ""}`} src={HomeIcon} />
         <p className={`returnText ${hovered ? "returnTextHover" : ""}`}>RETURN TO FULL MAP</p>
       </div>}
+      <AnimatePresence>
+        {feedback && <motion.div className="projectRaceFeedback"
+          initial={{opacity: 0}}
+          animate={{opacity: 1, transition: {ease: "easeOut", duration: 0.2}}}
+          exit={{opacity: 0, transition: {ease: "easeInOut", duration: 0.4}}}
+        >
+          {feedback}
+        </motion.div>}
+      </AnimatePresence>
       {hovered && project &&
         <div className="projectTooltip">
           <div className="projectTooltipBox">

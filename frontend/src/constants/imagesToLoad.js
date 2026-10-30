@@ -24,6 +24,7 @@ import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 import BackIcon from "../assets/Back.svg";
 import SmileIsle from '../assets/Smile Isle.jpg';
 import MainBlur from '../assets/Main Blur.png';
+import BobAnimation from '../assets/Bob Animation.png';
 
 const imagesToLoad = [
   SmileIsle,
@@ -53,6 +54,7 @@ const imagesToLoad = [
   FullscreenIcon,
   ExitFullscreenIcon,
   BackIcon,
+  BobAnimation,
 ];
 
 export default imagesToLoad;

@@ -14,6 +14,7 @@
   z-index: 1;
   container-type: inline-size;
   animation: zoomIn 0.3s ease-out;
+  overflow: hidden;
 }
 
 .dailyRacesCloseButton {
@@ -94,4 +95,21 @@
   margin: 0;
   font-weight: 600;
   font-size: 18px;
+}
+
+.racesAnimationContainer {
+  position: fixed;
+  bottom: 0;
+  right: -65px;
+  pointer-events: none;
+  width: calc(8/7 * 400px);
+  overflow: hidden;
+  height: 400px;
+}
+
+.racesAnimation {
+  width: calc(8/7 * 400px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  will-change: transform;
 }
