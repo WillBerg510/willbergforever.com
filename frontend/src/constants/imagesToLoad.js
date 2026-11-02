@@ -24,7 +24,15 @@ import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 import BackIcon from "../assets/Back.svg";
 import SmileIsle from '../assets/Smile Isle.jpg';
 import MainBlur from '../assets/Main Blur.png';
-import BobAnimation from '../assets/Bob Animation.png';
+
+const bobAnimationFrames = Object.values(import.meta.glob(
+  '../assets/Bob Animation/Bob*.png',
+  {
+    eager: true,
+    import: 'default',
+    query: '?url'
+  }
+));
 
 const imagesToLoad = [
   SmileIsle,
@@ -54,7 +62,7 @@ const imagesToLoad = [
   FullscreenIcon,
   ExitFullscreenIcon,
   BackIcon,
-  BobAnimation,
+  ...bobAnimationFrames,
 ];
 
 export default imagesToLoad;

@@ -1,41 +1,20 @@
 import '../stylesheets/DailyRaces.css';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { motion, steps } from 'motion/react';
 import racesAPI from '../api/RacesAPI';
 import raceLevels from '../constants/raceLevels';
-import spritesheet from '../assets/Bob Animation.png';
 
-const framerate = 20;
-const totalFrames = 52;
+const framerate = 20.5;
 
-const animations = {
-  initial: {y: [0, `-${36 * 400}px`], opacity: [0, 1]},
-  wave: {y: [`-${36 * 400}px`, `-${43 * 400}px`]},
-  blink: {y: [`-${44 * 400}px`, `-${51 * 400}px`]}
-};
-
-const transitions = {
-  initial: {
-    y: {
-      delay: 0.75,
-      duration: (1/framerate) * 36,
-      ease: steps(36)
-    },
-    opacity: {
-      duration: 0,
-      delay: 0.75
-    }
-  },
-  wave: {
-    duration: (1/framerate) * 7,
-    ease: steps(7)
-  },
-  blink: {
-    duration: (1/framerate) * 7,
-    ease: steps(7)
-  }
-};
+const bobAnimationFrames = Object.entries(
+  import.meta.glob('../assets/Bob Animation/Bob*.png', {
+    eager: true,
+    import: 'default',
+    query: '?url'
+  })
+).sort(([firstFrame], [secondFrame]) =>
+  firstFrame.localeCompare(secondFrame, undefined, { numeric: true })
+).map(([, frame]) => frame);
 
 const formatRaceTime = (time) => {
   if (time == null) return "--:--";
@@ -47,19 +26,54 @@ const formatRaceTime = (time) => {
 
 const DailyRaces = (props) => {
   const { closeWindows, getRace } = props;
-  const [spritesheetLoaded, setSpritesheetLoaded] = useState(false);
-  const [animationState, setAnimationState] = useState("initial");
-  const [animationCounter, setAnimationCounter] = useState(0);
-  const [blinkTime, setBlinkTime] = useState(Math.floor(Math.random() * 7) + 7);
+  const [animationLoaded, setAnimationLoaded] = useState(false);
+  const [currentFrame, setCurrentFrame] = useState(0);
 
   useEffect(() => {
-    const image = new window.Image();
-
-    image.onload = () => {
-      setSpritesheetLoaded(true);
-    };
-    setTimeout(() => image.src = spritesheet, 100);
+    Promise.all(bobAnimationFrames.map((frame) => new Promise((resolve, reject) => {
+      const image = new window.Image();
+      image.onload = resolve;
+      image.src = frame;
+    }))).then(() => {
+      setAnimationLoaded(true);
+    });
   }, []);
+
+  useEffect(() => {
+    if (!animationLoaded) return;
+
+    let animationFrames = Array.from({ length: 37 }, (_, index) => index);
+    let animationStart;
+    let animationFrame;
+
+    const updateAnimation = (timestamp) => {
+      if (animationStart == null) animationStart = timestamp;
+
+      let elapsed = timestamp - animationStart;
+      const frameDuration = 1000 / framerate;
+
+      if (elapsed >= animationFrames.length * frameDuration) {
+        const animationDuration = animationFrames.length * frameDuration;
+        animationStart += animationDuration;
+        elapsed -= animationDuration;
+        animationFrames = [
+          ...Array.from(
+            { length: Math.floor(Math.random() * 6) + 7 },
+            () => Array.from({ length: 8 }, (_, index) => index + 37)
+          ).flat(),
+          ...Array.from({ length: 8 }, (_, index) => index + 45)
+        ];
+      }
+
+      setCurrentFrame(animationFrames[Math.floor(elapsed / frameDuration)]);
+      animationFrame = window.requestAnimationFrame(updateAnimation);
+    };
+
+    setTimeout(() => animationFrame = window.requestAnimationFrame(updateAnimation), 100);
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [animationLoaded]);
 
   const { data: races } = useQuery({
     queryKey: ["races"],
@@ -70,57 +84,46 @@ const DailyRaces = (props) => {
     getRace(level);
   };
 
-  const switchAnimation = () => {
-    if (animationCounter == blinkTime && animationState == "wave") {
-      setAnimationState("blink");
-      setBlinkTime(Math.floor(Math.random() * 7) + 7);
-      setAnimationCounter(0);
-    } else {
-      setAnimationState("wave");
-      setAnimationCounter(prev => prev + 1);
-    }
-  };
-
   return (
-    <div className="dailyRacesBox" style={{display: spritesheetLoaded ? "flex" : "none"}} onClick={(e) => e.stopPropagation()}>
+    <div className="dailyRacesBox" style={{display: (animationLoaded && races) ? "flex" : "none"}} onClick={(e) => e.stopPropagation()}>
       <div className="dailyRacesCloseButton" onClick={closeWindows}>
         <p>CLOSE</p>
       </div>
       <h2 className="dailyRacesHeader">BOB'S DAILY RACES</h2>
-      {races && Object.entries(raceLevels).map(([level, number]) => {
-        const race = races.find(race => race.level == number);
-        return (
-          <div
-            className="raceDiv"
-            key={level}
-            onClick={() => !race.userTime && startRace(number)}
-          >
-            <div className="raceDivLeft">
-              <h3 className="raceDivTitle">{level.toUpperCase()} RACE</h3>
-              <p className="raceDivSubtitle">PLAYED BY {race?.numUsers} USER{race?.numUsers != 1 && 'S'} TODAY</p>
-            </div>
-            <div className="raceDivRight">
-              <div className="raceTime">
-                <p className="raceTimeTitle">YOUR TIME</p>
-                <p className="raceTimeText">{formatRaceTime(race?.userTime)}</p>
+      <div className="dailyRacesContent">
+        <div className="racesList">
+          <p className="racesDescription">How well do you know the locations of projects on this site? Test your knowledge with three races to play every day!</p>
+          {races && Object.entries(raceLevels).map(([level, number]) => {
+            const race = races.find(race => race.level == number);
+            return (
+              <div
+                className={`raceDiv ${race.userTime && "played"}`}
+                key={level}
+                onClick={() => !race.userTime && startRace(number)}
+              >
+                <div className="raceDivLeft">
+                  <h3 className="raceDivTitle">{level.toUpperCase()} RACE</h3>
+                  <p className="raceDivSubtitle">PLAYED BY {race?.numUsers} USER{race?.numUsers != 1 && 'S'} TODAY</p>
+                </div>
+                <div className="raceDivRight">
+                  <div className="raceTime">
+                    <p className="raceTimeTitle">YOUR TIME</p>
+                    <p className="raceTimeText">{formatRaceTime(race?.userTime)}</p>
+                  </div>
+                  <div className="raceTime">
+                    <p className="raceTimeTitle">TODAY'S BEST</p>
+                    <p className="raceTimeText">{formatRaceTime(race?.bestTime)}</p>
+                  </div>
+                </div>
               </div>
-              <div className="raceTime">
-                <p className="raceTimeTitle">TODAY'S BEST</p>
-                <p className="raceTimeText">{formatRaceTime(race?.bestTime)}</p>
-              </div>
-            </div>
+            );
+          })}
+        </div>
+        <div className="racesAnimationContainer">
+          <div className="racesAnimationCutoff">
+            {(animationLoaded && races) && <img className="racesAnimation" src={bobAnimationFrames[currentFrame]} />}
           </div>
-        );
-      })}
-      <div className="racesAnimationContainer">
-        {spritesheetLoaded && <motion.div
-          className="racesAnimation"
-          key={animationCounter}
-          style={{backgroundImage: `url(${spritesheet})`, height: `calc(${totalFrames} * 400px)`}}
-          animate={animations[animationState]}
-          onAnimationComplete={switchAnimation}
-          transition={transitions[animationState]}
-        />}
+        </div>
       </div>
     </div>
   );

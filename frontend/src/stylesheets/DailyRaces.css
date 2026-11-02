@@ -1,7 +1,6 @@
 .dailyRacesBox {
   max-width: 950px;
   width: 95%;
-  height: 70vh;
   filter: drop-shadow(0.25em 0.25em 1em rgba(0, 0, 0, 0.7));
   position: relative;
   display: flex;
@@ -14,7 +13,6 @@
   z-index: 1;
   container-type: inline-size;
   animation: zoomIn 0.3s ease-out;
-  overflow: hidden;
 }
 
 .dailyRacesCloseButton {
@@ -45,38 +43,88 @@
 }
 
 .dailyRacesHeader {
-  margin-top: 10px;
+  margin-top: 0.5em;
   font-family: wbf2;
-  font-size: 30px;
+  font-size: 2em;
+  margin-bottom: 0.1em;
+}
+
+.dailyRacesContent {
+  font-size: 1.5cqw;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.racesList {
+  margin: 0 -0.5em 1.5em 1.5em;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+}
+
+.racesDescription {
+  font-size: 1.25em;
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 0.3em;
 }
 
 .raceDiv {
   display: flex;
-  background-color: white;
-  width: 60cqw;
-  margin: 10px;
+  background-color: hsl(from var(--background-color) h calc(s - 20) calc(l - 10));
+  border-radius: 1em;
+  margin: 0.5em;
   align-items: center;
   justify-content: space-between;
-  padding: 3px 15px;
+  padding: 0.5em 1.3em;
   cursor: pointer;
+  box-shadow: inset 0 0 0.5em rgba(0, 0, 0, 0.7);
+  transition: background-color 0.15s ease-in-out;
+}
+
+.raceDiv:hover {
+  background-color: hsl(from var(--background-color) h calc(s - 30) calc(l - 35));
+}
+
+.raceDiv:hover .raceDivTitle,
+.raceDiv:hover .raceDivSubtitle,
+.raceDiv:hover .raceDivRight {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.raceDiv.played {
+  box-shadow: inset 0.1em 0.1em 0.3em 0.15em
+  hsl(from var(--background-color) h calc(s - 10) calc(l + 15) / 0.35),
+  inset -0.1em -0.1em 0.3em 0.15em
+  rgba(0, 0, 0, 0.35);
+  background-color: hsl(from var(--background-color) h calc(s - 40) calc(l - 10));
+  color: hsl(from var(--background-color) h calc(s - 65) calc(l - 65));
+  pointer-events: none;
+  user-select: none;
 }
 
 .raceDivTitle {
   margin: 0;
   text-align: left;
-  transform: skewX(-10deg);
-  font-size: 25px;
+  transform: skewX(-8deg);
+  font-size: 2.1em;
+  transition: color 0.15s ease-in-out;
 }
 
 .raceDivSubtitle {
-  margin: -3px 0 3px 0;
+  margin: -0.3em 0 0.3em 0;
   text-align: left;
-  font-size: 14px;
+  font-weight: 450;
+  font-size: 1.1em;
+  transition: color 0.15s ease-in-out;
 }
 
 .raceDivRight {
   display: flex;
-  gap: 15px;
+  gap: 1.25em;
+  transition: color 0.15s ease-in-out;
+  margin-right: 0.1em;
 }
 
 .raceTime {
@@ -84,32 +132,39 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  
 }
 
 .raceTimeTitle {
   margin: 0;
-  font-size: 13px;
+  font-size: 1em;
+  font-weight: 450;
+  transform: skewX(-8deg);
 }
 
 .raceTimeText {
   margin: 0;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 1.35em;
 }
 
 .racesAnimationContainer {
-  position: fixed;
+  width: 50%;
+}
+
+.racesAnimationCutoff {
+  position: absolute;
+  height: 50em;
   bottom: 0;
-  right: -65px;
-  pointer-events: none;
-  width: calc(8/7 * 400px);
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
   overflow: hidden;
-  height: 400px;
+  border-radius: 1em;
+  pointer-events: none;
 }
 
 .racesAnimation {
-  width: calc(8/7 * 400px);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  will-change: transform;
+  width: 115%;
+  filter: saturate(108%);
 }

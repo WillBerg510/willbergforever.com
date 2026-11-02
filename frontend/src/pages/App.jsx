@@ -29,6 +29,7 @@ function App() {
   const [openPlayer, setOpenPlayer] = useState(null);
   const [openMiscWindow, setOpenMiscWindow] = useState(null);
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
+  const [beginLoad, setBeginLoad] = useState(false);
   const [menu, setMenu] = useState("Map");
   const [listMode, setListMode] = useState(true);
   const [returnButtonClicked, setReturnButtonClicked] = useState(false);
@@ -177,7 +178,6 @@ function App() {
       racesAPI.submitRace(raceLevel, score, raceCode);
     },
     onSuccess: () => {
-      client.invalidateQueries(["races"]);
       setRaceCode(null);
     }
   });
@@ -191,6 +191,7 @@ function App() {
 
   const exitRaceResults = () => {
     if (raceResults) {
+      client.invalidateQueries(["races"]);
       onMapClick();
       setRaceLevel(-1);
       setRaceResults(null);
@@ -198,6 +199,12 @@ function App() {
       setOpenMiscWindow("races");
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setBeginLoad(true);
+    }, 500);
+  }, [mainHeadingReady]);
 
   return (
     <div id="app">
@@ -208,7 +215,7 @@ function App() {
         <img src={WillBergLogo} onLoad={() => setMainHeadingReady(true)} />
       </div>
       <AnimatePresence initial={false}>
-        {raceLevel == -1 &&
+        {(raceLevel == -1 && initialLoad <= 0) &&
           <motion.div
             exit={{opacity: 0, transition: {duration: 0.2, ease: "easeInOut"}}}
             className="sideMenuContainer"
@@ -259,7 +266,7 @@ function App() {
       {(openMiscWindow == "races") && <div className="windowOnTop" onClick={closeWindows}>
         <DailyRaces closeWindows={closeWindows} getRace={getRace} />
       </div>}
-      {(initialLoad > 0) && <>
+      {(initialLoad > 0 && beginLoad) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />
         {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
       </>}
@@ -273,7 +280,7 @@ function App() {
         }
       </AnimatePresence>
         {(raceLevel != -1) && <div className={`windowOnTop ${raceTime == -1 ? "racePrepWindow" : !raceResults && "hidden"}`} onClick={exitRaceResults}>
-          <RaceBox projects={raceProjects} startTime={raceTime} setStartTime={setRaceTime} raceResults={raceResults} />
+          <RaceBox projects={raceProjects} startTime={raceTime} setStartTime={setRaceTime} raceResults={raceResults} exitRaceResults={exitRaceResults} raceLevel={raceLevel} />
         </div>}
       <AnimatePresence>
         {!listMode && <motion.div
