@@ -24,6 +24,9 @@ import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 import BackIcon from "../assets/Back.svg";
 import SmileIsle from '../assets/Smile Isle.jpg';
 import MainBlur from '../assets/Main Blur.png';
+import BobTable from '../assets/Bob Table.png';
+import Right from '../assets/Right.png';
+import Wrong from '../assets/Wrong.png';
 
 const bobAnimationFrames = Object.values(import.meta.glob(
   '../assets/Bob Animation/Bob*.png',
@@ -63,6 +66,9 @@ const imagesToLoad = [
   ExitFullscreenIcon,
   BackIcon,
   ...bobAnimationFrames,
+  BobTable,
+  Right,
+  Wrong,
 ];
 
 export default imagesToLoad;
