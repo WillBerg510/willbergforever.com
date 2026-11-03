@@ -268,7 +268,7 @@ function App() {
         <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
       </div>}
       {(openMiscWindow == "races") && <div className="windowOnTop" onClick={closeWindows}>
-        <DailyRaces closeWindows={closeWindows} getRace={getRace} />
+        <DailyRaces closeWindows={closeWindows} getRace={getRace} userRefresh={userRefresh} />
       </div>}
       {(initialLoad > 0 && beginLoad) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />

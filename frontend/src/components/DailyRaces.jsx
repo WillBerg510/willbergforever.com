@@ -26,7 +26,7 @@ const formatRaceTime = (time) => {
 };
 
 const DailyRaces = (props) => {
-  const { closeWindows, getRace } = props;
+  const { closeWindows, getRace, userRefresh } = props;
   const [animationLoaded, setAnimationLoaded] = useState(false);
   const [currentFrame, setCurrentFrame] = useState(0);
 
@@ -78,7 +78,14 @@ const DailyRaces = (props) => {
 
   const { data: races } = useQuery({
     queryKey: ["races"],
-    queryFn: () => racesAPI.getRaces().then(res => res?.data?.races)
+    queryFn: () => racesAPI.getRaces().then(res => res?.data?.races),
+    retry: (count, error) => {
+      if (error.response?.status == 500) {
+        userRefresh();
+        return true;
+      }
+      return false;
+    },
   });
 
   const startRace = (level) => {
