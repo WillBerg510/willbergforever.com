@@ -167,6 +167,6 @@
   transition: opacity 0.35s ease-out 0.4s;
 }
 
-.raceBoxResults .raceBoxTime, .raceBoxResults .raceBoxInstructions {
+.raceBoxResults .raceBoxTime, .raceBoxResults .raceBoxInstructions, .raceBoxResults .raceBoxItems {
   transition: opacity 0.35s ease-in;
 }

@@ -41,6 +41,7 @@ function App() {
   const [isDivisionExiting, setIsDivisionExiting] = useState(false);
   const [raceProjects, setRaceProjects] = useState(null);
   const [raceCode, setRaceCode] = useState(null);
+  const [raceDate, setRaceDate] = useState(null);
   const [raceLevel, setRaceLevel] = useState(-1);
   const [raceTime, setRaceTime] = useState(-1);
   const [raceResults, setRaceResults] = useState(null);
@@ -164,6 +165,7 @@ function App() {
         onMapClick();
         setRaceProjects(res?.data?.projects);
         setRaceCode(res?.data?.code);
+        setRaceDate(res?.data?.date);
         setRaceResults(null);
         setRaceLevel(level);
         setRaceTime(-1);
@@ -179,6 +181,7 @@ function App() {
     },
     onSuccess: () => {
       setRaceCode(null);
+      client.invalidateQueries(["races"]);
     }
   });
 
@@ -194,6 +197,7 @@ function App() {
       client.invalidateQueries(["races"]);
       onMapClick();
       setRaceLevel(-1);
+      setRaceDate(null);
       setRaceResults(null);
       setRaceProjects(null);
       setOpenMiscWindow("races");
@@ -279,8 +283,8 @@ function App() {
           />
         }
       </AnimatePresence>
-        {(raceLevel != -1) && <div className={`windowOnTop ${raceTime == -1 ? "racePrepWindow" : !raceResults && "hidden"}`} onClick={exitRaceResults}>
-          <RaceBox projects={raceProjects} startTime={raceTime} setStartTime={setRaceTime} raceResults={raceResults} exitRaceResults={exitRaceResults} raceLevel={raceLevel} />
+        {(raceLevel != -1) && <div className={`windowOnTop ${raceTime == -1 ? "racePrepWindow" : raceResults ? "results" : "hidden"}`} onClick={exitRaceResults}>
+          <RaceBox projects={raceProjects} startTime={raceTime} setStartTime={setRaceTime} raceResults={raceResults} exitRaceResults={exitRaceResults} raceLevel={raceLevel} raceDate={raceDate} />
         </div>}
       <AnimatePresence>
         {!listMode && <motion.div

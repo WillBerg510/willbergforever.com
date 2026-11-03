@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import racesAPI from '../api/RacesAPI';
 import raceLevels from '../constants/raceLevels';
+import BobTable from '../assets/Bob Table.png';
 
 const framerate = 20.5;
 
@@ -69,7 +70,7 @@ const DailyRaces = (props) => {
       animationFrame = window.requestAnimationFrame(updateAnimation);
     };
 
-    setTimeout(() => animationFrame = window.requestAnimationFrame(updateAnimation), 100);
+    setTimeout(() => animationFrame = window.requestAnimationFrame(updateAnimation), 200);
     return () => {
       window.cancelAnimationFrame(animationFrame);
     };
@@ -122,6 +123,7 @@ const DailyRaces = (props) => {
         <div className="racesAnimationContainer">
           <div className="racesAnimationCutoff">
             {(animationLoaded && races) && <img className="racesAnimation" src={bobAnimationFrames[currentFrame]} />}
+            <img className="racesAnimationTable" src={BobTable} />
           </div>
         </div>
       </div>

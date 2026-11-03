@@ -53,6 +53,7 @@ router.patch("/initiate/:level", async (req, res) => {
       await Promise.all(promises);
       res.status(200).json({
         code: code,
+        date: race.date,
         projects: projects
       });
     } catch (err) {

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import raceLevels from '../constants/raceLevels';
 
 const RaceBox = (props) => {
-  const { projects, startTime, setStartTime, raceResults, exitRaceResults, raceLevel } = props;
+  const { projects, startTime, setStartTime, raceResults, exitRaceResults, raceLevel, raceDate } = props;
   const [elapsedTime, setElapsedTime] = useState(0);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const RaceBox = (props) => {
             <p className="finalTime">FINAL TIME:</p>
             <p className="time">{Math.floor(raceResults / 60)}:{String(raceResults % 60).padStart(2, "0")}</p>
           </div>
-          <p className="raceID">{Object.keys(raceLevels).find(level => raceLevels[level] == raceLevel).toUpperCase()} RACE - {new Date().toLocaleDateString()}</p>
+          <p className="raceID">{Object.keys(raceLevels).find(level => raceLevels[level] == raceLevel).toUpperCase()} RACE - {new Date(raceDate).toLocaleDateString()}</p>
           <div className="return" onClick={exitRaceResults}>RETURN</div>
         </div>
         <p className="raceBoxInstructions">Locate all of these projects:</p>
