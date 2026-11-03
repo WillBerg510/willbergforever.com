@@ -112,14 +112,14 @@ const regions = [
     position: [28, 84],
     arrow: [70, "up"],
     holdsProjects: false,
-  },
+  },*/
   {
     name: "Bob's Daily Races",
     code: "races",
-    position: [68.5, 81.5],
+    position: [69, 83],
     arrow: [30, "up"],
     holdsProjects: false,
-  }*/
+  }
 ]
 
 export default regions;

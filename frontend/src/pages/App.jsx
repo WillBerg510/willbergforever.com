@@ -7,7 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import adminAPI from "../api/AdminAPI.js";
 import userAPI from "../api/UserAPI.js";
 import projectsAPI from '../api/ProjectsAPI.js';
+import racesAPI from '../api/RacesAPI.js';
 import UpdatesBox from '../components/UpdatesBox.jsx';
+import DailyRaces from '../components/DailyRaces.jsx';
+import RaceBox from '../components/RaceBox.jsx';
 import Island from '../components/Island.jsx';
 import Project from '../components/Project.jsx';
 import Player from '../components/Player.jsx';
@@ -19,20 +22,14 @@ import About from '../components/About.jsx';
 import imagesToLoad from '../constants/imagesToLoad.js';
 import WillBergLogo from '../assets/WillBergLogo.png';
 
-const levels = {
-  "Easy": 3,
-  "Medium": 4,
-  "Hard": 5,
-};
-
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
   const [openProject, setOpenProject] = useState(null);
   const [openPlayer, setOpenPlayer] = useState(null);
   const [openMiscWindow, setOpenMiscWindow] = useState(null);
-  const [racesData, setRacesData] = useState({});
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
+  const [beginLoad, setBeginLoad] = useState(false);
   const [menu, setMenu] = useState("Map");
   const [listMode, setListMode] = useState(true);
   const [returnButtonClicked, setReturnButtonClicked] = useState(false);
@@ -42,6 +39,13 @@ function App() {
   const [focusRegion, setFocusRegion] = useState(null);
   const [focusDivision, setFocusDivision] = useState(null);
   const [isDivisionExiting, setIsDivisionExiting] = useState(false);
+  const [raceProjects, setRaceProjects] = useState(null);
+  const [raceCode, setRaceCode] = useState(null);
+  const [raceDate, setRaceDate] = useState(null);
+  const [raceLevel, setRaceLevel] = useState(-1);
+  const [raceTime, setRaceTime] = useState(-1);
+  const [raceResults, setRaceResults] = useState(null);
+  const [doStrikeThrough, setDoStrikeThrough] = useState(false);
   const client = useQueryClient();
   const navigate = useNavigate();
 
@@ -103,14 +107,6 @@ function App() {
       }))),
   });
 
-  const { mutate: getRace } = useMutation({
-    mutationFn: (level) => projectsAPI.getRace(levels[level]),
-    onSuccess: (res, level) => {
-      const projects = res?.data?.projects;
-      setRacesData(prev => ({...prev, [level]: projects}));
-    },
-  });
-
   const toggleSeeMore = async () => {
     client.invalidateQueries(["updates"]);
     if (allUpdatesOpen) {
@@ -163,6 +159,57 @@ function App() {
     }
   }
 
+  const { mutate: getRace } = useMutation({
+    mutationFn: (level) => racesAPI.initiateRace(level)
+      .then(res => {
+        onMapClick();
+        setRaceProjects(res?.data?.projects);
+        setRaceCode(res?.data?.code);
+        setRaceDate(res?.data?.date);
+        setRaceResults(null);
+        setRaceLevel(level);
+        setRaceTime(-1);
+        closeWindows();
+    })
+  });
+
+  const { mutate: submitRace } = useMutation({
+    mutationFn: () => {
+      const score = Math.floor((performance.now() - raceTime) / 1000);
+      setRaceResults(score);
+      racesAPI.submitRace(raceLevel, score, raceCode);
+    },
+    onSuccess: () => {
+      setRaceCode(null);
+      client.invalidateQueries(["races"]);
+    }
+  });
+
+  const checkRaceComplete = () => {
+    setDoStrikeThrough(!doStrikeThrough);
+    if (raceProjects?.every(raceProject => raceProject.found)) {
+      submitRace();
+    }
+  };
+
+  const exitRaceResults = () => {
+    if (raceResults) {
+      client.invalidateQueries(["races"]);
+      onMapClick();
+      setRaceLevel(-1);
+      setRaceDate(null);
+      setRaceResults(null);
+      setRaceProjects(null);
+      setOpenMiscWindow("races");
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setBeginLoad(true);
+    }, 500);
+  }, [mainHeadingReady]);
+
   return (
     <div id="app">
       <div
@@ -171,8 +218,26 @@ function App() {
       >
         <img src={WillBergLogo} onLoad={() => setMainHeadingReady(true)} />
       </div>
-      <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} listMode={listMode} setListMode={setListMode} setMapSelected={setMapSelected} firstOpen={firstOpen} onMapClick={onMapClick} />
-      {initialLoad <= 0 && <RightSideMenu setMenu={setMenu} listMode={listMode} setListMode={setListMode} firstOpen={firstOpen} />}
+      <AnimatePresence initial={false}>
+        {(raceLevel == -1 && initialLoad <= 0) &&
+          <motion.div
+            exit={{opacity: 0, transition: {duration: 0.2, ease: "easeInOut"}}}
+            className="sideMenuContainer"
+          >
+            <SideMenu getGroupProjects={getGroupProjects} setMenu={setMenu} menu={menu} loaded={initialLoad <= 0} listMode={listMode} setListMode={setListMode} setMapSelected={setMapSelected} firstOpen={firstOpen} onMapClick={onMapClick} />
+          </motion.div>
+        }
+      </AnimatePresence>
+      <AnimatePresence initial={false}>
+        {(raceLevel == -1 && initialLoad <= 0) &&
+          <motion.div
+            exit={{opacity: 0, transition: {duration: 0.2, ease: "easeInOut"}}}
+            className="rightSideMenuContainer"
+          >
+            <RightSideMenu setMenu={setMenu} listMode={listMode} setListMode={setListMode} firstOpen={firstOpen} />
+          </motion.div>
+        }
+      </AnimatePresence>
       {isAdmin &&
         <div style={{position: "fixed", right: "10px", top: 0, zIndex: 4, display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
           <p style={{margin: "0"}}>Logged in as admin</p>
@@ -202,15 +267,25 @@ function App() {
       {(openMiscWindow == "updates") && <div className="windowOnTop" onClick={closeWindows}>
         <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
       </div>}
-      {(initialLoad > 0) && <>
+      {(openMiscWindow == "races") && <div className="windowOnTop" onClick={closeWindows}>
+        <DailyRaces closeWindows={closeWindows} getRace={getRace} />
+      </div>}
+      {(initialLoad > 0 && beginLoad) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />
         {imagesToLoad.map(image => <img key={image} src={image} className="imageLoader" onLoad={onElementLoad} />)}
       </>}
       <AnimatePresence>
         {(initialLoad <= 0 && menu == "Map") &&
-          <Island focusRegion={focusRegion} setFocusRegion={setFocusRegion} focusDivision={focusDivision} setFocusDivision={setFocusDivision} isDivisionExiting={isDivisionExiting} setIsDivisionExiting={setIsDivisionExiting} setOpenProject={setOpenProject} isAdmin={isAdmin} setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} listMode={listMode} returnButtonClicked={returnButtonClicked} mapSelected={mapSelected} />
+          <Island focusRegion={focusRegion} setFocusRegion={setFocusRegion} focusDivision={focusDivision} setFocusDivision={setFocusDivision}
+            isDivisionExiting={isDivisionExiting} setIsDivisionExiting={setIsDivisionExiting} setOpenProject={setOpenProject} isAdmin={isAdmin}
+            setOpenMiscWindow={setOpenMiscWindow} firstOpen={firstOpen} setFirstOpen={setFirstOpen} listMode={listMode} returnButtonClicked={returnButtonClicked}
+            mapSelected={mapSelected} raceMode={raceLevel != -1} raceProjects={raceProjects} checkRaceComplete={checkRaceComplete}
+          />
         }
       </AnimatePresence>
+        {(raceLevel != -1) && <div className={`windowOnTop ${raceTime == -1 ? "racePrepWindow" : raceResults ? "results" : "hidden"}`} onClick={exitRaceResults}>
+          <RaceBox projects={raceProjects} startTime={raceTime} setStartTime={setRaceTime} raceResults={raceResults} exitRaceResults={exitRaceResults} raceLevel={raceLevel} raceDate={raceDate} />
+        </div>}
       <AnimatePresence>
         {!listMode && <motion.div
           className="returnButton"
@@ -228,22 +303,6 @@ function App() {
           RETURN
         </motion.div>}
       </AnimatePresence>
-      {/*<div style={{display: "flex", gap: "10px", zIndex: "4", justifyContent: "center", margin: "20px 0"}}>
-        {Object.keys(levels).map(level => <button onClick={() => getRace(level)}>{level} Race</button>)}
-      </div>*/}
-      {/*<div style={{display: "flex", gap: "30px", zIndex: "4", justifyContent: "center", flexWrap: "wrap", margin: "20px 0"}}>
-        {Object.keys(levels).map(level => 
-          racesData[level] && (
-          <div style={{border: "1px solid #ccc", padding: "10px", borderRadius: "5px"}}>
-            <h3>{level} Race Projects</h3>
-            <ul>
-              {racesData[level].map((project) => (
-                <li style={{textAlign: "left"}} key={project._id}>{project.name}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>*/}
     </div>
   )
 }

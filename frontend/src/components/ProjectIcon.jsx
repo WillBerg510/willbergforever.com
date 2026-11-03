@@ -6,6 +6,9 @@ import ArtIcon from '../assets/Art Map Icon.png';
 import PhotosIcon from '../assets/Photos Map Icon.png';
 import ExitArrow from '../assets/Exit Icon.png';
 import HomeIcon from '../assets/Home Icon.png';
+import Right from '../assets/Right.png';
+import Wrong from '../assets/Wrong.png';
+import { AnimatePresence, motion } from 'motion/react';
 
 const icons = {
   "music": MusicIcon,
@@ -16,28 +19,50 @@ const icons = {
 }
 
 const ProjectIcon = (props) => {
-  const { project, setOpenProject, division, setFocusDivision, otherDivision, leaveRegion } = props;
+  const { project, setOpenProject, division, setFocusDivision, otherDivision, leaveRegion, raceMode, raceProjects, checkRaceComplete } = props;
   const [hovered, setHovered] = useState(false);
   const [exitText, setExitText] = useState("");
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
     setExitText(otherDivision?.name.toUpperCase());
   }, []);
+
+  const onProjectClick = () => {
+    if (raceMode) {
+      const raceProject = raceProjects.find(proj => proj.name == project.name);
+      if (raceProject) {
+        if (true || !raceProject.found) {
+          raceProject.found = true;
+          checkRaceComplete();
+          setFeedback(Right);
+        }
+      } else {
+        setFeedback(Wrong);
+      }
+      setTimeout(() => {
+        setFeedback(null);
+      }, 1000);
+    } else {
+      setOpenProject(project._id);
+    }
+  };
 
   return (
     <div className="projectIconFull" style={{
       position: "absolute",
       left: project ? `${project.position[0]}%` : division ? `${division.exit[0]}%` : "calc(100% + 2em)",
       top: project ? `${project.position[1]}%` : division ? `${division.exit[1]}%` : "50%",
-      '--glide-delay': `${(division || project) ? Math.random() * 0.25 + 0.1 : 0.1}s`,
+      '--glide-delay': `${((division || project) && !raceMode) ? Math.random() * 0.25 + 0.1 : 0.1}s`,
       zIndex: hovered ? 3 : 2,
     }}>
       {project && <img
-        className="projectIcon"
+        className={`projectIcon ${feedback && "withFeedback"}`}
         src={icons[project.icon] || MusicIcon}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        onClick={() => setOpenProject(project._id)}
+        onClick={onProjectClick}
+        draggable={false}
       />}
       {division && <div
         className="exitIconFull"
@@ -45,7 +70,7 @@ const ProjectIcon = (props) => {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <img className={`exitIcon ${hovered ? "exitIconHover" : ""}`} src={ExitArrow} style={{
+        <img className={`exitIcon ${hovered ? "exitIconHover" : ""}`} src={ExitArrow} draggable={false} style={{
           rotate: division ? `${Math.atan2(-1 * division.direction[1], -1 * division.direction[0])}rad` : null,
         }}/>
         <p className={`exitText ${hovered ? "exitTextHover" : ""}`}>TO {exitText}</p>
@@ -57,9 +82,18 @@ const ProjectIcon = (props) => {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <img className={`returnIcon ${hovered ? "returnIconHover" : ""}`} src={HomeIcon} />
+        <img className={`returnIcon ${hovered ? "returnIconHover" : ""}`} draggable={false} src={HomeIcon} />
         <p className={`returnText ${hovered ? "returnTextHover" : ""}`}>RETURN TO FULL MAP</p>
       </div>}
+      <AnimatePresence>
+        {feedback && <motion.div className="projectRaceFeedback"
+          initial={{opacity: 0, scale: 0.8}}
+          animate={{opacity: 1, scale: 1, transition: {ease: "easeOut", duration: 0.15}}}
+          exit={{opacity: 0, scale: 1, transition: {ease: "easeInOut", duration: 0.3}}}
+        >
+          {feedback && <img src={feedback} />}
+        </motion.div>}
+      </AnimatePresence>
       {hovered && project &&
         <div className="projectTooltip">
           <div className="projectTooltipBox">

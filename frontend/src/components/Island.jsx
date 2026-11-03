@@ -10,7 +10,8 @@ import SmileIsle from '../assets/Smile Isle.jpg';
 import MainBlur from '../assets/Main Blur.png';
 
 const Island = (props) => {
-  const { isDivisionExiting, setIsDivisionExiting, focusRegion, setFocusRegion, focusDivision, setFocusDivision, setOpenProject, setOpenMiscWindow, isAdmin, firstOpen, setFirstOpen, listMode, returnButtonClicked } = props;
+  const { isDivisionExiting, setIsDivisionExiting, focusRegion, setFocusRegion, focusDivision, setFocusDivision, setOpenProject,
+    setOpenMiscWindow, isAdmin, firstOpen, setFirstOpen, listMode, returnButtonClicked, raceMode, raceProjects, checkRaceComplete } = props;
   const [loadedDivision, setLoadedDivision] = useState(null)
   const [islandVisible, setIslandVisible] = useState(false);
   const islandRef = useRef(null);
@@ -118,13 +119,13 @@ const Island = (props) => {
           }}
         >
           <AnimatePresence>
-            {!focusRegion && regions.map(region => <RegionName key={region.name} region={region} enterRegion={enterRegion} visible={!focusRegion} />)}
+            {!focusRegion && regions.map(region => (region.holdsProjects || !raceMode) && <RegionName key={region.name} region={region} enterRegion={enterRegion} visible={!focusRegion} raceMode={raceMode} />)}
           </AnimatePresence>
           <div className="regionDivisions" style={{
             scale: 1 / focusRegion?.zoom[0]
           }}>
             <AnimatePresence>
-              {!focusDivision && focusRegion && focusRegion.divisions?.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} />)}
+              {!focusDivision && focusRegion && focusRegion.divisions?.map(division => <RegionName key={`${focusRegion.code}${division.code}`} region={division} enterRegion={enterRegion} raceMode={raceMode} />)}
             </AnimatePresence>
           </div>
           <img key={`${focusRegion?.name}-image` || "isle-image"} className="islandImage" draggable="false" src={SmileIsle} />
@@ -147,7 +148,7 @@ const Island = (props) => {
         </motion.div>
       }
       </AnimatePresence>
-      {focusDivision && focusDivision.projects && (focusDivision != loadedDivision) && focusDivision.image &&
+      {focusDivision && (focusDivision != loadedDivision) && focusDivision.image &&
         <img src={focusDivision.image} style={{display: "none"}} onLoad={() => {
           setLoadedDivision(focusDivision);
         }}/>
@@ -155,7 +156,7 @@ const Island = (props) => {
       {loadedDivision && <motion.div
         className="regionPresence"
         initial={{opacity: 0}}
-        animate={{opacity: isDivisionExiting ? 0 : 1, transition: {duration: 0.2, ease: "easeInOut"}}}
+        animate={{opacity: isDivisionExiting ? 0 : 1, transition: {duration: isDivisionExiting ? 0.2 : 0.3, ease: "easeInOut"}}}
         onAnimationComplete={() => {
           if (isDivisionExiting) {
             setLoadedDivision(null);
@@ -186,7 +187,7 @@ const Island = (props) => {
             }}
           >
             {loadedDivision?.projects && loadedDivision.projects.map(project =>
-              <ProjectIcon key={project.name} project={project} setOpenProject={setOpenProject} />
+              <ProjectIcon key={project.name} project={project} setOpenProject={setOpenProject} raceMode={raceMode} raceProjects={raceProjects} checkRaceComplete={checkRaceComplete} />
             )}
             {loadedDivision?.image &&
               <img key={`${loadedDivision.name}-image`} className="islandImage" src={loadedDivision.image} draggable="false" alt="" />

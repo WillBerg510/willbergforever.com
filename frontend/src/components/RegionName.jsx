@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 
 const RegionName = (props) => {
-  const { region, enterRegion } = props;
+  const { region, enterRegion, raceMode } = props;
 
   return (
     <motion.div
@@ -15,7 +15,7 @@ const RegionName = (props) => {
         transition: {
           duration: region.exit ? 0.2 : 0.4,
           ease: [0.3, 0, 0.3, 1],
-          delay: region.exit ? 0.1 + Math.random() * 0.1 : 0.3 + Math.random() * 0.15,
+          delay: region.exit ? 0.1 + Math.random() * 0.1 * !raceMode : 0.3 + Math.random() * 0.15 * !raceMode,
         }
       }}
       exit={{opacity: 0, transition: {duration: 0.2, ease: [0.8, 0, 0.67, 1]}}}

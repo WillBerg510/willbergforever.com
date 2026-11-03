@@ -14,8 +14,13 @@ const race = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  bestTime: {
-    type: Number,
+  times: {
+    type: Map,
+    of: Number,
+  },
+  codes: {
+    type: Map,
+    of: String,
   }
 });
 
