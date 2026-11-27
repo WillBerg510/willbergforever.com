@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 const Project = require("../models/Project.js");
 const Race = require("../models/Race.js");
+const FactoryEvent = require("../models/FactoryEvent.js");
 const auth = require("../utils/auth.js");
 const { uploadToS3, deleteFromS3 } = require("../utils/s3Client.js");
 const formidable = require('express-formidable');
 const jwt = require('jsonwebtoken');
 const refreshRaces = require("../utils/refreshRaces.js");
+const crypto = require('crypto');
 
 // Post a new project using FormData which will upload files to the AWS S3 bucket
 router.post("/", auth, formidable({
@@ -203,7 +205,26 @@ router.get("/:id", async (req, res) => {
           Object.entries(project.reactions).forEach(([reaction, users]) => {
             project.reacted[reaction] = users.includes(decoded.user);
             project.reactionNums[reaction] = users.length - users.includes(decoded.user);
-          })
+          });
+          const factoryEvent = await FactoryEvent.findOne().sort({date: -1}).lean();
+          if (factoryEvent && factoryEvent.active) {
+            factoryIndex = factoryEvent.projects.indexOf(project._id.toString());
+            if (factoryIndex > -1) {
+              project.factoryPart = !factoryEvent.progresses[factoryIndex].includes(decoded.user) ? factoryEvent.parts?.[factoryIndex] : null;
+              project.factoryLocation = factoryEvent.locations?.[factoryIndex];
+              let code = null;
+              if (!factoryEvent.codes[decoded.user]) {
+                code = crypto.randomUUID();
+                await FactoryEvent.findOneAndUpdate(
+                  {_id: factoryEvent._id},
+                  {$set: {[`codes.${decoded.user}`]: code}}
+                );
+              } else {
+                code = factoryEvent.codes[decoded.user];
+              }
+              project.factoryCode = code;
+            }
+          }
         }
         delete project.reactions;
         delete project.awards;

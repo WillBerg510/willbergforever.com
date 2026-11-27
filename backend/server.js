@@ -8,6 +8,7 @@ const adminRouter = require("./routes/admin.js");
 const userRouter = require("./routes/user.js");
 const projectsRouter = require("./routes/projects.js");
 const racesRouter = require("./routes/races.js");
+const factoryRouter = require("./routes/factory.js");
 
 require("dotenv").config();
 
@@ -54,6 +55,7 @@ app.use('/admin', adminRouter);
 app.use('/user', userRouter);
 app.use('/projects', projectsRouter);
 app.use('/races', racesRouter);
+app.use('/factory', factoryRouter);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

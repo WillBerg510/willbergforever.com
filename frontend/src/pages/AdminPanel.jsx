@@ -4,7 +4,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import adminAPI from "../api/AdminAPI.js";
 import updatesAPI from "../api/UpdatesAPI.js";
 import projectsAPI from "../api/ProjectsAPI.js";
+import factoryAPI from "../api/FactoryAPI.js";
 import projectGroups from "../constants/projectGroups.js";
+import factoryParts from "../constants/factoryParts.js";
 import regions from "../constants/regions.js";
 import "../stylesheets/AdminPanel.css";
 
@@ -34,22 +36,64 @@ const defaultProjectFilePreviews = {
   content: [],
 };
 
+const defaultFactoryInput = {
+  name: "",
+  contentTitle: "",
+  projects: [""],
+  parts: [""],
+  locations: [""],
+  active: true,
+  contentType: "",
+  content: [],
+  contentNames: [],
+};
+
+const defaultFactoryFilePreviews = {
+  content: [],
+};
+
 const AdminPanel = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editProject = searchParams.get("editProject");
+  const editFactoryEvent = searchParams.get("editFactoryEvent");
   const [updateInput, setUpdateInput] = useState("");
   const [projectInput, setProjectInput] = useState(defaultProjectInput);
   const [projectFilePreviews, setProjectFilePreviews] = useState(defaultProjectFilePreviews);
+  const [factoryInput, setFactoryInput] = useState(defaultFactoryInput);
+  const [factoryFilePreviews, setFactoryFilePreviews] = useState(defaultFactoryFilePreviews);
   const [isAdmin, setIsAdmin] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState();
   const projectThumbnailRef = useRef(null);
   const projectContentRef = useRef(null);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const editProject = searchParams.get("editProject");
+  const factoryContentRef = useRef(null);
+  const [postingMode, setPostingMode] = useState(editProject ? "project" : editFactoryEvent ? "factory" : "update");
 
   useEffect(() => {
     adminVerify();
     if (editProject) getProjectToEdit();
+    if (editFactoryEvent) getFactoryEventToEdit();
   }, []);
+
+  const { mutate: getFactoryEventToEdit } = useMutation({
+    mutationFn: () => factoryAPI.getFactoryEventForEdit(),
+    onSuccess: (res) => {
+      const event = res.data.factoryEvent;
+      if (!event || event._id != editFactoryEvent) return;
+      setFactoryInput({
+        name: event.name,
+        contentTitle: event.contentTitle || "",
+        projects: event.projects,
+        parts: event.projects.map((_, index) => event.parts?.[index] || ""),
+        locations: event.projects.map((_, index) => event.locations?.[index] ?? ""),
+        active: event.active,
+        contentType: event.contentType,
+        content: event.content,
+        contentNames: event.contentNames || [],
+      });
+      setFactoryFilePreviews({content: event.content});
+    },
+  });
 
   const { mutate: getProjectToEdit } = useMutation({
     mutationFn: () => projectsAPI.getProjectInfo(editProject),
@@ -105,6 +149,26 @@ const AdminPanel = () => {
     onSuccess: () => setUpdateInput(""),
   });
 
+  const { mutate: postFactoryEvent, isSuccess: factoryEventPosted, isPending: factoryEventPostLoading, isError: factoryEventPostError } = useMutation({
+    mutationFn: () => {
+      const {name, contentTitle, projects, contentType, content} = factoryInput;
+      if (!name || !contentTitle || projects.some(project => !project) || !factoryInput.locations || !contentType || content.some(item => !item)) {
+        throw new Error("All factory event fields are required");
+      }
+      return factoryAPI.postFactoryEvent(factoryInput);
+    },
+    onSuccess: () => {
+      setFactoryInput(defaultFactoryInput);
+      setFactoryFilePreviews(defaultFactoryFilePreviews);
+      if (factoryContentRef.current) factoryContentRef.current.value = null;
+    },
+  });
+
+  const { mutate: editFactoryEventMutation, isSuccess: factoryEventEdited, isPending: factoryEventEditLoading, isError: factoryEventEditError } = useMutation({
+    mutationFn: () => factoryAPI.editFactoryEvent(editFactoryEvent, factoryInput),
+    onSuccess: () => getFactoryEventToEdit(),
+  });
+
   // Determine whether the user's admin access token is valid, and then attempt a refresh with the refresh token
   const { mutate: adminVerify } = useMutation({
     mutationFn: () => adminAPI.verify(),
@@ -134,6 +198,91 @@ const AdminPanel = () => {
   // On change of update textarea
   const changeUpdate = (e) => {
     setUpdateInput(e.target.value);
+  }
+
+  const changeFactoryInput = (e) => {
+    setFactoryInput({...factoryInput, [e.target.name]: e.target.value});
+  }
+
+  const onFactoryArrayChange = (e, index) => {
+    const values = [...factoryInput[e.target.name]];
+    values[index] = e.target.name == "locations" && e.target.value != "" ? Number(e.target.value) : e.target.value;
+    setFactoryInput({...factoryInput, [e.target.name]: values});
+  }
+
+  const addFactoryProject = () => {
+    setFactoryInput({
+      ...factoryInput,
+      projects: [...factoryInput.projects, ""],
+      parts: [...factoryInput.parts, ""],
+      locations: [...factoryInput.locations, ""],
+    });
+  }
+
+  const deleteFactoryProject = (index) => {
+    setFactoryInput({
+      ...factoryInput,
+      projects: factoryInput.projects.filter((project, i) => i != index),
+      parts: factoryInput.parts.filter((part, i) => i != index),
+      locations: factoryInput.locations.filter((location, i) => i != index),
+    });
+  }
+
+  const onFactoryContentUpload = (e, index, previews = [...factoryFilePreviews.content]) => {
+    let file = e.target.files[0] || null;
+    const content = [...factoryInput.content];
+    content[index] = file;
+    previews[index] = file ? URL.createObjectURL(file) : null;
+    setFactoryInput({...factoryInput, content});
+    setFactoryFilePreviews({...factoryFilePreviews, content: previews});
+  }
+
+  const addFactoryContentItem = () => {
+    setFactoryInput({
+      ...factoryInput,
+      content: [...factoryInput.content, null],
+      contentNames: [...factoryInput.contentNames, ""],
+    });
+    setFactoryFilePreviews({
+      ...factoryFilePreviews,
+      content: [...factoryFilePreviews.content, null],
+    });
+  }
+
+  const deleteFactoryContentItem = (index) => {
+    setFactoryInput({
+      ...factoryInput,
+      content: factoryInput.content.filter((content, i) => i != index),
+      contentNames: factoryInput.contentNames.filter((name, i) => i != index),
+    });
+    setFactoryFilePreviews({
+      ...factoryFilePreviews,
+      content: factoryFilePreviews.content.filter((preview, i) => i != index),
+    });
+    if (factoryContentRef.current) factoryContentRef.current.value = null;
+  }
+
+  const onFactoryContentTypeChange = (e) => {
+    const contentType = e.target.value;
+    const contentLength = contentType == "audio" ? 2 : contentType == "musicVideo" ? 3 : contentType == "gallery" ? 1 : 1;
+    const content = [...factoryInput.content];
+    while (content.length < contentLength) content.push(null);
+    setFactoryInput({
+      ...factoryInput,
+      contentType,
+      content: content.slice(0, contentLength),
+      contentNames: contentType == "gallery" ? [""] : [],
+    });
+    setFactoryFilePreviews({
+      ...factoryFilePreviews,
+      content: factoryFilePreviews.content.slice(0, contentLength),
+    });
+  }
+
+  const onFactoryContentNameChange = (e, index) => {
+    const contentNames = [...factoryInput.contentNames];
+    contentNames[index] = e.target.value;
+    setFactoryInput({...factoryInput, contentNames});
   }
 
   const onProjectChange = (e) => {
@@ -259,6 +408,11 @@ const AdminPanel = () => {
     onSuccess: returnHome,
   });
 
+  const { mutate: deleteFactoryEvent, isError: factoryEventDeleteError } = useMutation({
+    mutationFn: () => factoryAPI.deleteFactoryEvent(editFactoryEvent),
+    onSuccess: returnHome,
+  });
+
   const deleteClicked = () => {
     if (!confirmDelete) {
       setConfirmDelete(true);
@@ -269,22 +423,137 @@ const AdminPanel = () => {
     else deleteProject();
   };
 
+  const deleteFactoryEventClicked = () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      setTimeout(() => {
+        setConfirmDelete(false);
+      }, 2000);
+    }
+    else deleteFactoryEvent();
+  };
+
   return (
     <>
       <button onClick={returnHome}>Return to Home Page</button>
       {isAdmin &&
-        <div className="adminPanel">
+        <div className="adminPanel" style={{height: "750px"}}>
           <div style={{display: "flex", gap: "10px", height: "36px", alignItems: "center"}}>
             <h2 style={{margin: "0"}}>Logged in as admin</h2>
             <button style={{margin: "0"}} onClick={signOut}>Sign Out</button>
           </div>
           <h1>ADMIN PANEL</h1>
-          <div className="enterUpdate">
+          <div className="postingModeButtons">
+            <button onClick={() => setPostingMode("update")}>Post Update</button>
+            <button onClick={() => setPostingMode("factory")}>Post Factory Event</button>
+            <button onClick={() => setPostingMode("project")}>Post Project</button>
+          </div>
+          {postingMode == "update" && <div className="enterUpdate">
             <textarea onChange={changeUpdate} cols="50" rows="5" value={updateInput} />
             <button className="postUpdate" onClick={postUpdate}>Post an update</button>
             {updatePosted && <p>Update successfully posted</p>}
-          </div>
-          <div className="enterProject" style={{height: "500px", overflowY: "scroll"}}>
+          </div>}
+          {postingMode == "factory" && <div className="enterFactory" style={{height: "500px", overflowY: "scroll"}}>
+            <h2>Create factory event</h2>
+            <label htmlFor="factoryName">Name</label>
+            <input id="factoryName" name="name" type="text" value={factoryInput.name} onChange={changeFactoryInput} />
+            <label htmlFor="factoryContentTitle">Content Title</label>
+            <input id="factoryContentTitle" name="contentTitle" type="text" value={factoryInput.contentTitle} onChange={changeFactoryInput} />
+            <label htmlFor="factoryActive">
+              <input id="factoryActive" name="active" type="checkbox" checked={factoryInput.active} onChange={e => setFactoryInput({...factoryInput, active: e.target.checked})} />
+              Active
+            </label>
+            <label htmlFor="factoryProjects">Project Names</label>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+              {factoryInput.projects.map((project, index) =>
+                <div key={`factoryProject${index}`} style={{display: "flex", flexDirection: "column"}}>
+                  <input style={{width: "120px"}} name="projects" type="text" value={project} onChange={e => onFactoryArrayChange(e, index)} />
+                  <select
+                    aria-label={`Part for project ${index + 1}`}
+                    name="parts"
+                    value={factoryInput.parts[index] || ""}
+                    onChange={e => onFactoryArrayChange(e, index)}
+                  >
+                    <option value="">Select part</option>
+                    {Object.keys(factoryParts)
+                      .filter(option => option == factoryInput.parts[index] || !factoryInput.parts.includes(option))
+                      .map(option => <option key={option} value={option}>{option}</option>)}
+                  </select>
+                  <select
+                    aria-label={`Location for project ${index + 1}`}
+                    name="locations"
+                    value={factoryInput.locations[index] || ""}
+                    onChange={e => onFactoryArrayChange(e, index)}
+                  >
+                    <option value="">Select location</option>
+                    {["Right of title", "Below links", "YouTube button", "Spotify button", "Link button", "Play button"]
+                      .map((location, locationIndex) =>
+                        <option key={location} value={locationIndex + 1}>{location}</option>
+                      )}
+                  </select>
+                  <p />
+                  <button onClick={() => deleteFactoryProject(index)}>Delete</button>
+                </div>
+              )}
+              <button onClick={addFactoryProject} style={{width: "50px", height: "50px", fontSize: "16px"}}>Add</button>
+            </div>
+            <label htmlFor="factoryContentType">Content Type</label>
+            <select id="factoryContentType" name="contentType" value={factoryInput.contentType} onChange={onFactoryContentTypeChange}>
+              <option value=""></option>
+              <option value="audio">Audio</option>
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+              <option value="musicVideo">Music Video</option>
+              <option value="gallery">Gallery</option>
+            </select>
+            <label htmlFor="factoryContent">Content</label>
+            {factoryInput.contentType == "audio" ? <>
+              {factoryFilePreviews.content[0] && <audio controls src={factoryFilePreviews.content[0]} />}
+              {factoryFilePreviews.content[0] && <button onClick={() => deleteFactoryContentItem(0)}>Delete</button>}
+              <label htmlFor="factoryContent0" className="fileUpload">Upload Audio</label>
+              <input id="factoryContent0" type="file" accept="audio/*" ref={factoryContentRef} onChange={e => onFactoryContentUpload(e, 0)} />
+              {factoryFilePreviews.content[1] && <img height="200" src={factoryFilePreviews.content[1]} />}
+              {factoryFilePreviews.content[1] && <button onClick={() => deleteFactoryContentItem(1)}>Delete</button>}
+              <label htmlFor="factoryContent1" className="fileUpload">Upload Artwork</label>
+              <input id="factoryContent1" type="file" accept="image/*" onChange={e => onFactoryContentUpload(e, 1)} />
+            </> : factoryInput.contentType == "musicVideo" ? <>
+              {factoryFilePreviews.content[0] && <video controls height="200" src={factoryFilePreviews.content[0]} />}
+              {factoryFilePreviews.content[0] && <button onClick={() => deleteFactoryContentItem(0)}>Delete</button>}
+              <label htmlFor="factoryContent0" className="fileUpload">Upload Video</label>
+              <input id="factoryContent0" type="file" ref={factoryContentRef} onChange={e => onFactoryContentUpload(e, 0)} />
+              {factoryFilePreviews.content[1] && <audio controls src={factoryFilePreviews.content[1]} />}
+              {factoryFilePreviews.content[1] && <button onClick={() => deleteFactoryContentItem(1)}>Delete</button>}
+              <label htmlFor="factoryContent1" className="fileUpload">Upload Audio</label>
+              <input id="factoryContent1" type="file" accept="audio/*" onChange={e => onFactoryContentUpload(e, 1)} />
+              {factoryFilePreviews.content[2] && <img height="200" src={factoryFilePreviews.content[2]} />}
+              {factoryFilePreviews.content[2] && <button onClick={() => deleteFactoryContentItem(2)}>Delete</button>}
+              <label htmlFor="factoryContent2" className="fileUpload">Upload Artwork</label>
+              <input id="factoryContent2" type="file" accept="image/*" onChange={e => onFactoryContentUpload(e, 2)} />
+            </> : factoryInput.contentType == "gallery" ? <div style={{display: "grid", gridTemplateColumns: `repeat(${Math.min(12, factoryInput.content.length + 1)}, 1fr)`}}>
+              {factoryInput.content.map((file, index) =>
+                <div key={`factoryContent${index}`}>
+                  {factoryFilePreviews.content[index] && <img height="100" src={factoryFilePreviews.content[index]} />}
+                  <input size="12" value={factoryInput.contentNames[index] || ""} onChange={e => onFactoryContentNameChange(e, index)} />
+                  <label htmlFor={`factoryContent${index}`} className="fileUpload">Upload Image</label>
+                  <input id={`factoryContent${index}`} type="file" accept="image/*" multiple onChange={e => onFactoryContentUpload(e, index)} />
+                  <button onClick={() => deleteFactoryContentItem(index)}>Delete</button>
+                </div>
+              )}
+              <button onClick={addFactoryContentItem} style={{width: "50px", height: "50px", fontSize: "16px"}}>Add</button>
+            </div> : factoryInput.contentType ? <>
+              {factoryFilePreviews.content[0] && (factoryInput.contentType == "image" ? <img height="200" src={factoryFilePreviews.content[0]} /> : <video controls height="200" src={factoryFilePreviews.content[0]} />)}
+              {factoryFilePreviews.content[0] && <button onClick={() => deleteFactoryContentItem(0)}>Delete</button>}
+              <label htmlFor="factoryContent" className="fileUpload">Upload Content</label>
+              <input id="factoryContent" type="file" ref={factoryContentRef} onChange={e => onFactoryContentUpload(e, 0)} />
+            </> : null}
+            {(factoryEventPostLoading || factoryEventEditLoading) && <p>{editFactoryEvent ? "Updating" : "Posting"} factory event...</p>}
+            {(factoryEventPosted || factoryEventEdited) && <p>Factory event successfully {editFactoryEvent ? "updated" : "posted"}</p>}
+            {(factoryEventPostError || factoryEventEditError) && <p>Error {editFactoryEvent ? "updating" : "posting"} factory event</p>}
+            <button onClick={editFactoryEvent ? editFactoryEventMutation : postFactoryEvent}>{editFactoryEvent ? "Edit event" : "Create factory event"}</button>
+            {editFactoryEvent && <button onClick={deleteFactoryEventClicked}>{confirmDelete ? "Confirm" : "Delete Event"}</button>}
+            {factoryEventDeleteError && <p>Error deleting factory event</p>}
+          </div>}
+          {postingMode == "project" && <div className="enterProject" style={{height: "500px", overflowY: "scroll"}}>
             <h2>{editProject ? "Update project" : "Upload new project"}</h2>
             <p>Name</p>
             <input name="name" type="text" value={projectInput.name} onChange={onProjectChange} />
@@ -432,7 +701,7 @@ const AdminPanel = () => {
             {(projectDeleteError) && <p>Error deleting project</p>}
             <button onClick={editProject ? submitEdit : submitProject}>{editProject ? "Edit" : "Submit"}</button><p />
             {editProject && <button onClick={deleteClicked}>{confirmDelete ? "Confirm" : "Delete Project"}</button>}
-          </div>
+          </div>}
         </div>
       }
     </>

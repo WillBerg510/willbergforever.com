@@ -106,17 +106,17 @@ const regions = [
     arrow: [50, "down"],
     holdsProjects: false,
   },
-  /*{
-    name: "Ryan's Factory",
+  {
+    name: "The Factory",
     code: "factory",
-    position: [28, 84],
+    position: [29, 85],
     arrow: [70, "up"],
     holdsProjects: false,
-  },*/
+  },
   {
     name: "Bob's Daily Races",
     code: "races",
-    position: [69, 83],
+    position: [69, 82.5],
     arrow: [30, "up"],
     holdsProjects: false,
   }

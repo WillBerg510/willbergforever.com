@@ -159,6 +159,15 @@
   z-index: 1;
 }
 
+.projectTitle {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex-direction: column;
+  align-items: start;
+  margin: 0;
+}
+
 .projectName {
   font-size: 1.8em;
   line-height: 1em;
@@ -169,8 +178,43 @@
 .projectDate {
   font-size: 1.1em;
   font-weight: 450;
-  margin: 0 0 0 0;
+  margin: 0 0 0.1em 0;
   line-height: 1.7em;
+}
+
+.projectFactoryPart {
+  position: absolute;
+  width: 3.8em;
+  height: 3.8em;
+  transition: scale 0.1s ease-out;
+}
+
+.projectFactoryPart.location1 {
+  right: 0.5em;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+}
+
+.projectFactoryPart.location2 {
+  margin-top: 11.25em;
+  right: 0;
+}
+
+.projectFactoryPart.location3 {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.projectFactoryPart img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.projectFactoryPart:hover {
+  scale: 130%;
 }
 
 .projectGroups {

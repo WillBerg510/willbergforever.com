@@ -10,6 +10,20 @@
   margin-bottom: 10px;
 }
 
+.postingModeButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.enterFactory {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 input[type="file"] {
     display: none;
 }

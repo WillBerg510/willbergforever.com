@@ -32,7 +32,7 @@ const ProjectIcon = (props) => {
     if (raceMode) {
       const raceProject = raceProjects.find(proj => proj.name == project.name);
       if (raceProject) {
-        if (true || !raceProject.found) {
+        if (!raceProject.found) {
           raceProject.found = true;
           checkRaceComplete();
           setFeedback(Right);

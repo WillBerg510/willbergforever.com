@@ -1,6 +1,7 @@
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useState, useEffect, useRef } from "react";
 import projectsAPI from "../api/ProjectsAPI.js";
+import factoryAPI from "../api/FactoryAPI.js";
 import regions from "../constants/regions.js";
 import "../stylesheets/Player.css";
 import PlayIcon from "../assets/Play.svg";
@@ -11,7 +12,7 @@ import FullscreenIcon from "../assets/Fullscreen.svg";
 import ExitFullscreenIcon from "../assets/Exit Fullscreen.svg";
 import BackIcon from "../assets/Back.svg";
 
-const Player = ({ project_id, closeWindows, setOpenProject, loader, userRefresh }) => {
+const Player = ({ project_id, closeWindows, setOpenProject, setOpenMiscWindow, loader, userRefresh, factoryMode }) => {
   const [contentReady, setContentReady] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [position, setPosition] = useState(0);
@@ -40,10 +41,15 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader, userRefresh 
   const { data: project } = useQuery({
     queryKey: [`project-${project_id}`],
     queryFn: () => {
-      return projectsAPI.getProject(project_id).then(res => {
-        res.data.project.date = new Date(res.data.project.date);
-        return res.data.project;
-      });
+      if (factoryMode) {
+        return factoryAPI.getContent(project_id).then(res => res?.data?.factoryEvent);
+      } else {
+        return projectsAPI.getProject(project_id).then(res => {
+          res.data.project.date = new Date(res.data.project.date);
+          return res.data.project;
+        });
+      }
+      
     },
     retry: (count, error) => {
       if (error.response.status == 500 && count < 1) {
@@ -273,7 +279,8 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader, userRefresh 
 
   const backToProject = () => {
     closeWindows();
-    setOpenProject(project_id);
+    if (!factoryMode) setOpenProject(project_id);
+    else setOpenMiscWindow("factory");
   };
 
   const switchContentType = () => {
@@ -288,7 +295,7 @@ const Player = ({ project_id, closeWindows, setOpenProject, loader, userRefresh 
   return (
     <div style={{
       display: contentType ? "flex" : "none",
-      '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
+      '--project-color': factoryMode ? "#cccccb" : regions.filter(region => region.code == project?.region?.split("-")[0])[0]?.color || null,
     }} key={`${project_id}-player`} className={`playerWindow ${loader && "playerLoader"}`} onClick={receiveClick}>
       {project && <div className="projectPlayer">
         <div className="playerHeader">

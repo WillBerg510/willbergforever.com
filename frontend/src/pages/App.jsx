@@ -10,6 +10,7 @@ import projectsAPI from '../api/ProjectsAPI.js';
 import racesAPI from '../api/RacesAPI.js';
 import UpdatesBox from '../components/UpdatesBox.jsx';
 import DailyRaces from '../components/DailyRaces.jsx';
+import Factory from '../components/Factory.jsx';
 import RaceBox from '../components/RaceBox.jsx';
 import Island from '../components/Island.jsx';
 import Project from '../components/Project.jsx';
@@ -27,6 +28,7 @@ function App() {
   const [allUpdatesOpen, setAllUpdatesOpen] = useState(false);
   const [openProject, setOpenProject] = useState(null);
   const [openPlayer, setOpenPlayer] = useState(null);
+  const [factoryMode, setFactoryMode] = useState(false);
   const [openMiscWindow, setOpenMiscWindow] = useState(null);
   const [initialLoad, setInitialLoad] = useState(imagesToLoad.length);
   const [beginLoad, setBeginLoad] = useState(false);
@@ -127,6 +129,7 @@ function App() {
   const closeWindows = () => {
     setOpenProject(null);
     setOpenPlayer(null);
+    setFactoryMode(false);
     setOpenMiscWindow(null);
   };
 
@@ -204,6 +207,12 @@ function App() {
     }
   };
 
+  const openFactoryPlayer = (projectId) => {
+    setOpenMiscWindow(null);
+    setFactoryMode(true);
+    setOpenPlayer(projectId);
+  }
+
   useEffect(() => {
     setTimeout(() => {
       setBeginLoad(true);
@@ -262,13 +271,16 @@ function App() {
       </AnimatePresence>
       {(openProject || openPlayer) && <div className="windowOnTop" onClick={closeWindows}>
         {openProject && <Project project_id={openProject} key={openProject} closeWindows={closeWindows} userRefresh={userRefresh} isAdmin={isAdmin} setOpenPlayer={setOpenPlayer} />}
-        {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} userRefresh={userRefresh} />}
+        {openPlayer && <Player project_id={openPlayer} closeWindows={closeWindows} setOpenProject={setOpenProject} userRefresh={userRefresh} factoryMode={factoryMode} setOpenMiscWindow={setOpenMiscWindow} />}
       </div>}
       {(openMiscWindow == "updates") && <div className="windowOnTop" onClick={closeWindows}>
         <UpdatesBox allUpdatesOpen={true} isAdmin={isAdmin} full={true} toggleSeeMore={toggleSeeMore} userVerifyFailed={userVerifyFailed} userRefresh={userRefresh} closeWindows={closeWindows} />
       </div>}
       {(openMiscWindow == "races") && <div className="windowOnTop" onClick={closeWindows}>
         <DailyRaces closeWindows={closeWindows} getRace={getRace} userRefresh={userRefresh} />
+      </div>}
+      {(openMiscWindow == "factory") && <div className="windowOnTop" onClick={closeWindows}>
+        <Factory closeWindows={closeWindows} isAdmin={isAdmin} openFactoryPlayer={openFactoryPlayer} />
       </div>}
       {(initialLoad > 0 && beginLoad) && <>
         <Player project_id="6a5d8bec5882a9c7eed13cba" loader={true} userRefresh={userRefresh} />

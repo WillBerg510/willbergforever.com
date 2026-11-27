@@ -275,12 +275,11 @@
   align-items: center;
   justify-content: center;
   color: white;
-  margin-bottom: 0.75em;
 }
 
 .projectRaceFeedback img {
   width: 100%;
-  filter: drop-shadow(0 0 0.75em rgba(255, 255, 0, 0.75));
+  filter: drop-shadow(0 0 0.85em rgba(255, 255, 0, 0.75));
 }
 
 .projectIcon.withFeedback {

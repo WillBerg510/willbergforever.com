@@ -1,15 +1,18 @@
 import projectsAPI from "../api/ProjectsAPI.js";
+import factoryAPI from "../api/FactoryAPI.js";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectReactions } from "../constants/reactions.js";
 import projectGroups from "../constants/projectGroups.js";
+import factoryParts from "../constants/factoryParts.js";
 import regions from "../constants/regions.js";
 import '../stylesheets/Project.css';
 import YouTubeIcon from "../assets/YouTube.svg";
 import SpotifyIcon from "../assets/Spotify.svg";
 import GlobeIcon from "../assets/Globe.svg";
 import ViewIcon from "../assets/View.svg";
+import FactoryPart from "./FactoryPart.jsx";
 
 const linkIcons = {
   youtube: YouTubeIcon,
@@ -19,6 +22,7 @@ const linkIcons = {
 
 const Project = (props) => {
   const { project_id, userRefresh, isAdmin, setOpenPlayer, closeWindows } = props;
+  const client = useQueryClient();
   const [reactionStates, setReactionStates] = useState({});
   const [reactionNums, setReactionNums] = useState({});
   const [allReactions, setAllReactions] = useState(projectReactions);
@@ -164,9 +168,31 @@ const Project = (props) => {
     setOpenPlayer(project_id);
   };
 
+  const { mutate: submitFactoryProgress } = useMutation({
+    mutationFn: () => {
+      if (project?.factoryCode) {
+        return factoryAPI.submitFactoryProgress(project_id, project.factoryCode);
+      }
+    },
+    onMutate: async () => {
+      const queryKey = [`project-${project_id}`];
+      await client.cancelQueries({queryKey});
+      const previousProject = client.getQueryData(queryKey);
+      if (previousProject) {
+        client.setQueryData(queryKey, {...previousProject, factoryPart: null});
+      }
+      return {previousProject};
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousProject) {
+        client.setQueryData([`project-${project_id}`], context.previousProject);
+      }
+    },
+  });
+
   return (
     <div style={{
-      display: (project && necessaryImagesReady >= 4 + project.groups.length) ? "flex" : "none",
+      display: (project && necessaryImagesReady >= 4 + project.groups.length + (factoryParts[project.factoryPart] ? 1 : 0)) ? "flex" : "none",
       '--project-color': regions.filter(region => region.code == project?.region.split("-")[0])[0]?.color || null,
     }} key={project_id} className={`projectWindow${hasTopFade ? ' hasTopFade' : ''}${hasBottomFade ? ' hasBottomFade' : ''}`} onClick={receiveClick}>
       <div className="projectCloseButton" onClick={closeWindows}>
@@ -183,13 +209,16 @@ const Project = (props) => {
             {/*<div className={`projectThumbnailCover projectThumbnailCoverTwo ${thumbnailReady && "projectThumbnailCoverHidden"}`} />*/}
             <img src={project.thumbnail} className="projectThumbnailImage" onLoad={onThumbnailReady} />
           </div>
-          <h1 className="projectName">{project.name}</h1>
-          <p className="projectDate">{project.date.toLocaleString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-            timeZone: "UTC",
-          })}</p>
+          <div className="projectTitle">
+            <h1 className="projectName">{project.name}</h1>
+            <p className="projectDate">{project.date.toLocaleString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+              timeZone: "UTC",
+            })}</p>
+            {project?.factoryLocation == 1 && <FactoryPart location={project.factoryLocation} partIndex={project.factoryPart} onNecessaryReady={onNecessaryReady} submitFactoryProgress={submitFactoryProgress} />}
+          </div>
           <div className="projectGroups">
             {project.groups?.map(group => 
               <div key={group} className="projectGroup">
@@ -223,7 +252,7 @@ const Project = (props) => {
             )}
           </div>}
           <div className="projectLinks">
-            {["youtube", "spotify", "link"].map(linkType =>
+            {["youtube", "spotify", "link"].map((linkType, index) =>
               <div
                 key={linkType}
                 disabled={!project.links?.[linkType] || project.links[linkType] == ""}
@@ -232,6 +261,7 @@ const Project = (props) => {
               >
                 <img src={linkIcons[linkType]} className="projectLinkIcon" onLoad={onNecessaryReady} />
                 <p className="projectLinkText">{linkType.toUpperCase()}</p>
+                {project?.factoryLocation == 3 + index && <FactoryPart location={3} partIndex={project.factoryPart} onNecessaryReady={onNecessaryReady} submitFactoryProgress={submitFactoryProgress} />}
               </div>
             )}
             <div
@@ -241,7 +271,9 @@ const Project = (props) => {
             >
               <img src={ViewIcon} className="projectLinkIcon" onLoad={onNecessaryReady} />
               <p className="projectLinkText">{project.icon == "photos" || project.icon == "art" ? "VIEW" : "PLAY"}</p>
+              {project?.factoryLocation == 6 && <FactoryPart location={3} partIndex={project.factoryPart} onNecessaryReady={onNecessaryReady} submitFactoryProgress={submitFactoryProgress} />}
             </div>
+            {project?.factoryLocation == 2 && <FactoryPart location={project.factoryLocation} partIndex={project.factoryPart} onNecessaryReady={onNecessaryReady} submitFactoryProgress={submitFactoryProgress} />}
           </div>
         </div>
       </div>}

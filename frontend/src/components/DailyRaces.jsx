@@ -40,8 +40,21 @@ const DailyRaces = (props) => {
     });
   }, []);
 
+  const { data: races } = useQuery({
+    queryKey: ["races"],
+    queryFn: () => racesAPI.getRaces().then(res => res?.data?.races),
+    retry: (count, error) => {
+      if (error.response?.status == 500) {
+        userRefresh();
+        return true;
+      }
+      return false;
+    },
+    retryDelay: (count) => count * 250,
+  });
+
   useEffect(() => {
-    if (!animationLoaded) return;
+    if (!animationLoaded || !races) return;
 
     let animationFrames = Array.from({ length: 37 }, (_, index) => index);
     let animationStart;
@@ -74,19 +87,7 @@ const DailyRaces = (props) => {
     return () => {
       window.cancelAnimationFrame(animationFrame);
     };
-  }, [animationLoaded]);
-
-  const { data: races } = useQuery({
-    queryKey: ["races"],
-    queryFn: () => racesAPI.getRaces().then(res => res?.data?.races),
-    retry: (count, error) => {
-      if (error.response?.status == 500) {
-        userRefresh();
-        return true;
-      }
-      return false;
-    },
-  });
+  }, [animationLoaded, races]);
 
   const startRace = (level) => {
     getRace(level);

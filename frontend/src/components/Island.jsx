@@ -67,33 +67,26 @@ const Island = (props) => {
         setIslandVisible(true);
       }}
     >
-      <AnimatePresence custom={focusRegion}>
-        {(!focusDivision && focusRegion) && <motion.div
-          className="islandBlurDiv"
-          custom={focusRegion}
-          initial={{opacity: 0}}
-          animate={{
-            opacity: 1,
-            transition: {
-              ease: "easeInOut",
-              duration: 0.1,
-            },
-          }}
-          exit="exit"
-          variants={{
-            exit: (focusRegion) => {
-              return {
-                opacity: 0,
-                transition: focusRegion
-                  ? {ease: "easeInOut", duration: 0.2, delay: 0.2}
-                  : {ease: "easeInOut", duration: 0.1, delay: 0.4},
-              };
-            }}
-          }
-        >
-          <img src={MainBlur} className="islandBlur" />
-        </motion.div>}
-      </AnimatePresence>
+      <motion.div
+        className="islandBlurDiv"
+        initial={{opacity: 0}}
+        animate={{
+          opacity: focusRegion && !focusDivision ? 1 : 0,
+          transition: focusRegion
+            ? {
+                ease: "easeInOut",
+                duration: focusDivision ? 0.2 : 0.1,
+                delay: focusDivision ? 0.2 : 0,
+              }
+            : {
+                ease: "easeInOut",
+                duration: 0.1,
+                delay: 0.4,
+              },
+        }}
+      >
+        <img src={MainBlur} className="islandBlur" />
+      </motion.div>
       <AnimatePresence>
         {!focusDivision && <motion.div
           key="smileIsle"

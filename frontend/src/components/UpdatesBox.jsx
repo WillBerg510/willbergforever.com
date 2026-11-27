@@ -92,7 +92,7 @@ const UpdatesBox = (props) => {
       </div>
       <h2 className="updatesHeader">LATEST UPDATES</h2>
       {(!expanded) && (<div className={`updatesBoxOverflow ${showGradient ? "" : "transparent"}`} />)}
-      {userVerifyFailed && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
+      {(!updates && userVerifyFailed) && <p className="updatesBoxInfo">Unable to connect with backend server.</p>}
       {(isLoading && !userVerifyFailed) && <p className="updatesBoxInfo">Loading...</p>}
       <div className={`updatesListContainer${hasTopFade ? ' hasTopFade' : ''}${hasBottomFade ? ' hasBottomFade' : ''}`}>
         <div ref={updatesListRef} className="updatesList">
